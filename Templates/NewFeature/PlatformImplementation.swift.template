@@ -1,0 +1,5 @@
+#if os(iOS)
+// Keep touch-oriented behavior here.
+#elseif os(macOS)
+// Keep keyboard, pointer, and window behavior here.
+#endif

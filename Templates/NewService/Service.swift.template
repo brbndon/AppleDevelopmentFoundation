@@ -1,0 +1,2 @@
+/// A boundary around an external system. Keep it application-neutral and cancellable where asynchronous.
+public protocol ServiceName: Sendable {}

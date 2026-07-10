@@ -1,0 +1,44 @@
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "AppleDevelopmentFoundation",
+    platforms: [.iOS(.v17), .macOS(.v14)],
+    products: [
+        .library(name: "AppFoundation", targets: ["AppFoundation"]),
+        .library(name: "DesignSystem", targets: ["DesignSystem"]),
+        .library(name: "FormKit", targets: ["FormKit"]),
+        .library(name: "OnboardingKit", targets: ["OnboardingKit"]),
+        .library(name: "NavigationKit", targets: ["NavigationKit"]),
+        .library(name: "PersistenceKit", targets: ["PersistenceKit"]),
+        .library(name: "FileKit", targets: ["FileKit"]),
+        .library(name: "MediaKit", targets: ["MediaKit"]),
+        .library(name: "FeedbackKit", targets: ["FeedbackKit"]),
+        .library(name: "LoggingKit", targets: ["LoggingKit"]),
+        .library(name: "AppShellKit", targets: ["AppShellKit"]),
+    ],
+    targets: [
+        .target(name: "AppFoundation"),
+        .target(name: "DesignSystem", dependencies: ["AppFoundation"]),
+        .target(name: "FormKit", dependencies: ["AppFoundation", "DesignSystem"]),
+        .target(name: "OnboardingKit", dependencies: ["AppFoundation", "DesignSystem"]),
+        .target(name: "NavigationKit", dependencies: ["AppFoundation"]),
+        .target(name: "PersistenceKit", dependencies: ["AppFoundation"]),
+        .target(name: "FileKit", dependencies: ["AppFoundation"]),
+        .target(name: "MediaKit", dependencies: ["AppFoundation", "FileKit"]),
+        .target(name: "FeedbackKit", dependencies: ["AppFoundation", "DesignSystem"]),
+        .target(name: "LoggingKit", dependencies: ["AppFoundation"]),
+        .target(name: "AppShellKit", dependencies: ["AppFoundation", "DesignSystem", "NavigationKit"]),
+        .executableTarget(name: "FoundationGallery", dependencies: ["DesignSystem", "FormKit", "OnboardingKit", "NavigationKit", "PersistenceKit", "FileKit", "MediaKit", "FeedbackKit", "AppShellKit"], path: "Examples/FoundationGallery"),
+        .executableTarget(name: "iOSExample", dependencies: ["DesignSystem", "FormKit", "OnboardingKit", "NavigationKit", "FeedbackKit", "AppShellKit"], path: "Examples/iOSExample"),
+        .executableTarget(name: "macOSExample", dependencies: ["DesignSystem", "FormKit", "OnboardingKit", "NavigationKit", "FeedbackKit", "AppShellKit"], path: "Examples/macOSExample"),
+        .target(name: "TestingSupport", dependencies: ["AppFoundation"], path: "Tests/TestingSupport"),
+        .testTarget(name: "AppFoundationTests", dependencies: ["AppFoundation", "TestingSupport"]),
+        .testTarget(name: "DesignSystemTests", dependencies: ["DesignSystem"]),
+        .testTarget(name: "FormKitTests", dependencies: ["FormKit"]),
+        .testTarget(name: "OnboardingKitTests", dependencies: ["OnboardingKit"]),
+        .testTarget(name: "NavigationKitTests", dependencies: ["NavigationKit"]),
+        .testTarget(name: "PersistenceKitTests", dependencies: ["PersistenceKit"]),
+        .testTarget(name: "FileKitTests", dependencies: ["FileKit", "TestingSupport"]),
+    ]
+)

@@ -1,0 +1,9 @@
+import SwiftUI
+
+/// Describe the reusable behavior, constraints, and platform notes.
+public struct ComponentName: View {
+    public init() {}
+    public var body: some View {
+        Text("Replace with a semantic, accessible native component")
+    }
+}
