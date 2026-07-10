@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(cd "$(dirname "$0")/.." && pwd -P)"
 python3 - <<'PY'
 import json, pathlib, re, sys
 root = pathlib.Path('.agents/skills')
@@ -12,5 +12,9 @@ for item in manifest['skills']:
     names.add(name)
     text = path.read_text()
     if not re.match(r'^---\nname: ' + re.escape(name) + r'\ndescription: .+\n---\n', text, re.S): raise SystemExit(f'invalid frontmatter: {path}')
+    if 'Inputs:' not in text or 'Output:' not in text: raise SystemExit(f'missing semantic contract: {path}')
+skill_paths = {path.parent.name for path in root.glob('*/SKILL.md')}
+if skill_paths != {item['path'] for item in manifest['skills']}:
+    raise SystemExit('manifest and skill directories differ')
 print(f'validated {len(names)} skills')
 PY

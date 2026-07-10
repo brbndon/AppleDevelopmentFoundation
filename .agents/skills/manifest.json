@@ -5,12 +5,12 @@
     {"name":"swiftui-component-author","path":"swiftui-component-author","scope":"repository-or-user","purpose":"Author reusable SwiftUI","installable":true,"scripts":false,"modules":["DesignSystem"]},
     {"name":"apple-design-system","path":"apple-design-system","scope":"repository-or-user","purpose":"Design-system changes","installable":true,"scripts":false,"modules":["DesignSystem"]},
     {"name":"ios-macos-platform-adaptation","path":"ios-macos-platform-adaptation","scope":"repository-or-user","purpose":"Platform adaptation","installable":true,"scripts":false,"modules":[]},
-    {"name":"swift-package-module-author","path":"swift-package-module-author","scope":"repository-or-user","purpose":"Add package modules","installable":true,"scripts":false,"modules":[]},
-    {"name":"reusable-code-extractor","path":"reusable-code-extractor","scope":"repository-or-user","purpose":"Extract proven reusable code","installable":true,"scripts":false,"modules":[]},
+    {"name":"swift-package-module-author","path":"swift-package-module-author","scope":"repository","purpose":"Add package modules","installable":true,"scripts":false,"modules":[]},
+    {"name":"reusable-code-extractor","path":"reusable-code-extractor","scope":"repository","purpose":"Extract proven reusable code","installable":true,"scripts":false,"modules":[]},
     {"name":"swift-concurrency-review","path":"swift-concurrency-review","scope":"repository-or-user","purpose":"Review concurrency","installable":true,"scripts":false,"modules":["AppFoundation"]},
     {"name":"apple-accessibility-review","path":"apple-accessibility-review","scope":"repository-or-user","purpose":"Review accessibility","installable":true,"scripts":false,"modules":["DesignSystem"]},
     {"name":"apple-security-privacy-review","path":"apple-security-privacy-review","scope":"repository-or-user","purpose":"Review privacy and security","installable":true,"scripts":false,"modules":["FileKit","LoggingKit"]},
     {"name":"swift-testing-verification","path":"swift-testing-verification","scope":"repository-or-user","purpose":"Verify changes","installable":true,"scripts":false,"modules":[]},
-    {"name":"codex-skill-maintainer","path":"codex-skill-maintainer","scope":"repository-or-user","purpose":"Maintain local skills","installable":true,"scripts":false,"modules":[]}
+    {"name":"codex-skill-maintainer","path":"codex-skill-maintainer","scope":"repository","purpose":"Maintain local skills","installable":true,"scripts":false,"modules":[]}
   ]
 }

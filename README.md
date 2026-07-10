@@ -1,39 +1,42 @@
 # Apple Development Foundation
 
-A fully local Swift Package source of reusable, independent iOS and macOS foundations. It targets iOS 17+ and macOS 14+, requires Xcode 16+ / Swift 6 (validated with Xcode 26.2 / Swift 6.2), and has no third-party dependencies.
+A local Swift Package of small, independently selectable foundations for iOS 17+ and macOS 14+. It has no third-party dependencies and is currently verified with Xcode 26.2 / Swift 6.2.3.
 
 ## Modules
 
-| Module | Responsibility | Dependencies |
+| Module | Implemented responsibility | Direct package dependencies |
 | --- | --- | --- |
-| AppFoundation | deterministic boundaries, app environment, shared errors | — |
-| DesignSystem | semantic SwiftUI tokens and accessible neutral components | AppFoundation |
-| FormKit | validation, validated fields, decimal input, dirty state | AppFoundation, DesignSystem |
-| OnboardingKit | testable generic guided-flow progression and container | AppFoundation, DesignSystem |
-| NavigationKit | native value path and sheet routing state | AppFoundation |
-| PersistenceKit | SwiftData container and reset foundation | AppFoundation |
-| FileKit | filename, import validation, locations, atomic writing, scoped access | AppFoundation |
-| MediaKit | explicit image-load validation and actor cache | AppFoundation, FileKit |
-| FeedbackKit | observable feedback center and accessible banner | AppFoundation, DesignSystem |
-| LoggingKit | narrow privacy-first OSLog boundary | AppFoundation |
-| AppShellKit | adaptive shell and settings trigger | AppFoundation, DesignSystem, NavigationKit |
+| AppFoundation | deterministic clocks/identifiers, environment flags, non-sensitive generic errors | — |
+| DesignSystem | semantic SwiftUI tokens and neutral accessible components | — |
+| FormKit | string validation, locale-aware decimal parsing/input, dirty and form validation state | DesignSystem |
+| OnboardingKit | guided-flow inclusion, validation, progression, cancellation, restoration | DesignSystem |
+| NavigationKit | typed value paths, one sheet state, Codable path restoration | — |
+| PersistenceKit | SwiftData container creation and store-file reset | — |
+| FileKit | regular-file validation, sanitization, safe locations, atomic writes, scoped access | — |
+| MediaKit | validated image-data loading and actor-isolated cache | FileKit |
+| FeedbackKit | main-actor message state and accessible banner | DesignSystem |
+| LoggingKit | compile-time-literal OSLog event boundary | — |
+| AppShellKit | adaptive split shell and settings trigger | DesignSystem |
 
 ```text
-AppFoundation ← { DesignSystem, NavigationKit, PersistenceKit, FileKit, LoggingKit }
 DesignSystem ← { FormKit, OnboardingKit, FeedbackKit, AppShellKit }
 FileKit ← MediaKit
-NavigationKit ← AppShellKit
 ```
+
+The graph above is generated from and must agree with `Package.swift`; `AppFoundation` is intentionally standalone rather than a convenience dependency of every module.
 
 ## Integrate only what you use
 
-In Xcode, add this folder as a local package, then add a product to the app target. From another Git repository, add its URL and select individual products. A Package.swift consumer may use `.package(path: "../AppleDevelopmentFoundation")` and depend on `.product(name: "FormKit", package: "AppleDevelopmentFoundation")`.
+In Xcode, add this folder as a local package, then add only the required products to an app target. A Package.swift consumer may use `.package(path: "../AppleDevelopmentFoundation")` and depend on `.product(name: "FormKit", package: "AppleDevelopmentFoundation")`.
 
 ```swift
 import FormKit
 
-ValidatedTextField("Display name", text: $name,
-                   validation: .init([.required(), .maximumLength(80)]))
+ValidatedTextField(
+    "Display name",
+    text: $name,
+    validation: .init([.required(), .maximumLength(80)])
+)
 ```
 
 ## Workflows
@@ -48,10 +51,12 @@ ValidatedTextField("Display name", text: $name,
 ./Scripts/install-skills.sh --uninstall
 ```
 
-Open `Package.swift` in Xcode; the `FoundationGallery`, `iOSExample`, and `macOSExample` executable schemes demonstrate reusable UI. `FoundationGallery` is the component gallery.
+`FoundationGallery`, `iOSExample`, and `macOSExample` are implemented SwiftPM executable examples. The package tests and macOS/iOS-simulator compilation verify their compilation, but they do not verify a signed Xcode host app. See [Verification Limitations](Documentation/VerificationLimitations.md).
 
-## Current limitations and roadmap
+## Status and roadmap
 
-This release deliberately provides image loading rather than automatic transforms: resizing, compression, conversion, and metadata stripping must be explicit. Examples are Swift Package executable schemes, not signed distributable projects. Next priorities: (1) image transformation/PhotosPicker and document panels, (2) richer form focus and discard presentation, (3) SwiftData migration/backup examples, (4) optional native Xcode app templates, (5) accessibility UI-test harnesses.
+Implemented behavior is covered by focused unit tests where it has platform-independent state or I/O semantics. SwiftUI accessibility semantics and platform interaction are manually reviewed; no automatic host-app UI testing has been claimed.
 
-See [Architecture](Documentation/Architecture.md), [module API guide](Documentation/Modules.md), [Integration](Documentation/IntegrationGuide.md), [Testing](Documentation/TestingGuide.md), and [skills](.agents/skills/README.md).
+Deliberate non-goals include image resizing, compression, conversion, metadata stripping, document parsing, app-specific error mapping, popover routing, and file import/export formats. The next roadmap item is a minimal iOS and macOS Xcode host-app verification harness, not a new library module.
+
+See [Architecture](Documentation/Architecture.md), [module API guide](Documentation/Modules.md), [integration](Documentation/IntegrationGuide.md), [testing](Documentation/TestingGuide.md), [public API policy](Documentation/PublicAPIPolicy.md), [versioning](Documentation/Versioning.md), and [local skills](.agents/skills/README.md).

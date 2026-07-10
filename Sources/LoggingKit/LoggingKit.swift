@@ -1,12 +1,27 @@
-import AppFoundation
 import OSLog
 
-/// A narrow, privacy-first diagnostics boundary. Pass only developer-authored event names and counts.
+/// A narrow, privacy-first diagnostics boundary for developer-authored literal event names.
 public struct FoundationLogger: Sendable {
     private let logger: Logger
-    public init(subsystem: String, category: String) { logger = Logger(subsystem: subsystem, category: category) }
-    /// Logs a fixed diagnostic event. Do not interpolate user content, credentials, URLs, or file paths.
-    public func debug(event: String) { logger.debug("event=\(event, privacy: .public)") }
-    /// Logs a fixed error category without exposing the underlying error's potentially sensitive details.
-    public func error(event: String) { logger.error("event=\(event, privacy: .public)") }
+
+    /// Creates a logger for an application-controlled subsystem and category.
+    ///
+    /// Do not derive either value from user content, URLs, filenames, or credentials.
+    public init(subsystem: String, category: String) {
+        logger = Logger(subsystem: subsystem, category: category)
+    }
+
+    /// Logs a compile-time diagnostic event name at debug level.
+    ///
+    /// `StaticString` intentionally prevents interpolating arbitrary runtime values into this API.
+    public func debug(event: StaticString) {
+        logger.debug("event=\(String(describing: event), privacy: .public)")
+    }
+
+    /// Logs a compile-time error category without exposing an underlying error description.
+    ///
+    /// `StaticString` intentionally prevents interpolating arbitrary runtime values into this API.
+    public func error(event: StaticString) {
+        logger.error("event=\(String(describing: event), privacy: .public)")
+    }
 }
