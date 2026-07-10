@@ -11,22 +11,79 @@ import SwiftUI
 
 private enum TaskRoute: Hashable {
     case detail(UUID)
+}
+
+private enum TaskSheet: Hashable {
     case newTask
 }
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \TaskItem.createdAt, order: .reverse) private var tasks: [TaskItem]
+    @State private var sheetRouter = NavigationRouter<TaskSheet>()
+
+    var body: some View {
+        TabView {
+            TaskListView(
+                title: "Tasks",
+                emptyTitle: "No tasks yet",
+                emptyMessage: "Add a task to start your focused list.",
+                tasks: tasks.filter { !$0.isComplete },
+                showAddButton: true,
+                addTask: { sheetRouter.presentSheet(.newTask) }
+            )
+            .tabItem {
+                Label("Tasks", systemImage: "checklist")
+            }
+
+            TaskListView(
+                title: "Completed",
+                emptyTitle: "No completed tasks",
+                emptyMessage: "Completed tasks will appear here.",
+                tasks: tasks.filter(\.isComplete),
+                showAddButton: false,
+                addTask: {}
+            )
+            .tabItem {
+                Label("Completed", systemImage: "checkmark.circle")
+            }
+        }
+        .sheet(isPresented: isPresentingNewTask) {
+            TaskEditorView { title, notes in
+                modelContext.insert(TaskItem(title: title, notes: notes))
+                sheetRouter.dismissSheet()
+            }
+        }
+    }
+
+    private var isPresentingNewTask: Binding<Bool> {
+        Binding(
+            get: { sheetRouter.sheet == .newTask },
+            set: { isPresented in
+                if !isPresented {
+                    sheetRouter.dismissSheet()
+                }
+            }
+        )
+    }
+}
+
+private struct TaskListView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var router = NavigationRouter<TaskRoute>()
+
+    let title: LocalizedStringKey
+    let emptyTitle: LocalizedStringKey
+    let emptyMessage: LocalizedStringKey
+    let tasks: [TaskItem]
+    let showAddButton: Bool
+    let addTask: () -> Void
 
     var body: some View {
         NavigationStack(path: $router.path) {
             Group {
                 if tasks.isEmpty {
-                    StateView(.empty(
-                        title: "No tasks yet",
-                        message: "Add a task to start your focused list."
-                    ))
+                    StateView(.empty(title: emptyTitle, message: emptyMessage))
                 } else {
                     List {
                         ForEach(tasks) { task in
@@ -45,11 +102,11 @@ struct ContentView: View {
                     .listStyle(.insetGrouped)
                 }
             }
-            .navigationTitle("Tasks")
+            .navigationTitle(title)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    IconOnlyButton("Add task", systemImage: "plus") {
-                        router.presentSheet(.newTask)
+                if showAddButton {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        LiquidGlassIconButton(label: "Add task", systemImage: "plus", action: addTask)
                     }
                 }
             }
@@ -61,33 +118,33 @@ struct ContentView: View {
                     } else {
                         StateView(.empty(title: "Task unavailable", message: "This task may have been deleted."))
                     }
-                case .newTask:
-                    EmptyView()
                 }
             }
         }
-        .sheet(isPresented: isPresentingNewTask) {
-            TaskEditorView { title, notes in
-                modelContext.insert(TaskItem(title: title, notes: notes))
-                router.dismissSheet()
-            }
-        }
-    }
-
-    private var isPresentingNewTask: Binding<Bool> {
-        Binding(
-            get: { router.sheet == .newTask },
-            set: { isPresented in
-                if !isPresented {
-                    router.dismissSheet()
-                }
-            }
-        )
     }
 
     private func deleteTasks(at offsets: IndexSet) {
         for offset in offsets {
             modelContext.delete(tasks[offset])
+        }
+    }
+}
+
+private struct LiquidGlassIconButton: View {
+    let label: LocalizedStringKey
+    let systemImage: String
+    let action: () -> Void
+
+    var body: some View {
+        if #available(iOS 26.0, *) {
+            Button(action: action) {
+                Image(systemName: systemImage)
+                    .frame(minWidth: 44, minHeight: 44)
+            }
+            .buttonStyle(.glass)
+            .accessibilityLabel(label)
+        } else {
+            IconOnlyButton(label, systemImage: systemImage, action: action)
         }
     }
 }
@@ -169,9 +226,7 @@ private struct TaskEditorView: View {
                 }
 
                 Section {
-                    FoundationButton("Add Task") {
-                        save()
-                    }
+                    LiquidGlassActionButton(title: "Add Task", action: save)
                 }
             }
             .navigationTitle("New Task")
@@ -190,6 +245,21 @@ private struct TaskEditorView: View {
         hasAttemptedSave = true
         guard titleValidation.error(for: title) == nil else { return }
         onSave(title.trimmingCharacters(in: .whitespacesAndNewlines), notes.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+}
+
+private struct LiquidGlassActionButton: View {
+    let title: LocalizedStringKey
+    let action: () -> Void
+
+    var body: some View {
+        if #available(iOS 26.0, *) {
+            Button(title, action: action)
+                .buttonStyle(.glass)
+                .controlSize(.large)
+        } else {
+            FoundationButton(title, action: action)
+        }
     }
 }
 
