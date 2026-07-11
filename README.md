@@ -17,7 +17,7 @@ The [Foundation website](Website/index.html) gives coding agents and humans a co
 | NavigationKit | typed value paths, one sheet state, Codable path restoration | — |
 | PersistenceKit | SwiftData container creation and store-file reset | — |
 | FileKit | regular-file validation, sanitization, safe locations, atomic writes, scoped access | — |
-| MediaKit | validated image-data loading and actor-isolated cache | FileKit |
+| MediaKit | validated image-data loading and bounded actor-isolated LRU cache | FileKit |
 | FeedbackKit | main-actor message state and accessible banner | DesignSystem |
 | LoggingKit | compile-time-literal OSLog event boundary | — |
 | AppShellKit | adaptive split shell and settings trigger | DesignSystem |
@@ -59,7 +59,12 @@ ValidatedTextField(
 
 ## Status and roadmap
 
-Implemented behavior is covered by focused unit tests where it has platform-independent state or I/O semantics. SwiftUI accessibility semantics and platform interaction are manually reviewed; no automatic host-app UI testing has been claimed.
+Implemented behavior is covered by focused unit tests where it has platform-independent state or I/O semantics. The FoundationTasks Xcode host includes launch and task-creation UI checks; detailed SwiftUI accessibility semantics and platform interaction remain manual review items.
+
+`ImageDataCache` retains validated encoded bytes up to a deterministic 32 MiB default capacity,
+rechecks the active image policy on every loader hit, and uses best-effort file metadata as a
+freshness indicator. A validated entry may still serve as a fallback after its source file is
+deleted; policy and image validation still apply to that fallback.
 
 Deliberate non-goals include image resizing, compression, conversion, metadata stripping, document parsing, app-specific error mapping, popover routing, and file import/export formats. The next roadmap item is a minimal iOS and macOS Xcode host-app verification harness, not a new library module.
 

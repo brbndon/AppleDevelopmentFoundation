@@ -1,4 +1,4 @@
-import OnboardingKit
+@testable import OnboardingKit
 import XCTest
 
 final class OnboardingKitTests: XCTestCase {
@@ -14,6 +14,25 @@ final class OnboardingKitTests: XCTestCase {
         XCTAssertTrue(flow.isComplete)
         XCTAssertNil(flow.currentStep)
         XCTAssertEqual(flow.progress, 1)
+        flow.goBack()
+        XCTAssertTrue(flow.isComplete)
+        XCTAssertNil(flow.currentStep)
+    }
+
+    func testProgressNormalization() {
+        XCTAssertEqual(FlowProgressNormalization.normalize(-1), 0)
+        XCTAssertEqual(FlowProgressNormalization.normalize(0.5), 0.5)
+        XCTAssertEqual(FlowProgressNormalization.normalize(2), 1)
+        XCTAssertEqual(FlowProgressNormalization.normalize(.nan), 0)
+        XCTAssertEqual(FlowProgressNormalization.normalize(.infinity), 0)
+    }
+
+    func testCompletedRestorationRemainsTerminal() {
+        var flow = FlowProgression(steps: [FlowStep(id: 1)], restoredAsComplete: true)
+        XCTAssertTrue(flow.isComplete)
+        XCTAssertNil(flow.currentStep)
+        flow.goBack()
+        XCTAssertTrue(flow.isComplete)
     }
 
     func testProgressionStopsForRequiredValidation() {

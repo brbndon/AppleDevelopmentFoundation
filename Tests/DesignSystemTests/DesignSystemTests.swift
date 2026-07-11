@@ -1,4 +1,4 @@
-import DesignSystem
+@testable import DesignSystem
 import XCTest
 
 final class DesignSystemTests: XCTestCase {
@@ -12,5 +12,15 @@ final class DesignSystemTests: XCTestCase {
     func testStatusKindsAreSemanticAndComparable() {
         XCTAssertEqual(StatusBadge.Kind.success, .success)
         XCTAssertNotEqual(StatusBadge.Kind.warning, .danger)
+    }
+
+    func testStatusKindsHaveDistinctSymbols() {
+        let symbols = [
+            StatusBadge.Kind.neutral.systemImage,
+            StatusBadge.Kind.success.systemImage,
+            StatusBadge.Kind.warning.systemImage,
+            StatusBadge.Kind.danger.systemImage,
+        ]
+        XCTAssertEqual(Set(symbols).count, 4)
     }
 }

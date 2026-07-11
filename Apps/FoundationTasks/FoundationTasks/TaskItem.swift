@@ -1,8 +1,3 @@
-//
-//  TaskItem.swift
-//  FoundationTasks
-//
-
 import Foundation
 import SwiftData
 

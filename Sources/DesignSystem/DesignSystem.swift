@@ -4,7 +4,7 @@ import SwiftUI
 public enum FoundationTokens {
     /// Semantic spacing values in points.
     public enum Spacing {
-        /// Compact spacing for closely related controls.
+        /// Compact spacing for icon-label pairs and closely related controls.
         public static let compact = 8.0
         /// Standard spacing for related content.
         public static let standard = 12.0
@@ -16,13 +16,13 @@ public enum FoundationTokens {
     public enum Radius {
         /// Radius for cards and grouped surfaces.
         public static let card = 16.0
-        /// Radius for compact controls.
+        /// Radius for compact controls such as buttons, fields, and badges.
         public static let control = 10.0
     }
 
     /// Semantic colors paired with textual and symbolic state cues.
     public enum ColorRole {
-        /// The application's accent color.
+        /// The application accent role, useful for controls and branded emphasis.
         public static let accent = Color.accentColor
         /// A success color that must be paired with a non-color cue.
         public static let success = Color.green
@@ -128,7 +128,8 @@ public struct StatusBadge: View {
         Label {
             Text(title)
         } icon: {
-            Image(systemName: kind == .success ? "checkmark.circle.fill" : "circle.fill")
+            Image(systemName: kind.systemImage)
+                .accessibilityHidden(true)
         }
         .font(.caption.weight(.semibold))
         .padding(.horizontal, 8)
@@ -136,6 +137,17 @@ public struct StatusBadge: View {
         .foregroundStyle(color)
         .background(color.opacity(0.14), in: Capsule())
         .accessibilityElement(children: .combine)
+    }
+}
+
+extension StatusBadge.Kind {
+    internal var systemImage: String {
+        switch self {
+        case .neutral: "info.circle.fill"
+        case .success: "checkmark.circle.fill"
+        case .warning: "exclamationmark.triangle.fill"
+        case .danger: "xmark.octagon.fill"
+        }
     }
 }
 

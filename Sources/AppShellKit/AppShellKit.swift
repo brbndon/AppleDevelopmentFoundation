@@ -1,4 +1,3 @@
-import DesignSystem
 import SwiftUI
 
 /// A generic application shell that adapts native navigation structure by platform.

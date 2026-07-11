@@ -40,13 +40,19 @@ public struct FlowProgression<ID: Hashable & Sendable>: Sendable {
     /// Whether the application cancelled the flow.
     public private(set) var isCancelled = false
 
-    /// Creates a progression, restoring an included step when its identifier is present.
+    /// Creates a progression, restoring an included step or completed terminal state.
     ///
     /// An unknown or excluded restored identifier starts the flow at the first included step.
-    public init(steps: [FlowStep<ID>], restoredStepID: ID? = nil) {
+    /// Set `restoredAsComplete` when the application persisted that all included steps had
+    /// completed; completion is terminal and is not undone by ``goBack()``.
+    public init(
+        steps: [FlowStep<ID>],
+        restoredStepID: ID? = nil,
+        restoredAsComplete: Bool = false
+    ) {
         let includedSteps = steps.filter { $0.isIncluded() }
         self.steps = includedSteps
-        currentIndex = restoredStepID.flatMap { id in
+        currentIndex = restoredAsComplete ? includedSteps.count : restoredStepID.flatMap { id in
             includedSteps.firstIndex { $0.id == id }
         } ?? 0
     }
@@ -78,7 +84,7 @@ public struct FlowProgression<ID: Hashable & Sendable>: Sendable {
 
     /// Moves to the preceding included step unless the flow has completed or been cancelled.
     public mutating func goBack() {
-        guard !isCancelled else { return }
+        guard !isCancelled, !isComplete else { return }
         currentIndex = max(0, currentIndex - 1)
     }
 
@@ -86,11 +92,22 @@ public struct FlowProgression<ID: Hashable & Sendable>: Sendable {
     public mutating func cancel() { isCancelled = true }
 }
 
+internal enum FlowProgressNormalization {
+    static func normalize(_ progress: Double) -> Double {
+        guard progress.isFinite else { return 0 }
+        return min(max(progress, 0), 1)
+    }
+}
+
+/// A titled, accessible container for the content and normalized progress of a guided flow.
+///
+/// Progress values below zero are normalized to zero, values above one to one, and non-finite
+/// values such as `NaN` and infinity to zero. Applications own the flow content and persistence.
 public struct FlowContainer<Content: View>: View {
     /// The visible flow title.
     public let title: LocalizedStringKey
 
-    /// The completed progress, expected to be in the `0...1` range.
+    /// The completed progress, normalized to the `0...1` range for SwiftUI.
     public let progress: Double
 
     private let content: Content
@@ -102,7 +119,7 @@ public struct FlowContainer<Content: View>: View {
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
-        self.progress = progress
+        self.progress = FlowProgressNormalization.normalize(progress)
         self.content = content()
     }
 

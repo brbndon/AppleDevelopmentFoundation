@@ -10,7 +10,15 @@ final class FileKitTests: XCTestCase {
 
     func testFilenameUsesFallbackForWhitespaceAndRejectsTraversalComponents() throws {
         XCTAssertEqual(try SafeFilename.make("   ", fallback: "export.txt"), "export.txt")
-        XCTAssertThrowsError(try SafeFilename.make(".."))
+        XCTAssertEqual(try SafeFilename.make(".."), "document")
+    }
+
+    func testFilenameSanitizesFallbackAndTraversalInputs() throws {
+        XCTAssertEqual(try SafeFilename.make("", fallback: "bad/name:here"), "bad-name-here")
+        XCTAssertEqual(try SafeFilename.make("", fallback: "///"), "Untitled")
+        XCTAssertEqual(try SafeFilename.make(".", fallback: ".."), "Untitled")
+        XCTAssertEqual(try SafeFilename.make("e\u{301}"), "é")
+        XCTAssertEqual(try SafeFilename.make("a\\b:c\u{0001}"), "a-b-c-")
     }
 
     func testPolicyRejectsOversizedUnsupportedAndNonRegularFiles() throws {

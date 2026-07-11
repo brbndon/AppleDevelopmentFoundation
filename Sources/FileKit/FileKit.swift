@@ -87,19 +87,26 @@ public struct FileImportPolicy: Sendable {
 
 /// Safe portable filename generation for user-provided names.
 public enum SafeFilename {
-    /// Produces a single portable filename component, replacing path separators and control characters.
+    /// Produces a single portable filename component, sanitizing both the proposal and fallback.
+    ///
+    /// Unicode is canonically precomposed. Separators, colons, controls, and other forbidden
+    /// characters become hyphens; unsafe edge whitespace and periods are trimmed. If either
+    /// input becomes empty or is `.`/`..`, the next fallback is sanitized, ending at `Untitled`.
     public static func make(_ proposed: String, fallback: String = "document") throws -> String {
-        let forbidden = CharacterSet(charactersIn: "/\\:\u{0}")
-            .union(.controlCharacters)
-        let cleaned = proposed
-            .components(separatedBy: forbidden)
-            .joined(separator: "-")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        let value = cleaned.isEmpty ? fallback : cleaned
-        guard value != ".", value != "..", !value.contains("/") else {
+        func sanitize(_ input: String) -> String? {
+            let forbidden = CharacterSet(charactersIn: "/\\:").union(.controlCharacters)
+            let cleaned = input.precomposedStringWithCanonicalMapping
+                .components(separatedBy: forbidden)
+                .joined(separator: "-")
+                .trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ".")))
+            guard !cleaned.isEmpty, cleaned != ".", cleaned != "..",
+                  cleaned.contains(where: { $0 != "-" }) else { return nil }
+            return String(cleaned.prefix(120))
+        }
+        guard let value = sanitize(proposed) ?? sanitize(fallback) ?? sanitize("Untitled") else {
             throw FileKitError.invalidFilename
         }
-        return String(value.prefix(120))
+        return value
     }
 }
 
@@ -147,4 +154,17 @@ public func withSecurityScopedAccess<Result>(_ url: URL, _ body: () throws -> Re
     guard url.startAccessingSecurityScopedResource() else { throw FileKitError.inaccessible }
     defer { url.stopAccessingSecurityScopedResource() }
     return try body()
+}
+
+/// Executes an asynchronous body while security-scoped access remains active across suspension points.
+///
+/// The caller still owns picker acquisition, sandbox entitlements, bookmark persistence where
+/// applicable, and the lifetime of the externally acquired URL. The scope is balanced exactly once
+/// after success, failure, or cancellation. If access cannot be started, it throws
+/// ``FileKitError/inaccessible`` without invoking `body`. SwiftPM tests cannot prove signed-app
+/// sandbox behavior.
+public func withSecurityScopedAccess<Result>(_ url: URL, _ body: () async throws -> Result) async throws -> Result {
+    guard url.startAccessingSecurityScopedResource() else { throw FileKitError.inaccessible }
+    defer { url.stopAccessingSecurityScopedResource() }
+    return try await body()
 }

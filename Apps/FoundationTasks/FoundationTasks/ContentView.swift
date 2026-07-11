@@ -1,8 +1,3 @@
-//
-//  ContentView.swift
-//  FoundationTasks
-//
-
 import DesignSystem
 import FormKit
 import NavigationKit
@@ -107,6 +102,7 @@ private struct TaskListView: View {
                 if showAddButton {
                     ToolbarItem(placement: .topBarTrailing) {
                         LiquidGlassIconButton(label: "Add task", systemImage: "plus", action: addTask)
+                            .accessibilityIdentifier("add-task")
                     }
                 }
             }
@@ -216,6 +212,7 @@ private struct TaskEditorView: View {
             Form {
                 Section("Task") {
                     ValidatedTextField("Task title", text: $title, validation: titleValidation)
+                        .accessibilityIdentifier("task-title")
                         .textInputAutocapitalization(.sentences)
                     TextField("Notes", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
@@ -227,6 +224,7 @@ private struct TaskEditorView: View {
 
                 Section {
                     LiquidGlassActionButton(title: "Add Task", action: save)
+                        .accessibilityIdentifier("save-task")
                 }
             }
             .navigationTitle("New Task")

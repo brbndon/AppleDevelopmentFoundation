@@ -1,5 +1,9 @@
-import FormKit
+@testable import FormKit
 import XCTest
+
+private final class EvaluationCounter: @unchecked Sendable {
+    var value = 0
+}
 
 final class FormKitTests: XCTestCase {
     func testRequiredRuleRejectsWhitespace() {
@@ -21,11 +25,37 @@ final class FormKitTests: XCTestCase {
         XCTAssertEqual(validation.error(for: ""), "Required")
     }
 
+    func testFirstErrorStopsEvaluatingLaterRules() {
+        let counter = EvaluationCounter()
+        let validation = FieldValidation<String>([
+            .init(validate: { _ in "first" }),
+            .init(validate: { _ in counter.value += 1; return "later" }),
+        ])
+        XCTAssertEqual(validation.error(for: "value"), "first")
+        XCTAssertEqual(counter.value, 0)
+    }
+
     func testDecimalParserUsesProvidedLocaleAndRejectsInvalidInput() {
         let locale = Locale(identifier: "fr_FR")
         XCTAssertEqual(DecimalParser.parse("12,50", locale: locale), Decimal(string: "12.50"))
         XCTAssertNil(DecimalParser.parse("", locale: locale))
         XCTAssertNil(DecimalParser.parse("twelve", locale: locale))
+    }
+
+    func testDecimalInputClassifiesEditingStatesWithoutOverwritingInvalidValues() {
+        let locale = Locale(identifier: "fr_FR")
+        XCTAssertEqual(DecimalInputLogic.classify("", locale: locale), .empty)
+        XCTAssertEqual(DecimalInputLogic.classify("12,50", locale: locale), .valid(Decimal(string: "12.50")!))
+        XCTAssertEqual(DecimalInputLogic.classify("12,", locale: locale), .invalid("12,"))
+        XCTAssertEqual(DecimalInputLogic.classify("-", locale: locale), .invalid("-"))
+        XCTAssertEqual(DecimalInputLogic.classify("not a number", locale: locale), .invalid("not a number"))
+    }
+
+    func testDecimalInputCommitsValidTextUsingTheCurrentLocale() {
+        let locale = Locale(identifier: "en_US_POSIX")
+        let committed = DecimalInputLogic.committedValueAndText("12.50", locale: locale)
+        XCTAssertEqual(committed?.0, Decimal(string: "12.50"))
+        XCTAssertEqual(committed?.1, "12.5")
     }
 
     @MainActor func testFormTracksSavesAndDiscardsChangesWithoutFocusState() {

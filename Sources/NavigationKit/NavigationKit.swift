@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import SwiftUI
 
 /// An observable owner for value navigation and a single sheet route.
 @MainActor @Observable public final class NavigationRouter<Route: Hashable> {

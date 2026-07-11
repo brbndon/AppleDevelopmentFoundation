@@ -1,10 +1,3 @@
-//
-//  FoundationTasksApp.swift
-//  FoundationTasks
-//
-//  Created by brandon on 7/10/26.
-//
-
 import SwiftData
 import SwiftUI
 
@@ -20,9 +13,12 @@ struct FoundationTasksApp: App {
         ])
 
         do {
-            modelContainer = try PersistenceContainerFactory.make(schema: schema)
+            modelContainer = try PersistenceContainerFactory.make(
+                schema: schema,
+                inMemory: ProcessInfo.processInfo.arguments.contains("-inMemory")
+            )
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            fatalError("Could not create the task store (\(String(describing: type(of: error)))).")
         }
     }
 

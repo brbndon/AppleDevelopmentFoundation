@@ -32,8 +32,13 @@ public struct FieldValidation<Value>: Sendable {
     /// Returns every validation failure in rule order.
     public func errors(for value: Value) -> [String] { rules.compactMap { $0.validate(value) } }
 
-    /// Returns the first validation failure, if any.
-    public func error(for value: Value) -> String? { errors(for: value).first }
+    /// Returns the first validation failure, stopping before later rules are evaluated.
+    public func error(for value: Value) -> String? {
+        for rule in rules {
+            if let error = rule.validate(value) { return error }
+        }
+        return nil
+    }
 }
 
 /// Locale-aware decimal parsing used by ``DecimalInput``.
@@ -51,12 +56,42 @@ public enum DecimalParser {
     }
 }
 
+/// The observable editing state of ``DecimalInput``.
+public enum DecimalInputState: Equatable, Sendable {
+    /// The field contains no text.
+    case empty
+    /// The field contains a valid decimal value.
+    case valid(Decimal)
+    /// The field contains text that is not currently parseable.
+    case invalid(String)
+}
+
+internal enum DecimalInputLogic {
+    static func classify(_ text: String, locale: Locale) -> DecimalInputState {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { return .empty }
+        let separator = locale.decimalSeparator ?? "."
+        if trimmed == "-" || trimmed == "+" || trimmed.hasSuffix(separator) {
+            return .invalid(text)
+        }
+        if let value = DecimalParser.parse(text, locale: locale) { return .valid(value) }
+        return .invalid(text)
+    }
+
+    static func committedValueAndText(_ text: String, locale: Locale) -> (Decimal?, String)? {
+        if let value = DecimalParser.parse(text, locale: locale) {
+            return (value, DecimalParser.format(value, locale: locale))
+        }
+        guard text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return (nil, "")
+    }
+}
+
 /// A text field that displays binding-driven validation failures.
 public struct ValidatedTextField: View {
     private let title: LocalizedStringKey
     @Binding private var text: String
     private let validation: FieldValidation<String>
-    @FocusState private var focused: Bool
 
     /// Creates a text field whose visible error derives solely from the supplied binding and validation.
     public init(
@@ -74,7 +109,6 @@ public struct ValidatedTextField: View {
         VStack(alignment: .leading, spacing: 4) {
             TextField(title, text: $text)
                 .textFieldStyle(.roundedBorder)
-                .focused($focused)
             if let error = validation.error(for: text), !text.isEmpty {
                 Label(error, systemImage: "exclamationmark.circle.fill")
                     .font(.footnote)
@@ -86,28 +120,65 @@ public struct ValidatedTextField: View {
 }
 
 /// A locale-aware decimal input with an optional decimal binding.
+///
+/// Empty text writes `nil`; valid text updates the binding; invalid or partial text remains visible
+/// and reports ``DecimalInputState/invalid(_:)`` without replacing the last valid bound value.
 public struct DecimalInput: View {
     private let title: LocalizedStringKey
     @Binding private var value: Decimal?
     @State private var text = ""
+    @State private var isEditing = false
     private let locale: Locale
+    private let onStateChange: ((DecimalInputState) -> Void)?
 
     /// Creates a locale-aware decimal input. Currency formatting is application-owned.
-    public init(_ title: LocalizedStringKey, value: Binding<Decimal?>, locale: Locale = .current) {
+    ///
+    /// `onStateChange` is optional and reports empty, valid, or invalid editing state as it changes.
+    public init(
+        _ title: LocalizedStringKey,
+        value: Binding<Decimal?>,
+        locale: Locale = .current,
+        onStateChange: ((DecimalInputState) -> Void)? = nil
+    ) {
         self.title = title
         _value = value
         self.locale = locale
+        self.onStateChange = onStateChange
     }
 
     /// The decimal text field.
     public var body: some View {
-        TextField(title, text: $text)
+        TextField(title, text: $text, onEditingChanged: { editing in
+            isEditing = editing
+            guard !editing else { return }
+            if let committed = DecimalInputLogic.committedValueAndText(text, locale: locale) {
+                value = committed.0
+                text = committed.1
+            }
+        })
             .textFieldStyle(.roundedBorder)
             .onChange(of: text) { _, newText in
-                value = DecimalParser.parse(newText, locale: locale)
+                let state = DecimalInputLogic.classify(newText, locale: locale)
+                switch state {
+                case .empty:
+                    value = nil
+                case .valid(let parsed):
+                    value = parsed
+                case .invalid:
+                    break
+                }
+                onStateChange?(state)
+            }
+            .onChange(of: value) { _, newValue in
+                guard !isEditing else { return }
+                text = newValue.map { DecimalParser.format($0, locale: locale) } ?? ""
+            }
+            .onChange(of: locale) { _, newLocale in
+                guard !isEditing else { return }
+                text = value.map { DecimalParser.format($0, locale: newLocale) } ?? ""
             }
             .onAppear {
-                if let value { text = DecimalParser.format(value, locale: locale) }
+                text = value.map { DecimalParser.format($0, locale: locale) } ?? ""
             }
             .accessibilityLabel(title)
     }
@@ -164,7 +235,9 @@ public struct FormErrorSummary: View {
                 VStack(alignment: .leading) {
                     Label("Please review the following", systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(FoundationTokens.ColorRole.danger)
-                    ForEach(messages, id: \.self) { Text("• \($0)") }
+                    ForEach(Array(messages.enumerated()), id: \.offset) { _, message in
+                        Text("• \(message)")
+                    }
                 }
             }
             .accessibilityElement(children: .combine)

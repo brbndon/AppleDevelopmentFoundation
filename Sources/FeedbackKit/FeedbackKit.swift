@@ -60,11 +60,16 @@ public struct FeedbackBanner: View {
         self.dismiss = dismiss
     }
 
-    private var badgeKind: StatusBadge.Kind {
+    private struct Presentation {
+        let badgeKind: StatusBadge.Kind
+        let statusTitle: LocalizedStringKey
+    }
+
+    private var presentation: Presentation {
         switch message.kind {
-        case .success: .success
-        case .warning: .warning
-        case .error: .danger
+        case .success: Presentation(badgeKind: .success, statusTitle: "Success")
+        case .warning: Presentation(badgeKind: .warning, statusTitle: "Notice")
+        case .error: Presentation(badgeKind: .danger, statusTitle: "Error")
         }
     }
 
@@ -73,8 +78,8 @@ public struct FeedbackBanner: View {
         FoundationCard {
             HStack {
                 StatusBadge(
-                    message.kind == .success ? "Success" : message.kind == .warning ? "Notice" : "Error",
-                    kind: badgeKind
+                    presentation.statusTitle,
+                    kind: presentation.badgeKind
                 )
                 Text(message.text)
                 Spacer()

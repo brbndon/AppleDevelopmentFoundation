@@ -1,10 +1,3 @@
-//
-//  FoundationTasksTests.swift
-//  FoundationTasksTests
-//
-//  Created by brandon on 7/10/26.
-//
-
 import Testing
 @testable import FoundationTasks
 
