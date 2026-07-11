@@ -4,7 +4,9 @@ A local Swift Package of small, independently selectable foundations for iOS 17+
 
 ## Website
 
-The [Foundation website](Website/index.html) gives coding agents and humans a concise map of the package, its API patterns, and the repository rules that shape safe reusable changes. It is a dependency-free static site; preview or deploy the contents of `Website/` as-is.
+The [Foundation website](Website/index.html) gives coding agents and humans a concise map of the package, its API patterns, and the repository rules that shape safe reusable changes. It is an isolated React + Tailwind SPA powered by Vite; its tooling does not affect the Swift package targets.
+
+Preview it with `npm ci --prefix Website` followed by `npm run dev --prefix Website`. Build with `npm run build --prefix Website` and deploy the generated `Website/dist/` directory.
 
 ## Modules
 

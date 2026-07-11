@@ -4,3 +4,6 @@ DerivedData/
 *.xcuserstate
 xcuserdata/
 .xcodebuildmcp/
+Website/node_modules/
+Website/dist/
+Website/.vite/
