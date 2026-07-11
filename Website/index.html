@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10141e" />
+    <meta
+      name="description"
+      content="Apple Development Foundation is a dependency-light Swift package of reusable foundations for iOS and macOS coding agents."
+    />
+    <title>Apple Development Foundation</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="Apple Development Foundation home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Apple Development<br /><strong>Foundation</strong></span>
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          Menu
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+          <a href="#modules">Modules</a>
+          <a href="#apis">API patterns</a>
+          <a href="#agents">Agent behavior</a>
+          <a class="nav-cta" href="#quick-start">Start here <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section id="top" class="hero section-shell">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Swift 6 · local package · no third-party dependencies</p>
+          <h1>A calmer base layer for Apple-platform coding agents.</h1>
+          <p class="hero-lede">
+            Small, independently selectable Swift foundations for iOS 17+ and macOS 14+—with explicit
+            boundaries that help an agent make useful changes without inventing an application framework.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#quick-start">Explore the package <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="#agents">How agents use it <span aria-hidden="true">→</span></a>
+          </div>
+          <dl class="hero-facts" aria-label="Package facts">
+            <div><dt>10</dt><dd>focused modules</dd></div>
+            <div><dt>2</dt><dd>Apple platforms</dd></div>
+            <div><dt>0</dt><dd>third-party deps</dd></div>
+          </dl>
+        </div>
+        <div class="hero-visual" aria-label="A map of the foundation package" role="img">
+          <div class="visual-grid" aria-hidden="true"></div>
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="core-node">
+            <span class="node-kicker">package</span>
+            <strong>Foundation</strong>
+            <span class="node-caption">compose only what you need</span>
+          </div>
+          <span class="module-node node-app">App<br />Foundation</span>
+          <span class="module-node node-design">Design<br />System</span>
+          <span class="module-node node-file">FileKit</span>
+          <span class="module-node node-nav">Navigation<br />Kit</span>
+          <span class="module-node node-form">FormKit</span>
+          <span class="visual-note">application-owned<br />composition</span>
+        </div>
+      </section>
+
+      <section class="signal-strip" aria-label="Foundation guarantees">
+        <div class="shell signal-grid">
+          <div><span class="signal-icon" aria-hidden="true">↳</span><span>Native APIs first</span></div>
+          <div><span class="signal-icon" aria-hidden="true">⌘</span><span>Structured concurrency</span></div>
+          <div><span class="signal-icon" aria-hidden="true">◌</span><span>Accessibility by default</span></div>
+          <div><span class="signal-icon" aria-hidden="true">▱</span><span>Host app owns the domain</span></div>
+        </div>
+      </section>
+
+      <section id="quick-start" class="section-shell section-block quick-start">
+        <div class="section-intro narrow-intro">
+          <p class="eyebrow">01 / quick start</p>
+          <h2>Bring in one foundation. Keep the rest of your app yours.</h2>
+          <p>
+            Add the repository as a local Swift package or Git reference, then select only the products the
+            app actually uses. The package supplies seams and primitives; your app keeps its models, branding,
+            routing destinations, and persistence decisions.
+          </p>
+        </div>
+        <div class="quick-grid">
+          <article class="code-card featured-code">
+            <div class="card-topline"><span>Package.swift</span><button class="copy-button" type="button" data-copy-target="install-code">Copy</button></div>
+            <pre id="install-code"><code><span class="syntax-key">dependencies</span>: [
+    .<span class="syntax-call">package</span>(path: <span class="syntax-string">"../AppleDevelopmentFoundation"</span>)
+]
+
+<span class="syntax-key">targets</span>: [
+    .<span class="syntax-call">target</span>(
+        name: <span class="syntax-string">"MyApp"</span>,
+        dependencies: [
+            .<span class="syntax-call">product</span>(
+                name: <span class="syntax-string">"FormKit"</span>,
+                package: <span class="syntax-string">"AppleDevelopmentFoundation"</span>
+            )
+        ]
+    )
+]</code></pre>
+            <p class="code-caption">Select products by responsibility. Nothing is re-exported for convenience.</p>
+          </article>
+          <article class="principle-card">
+            <span class="card-index">A /</span>
+            <h3>Make the app the composition root.</h3>
+            <p>Inject clocks, identifiers, services, and environment data at the application shell. Let modules stay generic and testable.</p>
+            <a class="text-link" href="#apis">See the patterns <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </section>
+
+      <section id="modules" class="section-shell section-block modules-section">
+        <div class="section-intro split-intro">
+          <div>
+            <p class="eyebrow">02 / the module map</p>
+            <h2>Ten small tools. One clear direction.</h2>
+          </div>
+          <p>Each module has a narrow job, an independently importable surface, and a documented non-goal. The dependency graph only moves downward.</p>
+        </div>
+        <div class="module-grid">
+          <article class="module-card module-accent">
+            <span class="module-number">01</span><span class="module-tag">determinism</span>
+            <h3>AppFoundation</h3><p>Clocks, identifiers, environment flags, and generic errors that make previews and tests predictable.</p>
+            <code>AppClock · IdentifierProviding</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">02</span><span class="module-tag">ui primitives</span>
+            <h3>DesignSystem</h3><p>Semantic tokens and neutral SwiftUI components—without app branding or screen-level decisions.</p>
+            <code>FoundationCard · FoundationButton</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">03</span><span class="module-tag">input</span>
+            <h3>FormKit</h3><p>Validation rules, locale-aware decimal input, and main-actor form state.</p>
+            <code>FieldValidation · FormState</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">04</span><span class="module-tag">guided flows</span>
+            <h3>OnboardingKit</h3><p>Inclusion, validation, progression, cancellation, and restoration for app-owned flow content.</p>
+            <code>FlowStep · FlowProgression</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">05</span><span class="module-tag">navigation</span>
+            <h3>NavigationKit</h3><p>Typed value paths and one sheet route, with Codable restoration when the route allows it.</p>
+            <code>NavigationRouter&lt;Route&gt;</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">06</span><span class="module-tag">persistence</span>
+            <h3>PersistenceKit</h3><p>SwiftData container creation and store reset, while the app owns schemas and migration plans.</p>
+            <code>PersistenceContainerFactory</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">07</span><span class="module-tag">file safety</span>
+            <h3>FileKit</h3><p>Regular-file validation, safe filenames, scoped access, and atomic writes that refuse accidental replacement.</p>
+            <code>FileImportPolicy · AtomicFileWriter</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">08</span><span class="module-tag">media</span>
+            <h3>MediaKit</h3><p>Validated image-data loading and an actor-isolated cache—no silent resizing or metadata stripping.</p>
+            <code>ImageLoader · ImageDataCache</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">09</span><span class="module-tag">feedback</span>
+            <h3>FeedbackKit</h3><p>Main-actor message state and an accessible banner for app-owned user feedback.</p>
+            <code>FeedbackCenter · FeedbackBanner</code>
+          </article>
+          <article class="module-card">
+            <span class="module-number">10</span><span class="module-tag">shell + logging</span>
+            <h3>LoggingKit + AppShellKit</h3><p>Literal-only privacy-conscious events, plus adaptive split shell structure and settings triggers.</p>
+            <code>FoundationLogger · AdaptiveAppShell</code>
+          </article>
+        </div>
+      </section>
+
+      <section id="apis" class="section-shell section-block api-section">
+        <div class="section-intro split-intro">
+          <div>
+            <p class="eyebrow">03 / API patterns</p>
+            <h2>Use the seam. Own the decision.</h2>
+          </div>
+          <p>The public APIs are deliberately additive and small. These patterns show how a host app composes them without handing its domain to the package.</p>
+        </div>
+        <div class="api-layout">
+          <div class="pattern-list" role="list" aria-label="API usage patterns">
+            <article class="pattern-item active" role="listitem">
+              <span class="pattern-dot" aria-hidden="true"></span>
+              <div><h3>Inject time and IDs</h3><p>Use system providers in production and fixed providers in tests or previews.</p></div>
+            </article>
+            <article class="pattern-item" role="listitem">
+              <span class="pattern-dot" aria-hidden="true"></span>
+              <div><h3>Compose validation</h3><p>Pass rules into a field; keep focus, domain meaning, and submission ownership in the app.</p></div>
+            </article>
+            <article class="pattern-item" role="listitem">
+              <span class="pattern-dot" aria-hidden="true"></span>
+              <div><h3>Route values, not screens</h3><p>Let the app define route types and destinations while the router owns path mechanics.</p></div>
+            </article>
+            <article class="pattern-item" role="listitem">
+              <span class="pattern-dot" aria-hidden="true"></span>
+              <div><h3>Validate before reading</h3><p>File and image modules check type, size, regular-file status, and cancellation before I/O.</p></div>
+            </article>
+          </div>
+          <article class="code-card api-code">
+            <div class="card-topline"><span>SwiftUI + deterministic tests</span><button class="copy-button" type="button" data-copy-target="api-code">Copy</button></div>
+            <pre id="api-code"><code><span class="syntax-key">import</span> AppFoundation
+<span class="syntax-key">import</span> FormKit
+
+<span class="syntax-key">let</span> clock: <span class="syntax-type">any</span> AppClock =
+    <span class="syntax-type">FixedAppClock</span>(<span class="syntax-call">testDate</span>)
+
+<span class="syntax-key">struct</span> ProfileForm: <span class="syntax-type">View</span> {
+    @<span class="syntax-type">Binding</span> <span class="syntax-key">var</span> name: String
+
+    <span class="syntax-key">var</span> body: <span class="syntax-key">some</span> <span class="syntax-type">View</span> {
+        <span class="syntax-type">ValidatedTextField</span>(
+            <span class="syntax-string">"Display name"</span>,
+            text: $name,
+            validation: .<span class="syntax-call">init</span>([
+                .<span class="syntax-call">required</span>(),
+                .<span class="syntax-call">maximumLength</span>(<span class="syntax-number">80</span>)
+            ])
+        )
+    }
+}</code></pre>
+            <p class="code-caption">The app owns state and injection; the module owns reusable behavior.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="agents" class="agent-section">
+        <div class="shell section-block">
+          <div class="section-intro split-intro light-intro">
+            <div>
+              <p class="eyebrow">04 / agent behavior</p>
+              <h2>What most strongly shapes an agent’s next change?</h2>
+            </div>
+            <p>The framework is more than a bag of APIs. Repository instructions, boundaries, and verification rules act as a behavioral contract around every implementation.</p>
+          </div>
+          <div class="agent-grid">
+            <article class="agent-card agent-card-large"><span>01</span><h3>Repository instructions</h3><p>The local <code>AGENTS.md</code> sets the operating rules: Swift 6, native observation, initializer or environment injection, focused views, and no hidden network behavior.</p></article>
+            <article class="agent-card"><span>02</span><h3>Dependency direction</h3><p><code>Package.swift</code> and the module graph decide where a new type belongs. Circular or convenience dependencies are out.</p></article>
+            <article class="agent-card"><span>03</span><h3>Reusable API bar</h3><p>New public surface needs two plausible applications, neutral terminology, DocC comments, platform constraints, and focused tests.</p></article>
+            <article class="agent-card"><span>04</span><h3>Platform + accessibility</h3><p>iOS/macOS differences stay platform-specific. SwiftUI work must account for Dynamic Type, VoiceOver, keyboard access, contrast, and Reduce Motion.</p></article>
+            <article class="agent-card agent-card-wide"><span>05</span><h3>Security and verification</h3><p>Validate imports before reads, refuse unsafe file writes, avoid sensitive logs, run focused tests, and use repository verification before handoff. Correctness includes the boundary, not just the code path.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="ownership" class="section-shell section-block ownership-section">
+        <div class="section-intro narrow-intro">
+          <p class="eyebrow">05 / the boundary</p>
+          <h2>The foundation stops where product decisions begin.</h2>
+          <p>That line is intentional. It keeps reusable code easy to audit and gives coding agents a safe place to stop guessing.</p>
+        </div>
+        <div class="ownership-grid">
+          <div class="ownership-column owns"><div class="ownership-heading"><span aria-hidden="true">+</span><h3>The package owns</h3></div><ul><li>Deterministic seams and generic state</li><li>Semantic UI primitives</li><li>Validated local file and image operations</li><li>Typed path mechanics and flow progression</li><li>Privacy-safe, testable behavior</li></ul></div>
+          <div class="ownership-column app-owns"><div class="ownership-heading"><span aria-hidden="true">→</span><h3>The host app owns</h3></div><ul><li>Domain models and SwiftData schemas</li><li>Branding, screens, and app content</li><li>Deep-link parsing and destinations</li><li>Entitlements and file importer panels</li><li>Migration, backup, and product error mapping</li></ul></div>
+        </div>
+      </section>
+
+      <section class="section-shell section-block docs-section">
+        <div class="docs-card">
+          <div><p class="eyebrow">Keep going</p><h2>Read the source of truth.</h2><p>The website is the map; the repository documents the decisions behind it.</p></div>
+          <div class="docs-links">
+            <a href="#modules">Module API guide <span aria-hidden="true">↗</span></a>
+            <a href="#ownership">Architecture <span aria-hidden="true">↗</span></a>
+            <a href="#quick-start">Integration guide <span aria-hidden="true">↗</span></a>
+            <a href="#modules">Accessibility guide <span aria-hidden="true">↗</span></a>
+            <a href="#agents">Security + privacy <span aria-hidden="true">↗</span></a>
+            <a href="#top">Repository README <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <div><a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Apple Development <strong>Foundation</strong></span></a><p>Small foundations for thoughtful Apple-platform software.</p></div>
+        <p class="footer-meta">Swift 6 · iOS 17+ · macOS 14+<br />Built to be composed, tested, and extended carefully.</p>
+      </div>
+    </footer>
+  </body>
+</html>

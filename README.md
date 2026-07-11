@@ -2,6 +2,10 @@
 
 A local Swift Package of small, independently selectable foundations for iOS 17+ and macOS 14+. It has no third-party dependencies and is currently verified with Xcode 26.2 / Swift 6.2.3.
 
+## Website
+
+The [Foundation website](Website/index.html) gives coding agents and humans a concise map of the package, its API patterns, and the repository rules that shape safe reusable changes. It is a dependency-free static site; preview or deploy the contents of `Website/` as-is.
+
 ## Modules
 
 | Module | Implemented responsibility | Direct package dependencies |
