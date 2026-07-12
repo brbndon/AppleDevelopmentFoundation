@@ -1,15 +1,28 @@
 # Apple Development Foundation
 
-This repository is a private, local source of small reusable Swift Package modules for iOS 17+ and macOS 14+. Before architectural changes, read `Package.swift`, `Documentation/ModuleBoundaries.md`, `Documentation/Architecture.md`, and the affected module source.
+This repository is a **skills and MCP/commands reference** for Apple development (iOS 17+, macOS 14+). Its product is reusable Codex skills under `.agents/skills/` plus command references in `MCP.md`. The Swift package under `Sources/` is archived exploratory code — do not expand it unless explicitly asked.
 
-Use Swift 6, SwiftUI, SwiftData where appropriate, native observation, initializer or environment injection, structured concurrency, and focused views. Keep shared behavior shared; put Apple-convention differences in platform-specific files or extensions. Do not add a view model without a state-ownership or testability reason.
+## Primary work
 
-`AppFoundation` has no package dependencies. Foundation/service modules may depend only on it. UI modules may depend on it and DesignSystem. Higher-level modules never become dependencies of lower-level modules; circular dependencies are forbidden. Internal is the default access level. Every public API needs a DocC-compatible comment, stable additive design, relevant tests, and a documented platform constraint when applicable.
+- Maintain, install, and verify skills: `./Scripts/install-skills.sh`, `./Scripts/verify-skills.sh`, `./Scripts/test-install-skills.sh`
+- Keep skills neutral and reusable: no business models, branding, secrets, user-specific paths, or hidden network behavior
+- Prefer **XcodeBuildMCP** for Apple build, test, simulator, and UI inspection — see `MCP.md`
+- Use `$codex-bootstrap` or the `codex-bootstrap` skill when starting a new iOS/macOS SwiftUI project with these skills
+- Update skills through `.agents/skills/`; see `Documentation/SkillAuthoringGuide.md` before changing skill behavior
 
-Reusable code must have at least two plausible applications, neutral terminology, no business model, no secrets, no user-specific paths, and no hidden network behavior. Prefer Apple APIs; do not add a third-party production dependency without explicit authorization and a documented removal path.
+## Skills apply to consumer apps
+
+Skills target the **active workspace** (the app or package the user is building), not this repository's archived modules. Do not add code to `Sources/`, create modules with `./Scripts/create-module.sh`, or treat `DesignSystem` / `FileKit` here as live products unless the user explicitly asks to work on archived package code.
+
+## Apple development defaults (when writing Swift in any workspace)
+
+Use Swift 6, SwiftUI, SwiftData where appropriate, native observation, initializer or environment injection, structured concurrency, and focused views. Do not add a view model without a state-ownership or testability reason.
 
 All SwiftUI components must support Dynamic Type, VoiceOver, keyboard access, contrast, Reduce Motion, Differentiate Without Color, and a descriptive label for an icon-only control. Validate imports before reading them. Never log credentials, tokens, private content, raw imports, complete sensitive paths, or security-scoped URLs.
 
-Run the smallest relevant tests, then `./Scripts/verify.sh` for module-boundary or public API changes. Report commands not available locally. Avoid broad unrelated refactors during focused work; preserve public compatibility unless a breaking change is explicitly authorized.
+## Verification
 
-Add a component in its narrowest module with a preview/example and test. Add a module with `./Scripts/create-module.sh Name`, then update Package.swift, boundaries, graph, README, tests, and skills manifest only if a skill relates. Update a skill through `.agents/skills`, then run `./Scripts/verify-skills.sh`. See `Documentation/SkillAuthoringGuide.md` before changing skill behavior.
+- Skill or manifest changes: `./Scripts/verify-skills.sh` (and `./Scripts/test-install-skills.sh` if installer behavior changes)
+- Archived package changes (only when explicitly requested): `./Scripts/verify.sh` — see `ARCHIVE.md` and `Documentation/ModuleBoundaries.md`
+
+Avoid broad unrelated refactors. Report commands not available locally.
