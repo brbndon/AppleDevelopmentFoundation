@@ -127,7 +127,7 @@ function Brand({ footer = false }) {
   );
 }
 
-function SiteHeader({ menuOpen, setMenuOpen }) {
+function SiteHeader({ menuOpen, setMenuOpen, guide }) {
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -144,10 +144,22 @@ function SiteHeader({ menuOpen, setMenuOpen }) {
           Menu
         </button>
         <nav id="site-nav" className={`site-nav${menuOpen ? " is-open" : ""}`} aria-label="Primary navigation">
-          <a href="#modules" onClick={closeMenu}>Modules</a>
-          <a href="#apis" onClick={closeMenu}>API patterns</a>
-          <a href="#agents" onClick={closeMenu}>Agent behavior</a>
-          <a className="nav-cta" href="#quick-start" onClick={closeMenu}>Start here <span aria-hidden="true">↗</span></a>
+          {guide ? (
+            <>
+              <a href="#top" onClick={closeMenu}>Foundation home</a>
+              <a href="#guide-start" onClick={closeMenu}>Start a task</a>
+              <a href="#handoff" onClick={closeMenu}>Handoff check</a>
+              <a className="nav-cta" href="#guide-template" onClick={closeMenu}>Use the brief <span aria-hidden="true">↗</span></a>
+            </>
+          ) : (
+            <>
+              <a href="#modules" onClick={closeMenu}>Modules</a>
+              <a href="#apis" onClick={closeMenu}>API patterns</a>
+              <a href="#agents" onClick={closeMenu}>Agent behavior</a>
+              <a href="#guide" onClick={closeMenu}>Agent guide <span aria-hidden="true">↗</span></a>
+              <a className="nav-cta" href="#quick-start" onClick={closeMenu}>Start here <span aria-hidden="true">↗</span></a>
+            </>
+          )}
         </nav>
       </div>
     </header>
@@ -420,10 +432,103 @@ function DocumentationLinks() {
           <a href="#quick-start">Integration guide <span aria-hidden="true">↗</span></a>
           <a href="#modules">Accessibility guide <span aria-hidden="true">↗</span></a>
           <a href="#agents">Security + privacy <span aria-hidden="true">↗</span></a>
+          <a href="#guide">Guide for agent-led work <span aria-hidden="true">↗</span></a>
           <a href="#top">Repository README <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
+  );
+}
+
+function GuideCard({ label, title, children, className = "" }) {
+  return (
+    <article className={`guide-card ${className}`}>
+      <span className="guide-card-label">{label}</span>
+      <h3>{title}</h3>
+      {children}
+    </article>
+  );
+}
+
+function AgentGuide() {
+  const promptCopy = "Goal:\n[Describe the user-visible outcome]\n\nContext:\n[Point to the relevant module, screen, or existing pattern]\n\nConstraints:\n[Name boundaries, APIs, platforms, accessibility, or security rules]\n\nAcceptance:\n[Describe the behavior and tests that prove it]\n\nBefore editing, inspect the repository instructions and affected code. Then propose the smallest plan, implement it, run the relevant verification, and report changes, evidence, and remaining risks.";
+
+  return (
+    <div className="guide-page">
+      <section id="guide" className="guide-hero section-shell">
+        <div className="guide-hero-copy">
+          <a className="back-link" href="#top">← Back to the foundation</a>
+          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span> A field guide for systems thinkers</p>
+          <h1>Hand the work to an agent. Keep the shape of the system.</h1>
+          <p className="hero-lede">You do not need to read every line of Swift to direct a good change. You need a clear outcome, a map of the boundaries, and a way to tell whether the agent has earned your trust.</p>
+          <div className="guide-hero-note"><span aria-hidden="true">↳</span><p><strong>Your role:</strong> choose the outcome, constraints, and tradeoffs. The agent’s role is to inspect, implement, verify, and report.</p></div>
+        </div>
+        <div className="handoff-visual" aria-label="A handoff between a human and a coding agent" role="img">
+          <div className="handoff-line" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div className="handoff-node human-node"><span className="node-kicker">you decide</span><strong>Human</strong><span>outcome<br />constraints</span></div>
+          <div className="handoff-node agent-node"><span className="node-kicker">agent does</span><strong>Agent</strong><span>inspect<br />build · verify</span></div>
+          <p className="handoff-caption">A useful handoff<br />is a small system.</p>
+        </div>
+      </section>
+
+      <section className="guide-signal" aria-label="Agent guide principle">
+        <div className="shell"><span className="guide-signal-mark" aria-hidden="true">01</span><p>Do not start with “write some code.” Start with “here is what should be true when we are done.”</p></div>
+      </section>
+
+      <section id="guide-start" className="section-shell section-block guide-section">
+        <div className="section-intro split-intro">
+          <div><p className="eyebrow">01 / start with the system</p><h2>Give the agent a map before you give it a mission.</h2></div>
+          <p>Agents are fast at local decisions and unreliable when they must invent the surrounding system. Point them at the repository rules, the nearest existing pattern, and the boundary that must not move.</p>
+        </div>
+        <div className="guide-grid guide-grid-three">
+          <GuideCard label="Name the outcome" title="What should a person be able to do?"><p>Describe the behavior in user terms. “A person can import a photo and see a useful error when the file is too large” is more useful than “add an importer service.”</p></GuideCard>
+          <GuideCard label="Name the boundary" title="Where does the decision belong?"><p>Say what the foundation owns and what the host app owns. This keeps an agent from turning a reusable module into a product-specific framework.</p></GuideCard>
+          <GuideCard label="Name the proof" title="How will we know it works?"><p>Ask for focused tests, a build or verifier run, and a short handoff that names what changed, what was checked, and what remains manual.</p></GuideCard>
+        </div>
+      </section>
+
+      <section className="guide-section guide-dark">
+        <div className="shell section-block">
+          <div className="section-intro split-intro light-intro"><div><p className="eyebrow">02 / use a reliable loop</p><h2>Five moves are enough for most tasks.</h2></div><p>Keep the agent moving through a visible loop. If it skips a move, ask it to return there instead of adding more instructions.</p></div>
+          <div className="loop-grid">
+            <div className="loop-item"><span>01</span><h3>Inspect</h3><p>Read instructions, nearby code, tests, and boundaries before proposing an edit.</p></div>
+            <div className="loop-item"><span>02</span><h3>Plan</h3><p>State the smallest change, affected surfaces, risks, and how it will be verified.</p></div>
+            <div className="loop-item"><span>03</span><h3>Change</h3><p>Implement only the agreed behavior. Preserve existing APIs unless a break is explicitly needed.</p></div>
+            <div className="loop-item"><span>04</span><h3>Verify</h3><p>Run the narrowest relevant tests first, then the repository checks required by the change.</p></div>
+            <div className="loop-item loop-item-accent"><span>05</span><h3>Report</h3><p>Return a plain-language summary, evidence, limitations, and the next decision for the human.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="handoff" className="section-shell section-block guide-section">
+        <div className="section-intro narrow-intro"><p className="eyebrow">03 / read the handoff</p><h2>Review the shape of the work, not every character.</h2><p>A strong handoff lets you decide whether to continue without becoming the agent’s debugger.</p></div>
+        <div className="handoff-checklist">
+          <div className="checklist-column"><h3><span aria-hidden="true">✓</span> Trust signals</h3><ul><li>The agent names the files and behavior it changed.</li><li>It explains why each change belongs in that module.</li><li>Tests or checks are named with their result.</li><li>It calls out anything it could not verify.</li><li>It distinguishes implemented work from suggested next steps.</li></ul></div>
+          <div className="checklist-column caution-column"><h3><span aria-hidden="true">!</span> Pause signals</h3><ul><li>It changed boundaries “for convenience.”</li><li>It added a dependency without a clear reason.</li><li>It says “it should work” without evidence.</li><li>It hides a failing test behind a workaround.</li><li>It cannot explain what the host app still owns.</li></ul></div>
+        </div>
+      </section>
+
+      <section id="guide-template" className="section-shell section-block guide-template-section">
+        <div className="template-card">
+          <div className="template-intro"><p className="eyebrow">04 / copy the brief</p><h2>Give the agent enough shape to be useful.</h2><p>Replace the bracketed parts, then let the agent ask questions after it has inspected the repository.</p></div>
+          <div className="guide-prompt"><div className="prompt-topline"><span>agent task brief</span><CopyButton targetId="guide-prompt-copy" copyValue={promptCopy} /></div><pre id="guide-prompt-copy"><code><span className="prompt-label">Goal:</span>
+[Describe the user-visible outcome]
+
+<span className="prompt-label">Context:</span>
+[Point to the relevant module, screen, or existing pattern]
+
+<span className="prompt-label">Constraints:</span>
+[Name boundaries, APIs, platforms, accessibility, or security rules]
+
+<span className="prompt-label">Acceptance:</span>
+[Describe the behavior and tests that prove it]
+
+<span className="prompt-instruction">Before editing, inspect the repository instructions and affected code.
+Then propose the smallest plan, implement it, run the relevant verification,
+and report changes, evidence, and remaining risks.</span></code></pre></div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -440,20 +545,24 @@ function Footer() {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [guide, setGuide] = useState(() => window.location.hash === "#guide");
+
+  useEffect(() => {
+    const updatePage = () => {
+      setGuide(window.location.hash === "#guide");
+      setMenuOpen(false);
+      window.scrollTo({ top: 0, behavior: "auto" });
+    };
+    window.addEventListener("hashchange", updatePage);
+    return () => window.removeEventListener("hashchange", updatePage);
+  }, []);
 
   return (
     <div className="min-h-screen">
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <SiteHeader menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <SiteHeader menuOpen={menuOpen} setMenuOpen={setMenuOpen} guide={guide} />
       <main id="main-content">
-        <Hero />
-        <SignalStrip />
-        <QuickStart />
-        <ModulesSection />
-        <ApiPatterns />
-        <AgentBehavior />
-        <Ownership />
-        <DocumentationLinks />
+        {guide ? <AgentGuide /> : <><Hero /><SignalStrip /><QuickStart /><ModulesSection /><ApiPatterns /><AgentBehavior /><Ownership /><DocumentationLinks /></>}
       </main>
       <Footer />
     </div>

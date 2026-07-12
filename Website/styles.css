@@ -156,3 +156,58 @@ pre { margin: 0; padding: 26px 24px; overflow-x: auto; font: 13px/1.7 var(--mono
 @media (prefers-contrast: more) {
   :root { --line: #8a9190; --ink-soft: #263044; }.site-header { background: var(--paper); }.module-card, .pattern-item, .docs-links a { border-color: var(--ink); }
 }
+
+/* Agent-first guide */
+.guide-page { background: var(--paper); }
+.guide-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); gap: 64px; align-items: center; padding-top: 56px; padding-bottom: 84px; }
+.back-link { display: inline-block; margin-bottom: 48px; color: var(--ink-soft); font: 700 11px var(--mono); text-decoration: none; text-transform: uppercase; }
+.back-link:hover { color: var(--blue); }
+.guide-hero-copy h1 { max-width: 700px; font-size: clamp(54px, 6.4vw, 84px); }
+.guide-hero-note { display: flex; gap: 14px; max-width: 520px; padding: 16px 0 0; border-top: 1px solid var(--line-dark); }
+.guide-hero-note > span { color: var(--orange); font: 28px/1 var(--display); }
+.guide-hero-note p { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+.guide-hero-note strong { color: var(--ink); }
+.handoff-visual { position: relative; min-height: 430px; overflow: hidden; background: var(--ink); color: var(--paper); border-radius: 5px; isolation: isolate; }
+.handoff-visual::before { content: ""; position: absolute; inset: 0; opacity: .2; background-image: linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
+.handoff-line { position: absolute; left: 14%; right: 14%; top: 50%; display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed rgba(246,247,243,.52); }
+.handoff-line span { width: 9px; height: 9px; background: var(--paper); border-radius: 50%; transform: translateY(-5px); }
+.handoff-line span:first-child, .handoff-line span:last-child { width: 13px; height: 13px; background: var(--accent); transform: translateY(-7px); }
+.handoff-node { position: absolute; top: 50%; width: 136px; height: 136px; display: flex; flex-direction: column; justify-content: center; padding: 18px; border-radius: 50%; transform: translateY(-50%); text-align: center; }
+.handoff-node strong { margin: 4px 0 6px; font: 800 27px var(--display); letter-spacing: -.05em; }
+.handoff-node > span:last-child { font: 9px/1.45 var(--mono); text-transform: uppercase; }
+.human-node { left: 9%; background: var(--accent); color: var(--ink); box-shadow: 0 0 0 12px rgba(216,243,106,.11); }
+.agent-node { right: 9%; border: 1px solid var(--blue); background: #20283d; box-shadow: 0 0 0 12px rgba(104,116,238,.13); }
+.agent-node strong { color: #b7bdff; }.node-kicker { font: 9px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.handoff-caption { position: absolute; right: 24px; bottom: 22px; margin: 0; color: rgba(246,247,243,.58); font: 10px/1.45 var(--mono); text-align: right; text-transform: uppercase; }
+.guide-signal { border-top: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); background: var(--accent); }
+.guide-signal .shell { display: flex; align-items: center; gap: 24px; min-height: 76px; }
+.guide-signal-mark { color: var(--accent-dark); font: 800 26px var(--display); }
+.guide-signal p { max-width: 760px; margin: 0; color: #34400e; font: 700 16px/1.35 var(--mono); }
+.guide-section { border-top: 1px solid var(--line); }
+.guide-grid { display: grid; gap: 12px; }
+.guide-grid-three { grid-template-columns: repeat(3, 1fr); }
+.guide-card { min-height: 260px; padding: 22px; border: 1px solid var(--line-dark); background: var(--surface); }
+.guide-card:nth-child(2) { background: var(--blue-soft); }.guide-card:nth-child(3) { background: #fff0e7; }
+.guide-card-label { color: var(--blue); font: 700 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.guide-card h3 { max-width: 260px; margin: 52px 0 14px; font: 800 28px var(--display); letter-spacing: -.045em; }
+.guide-card p { max-width: 310px; margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+.guide-dark { background: var(--ink); color: var(--paper); border-top: 0; }
+.loop-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.loop-item { min-height: 225px; padding: 18px; border: 1px solid var(--line-dark); background: #181e2b; }.loop-item-accent { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+.loop-item > span { color: var(--accent); font: 700 10px var(--mono); }.loop-item-accent > span { color: var(--accent-dark); }
+.loop-item h3 { margin: 62px 0 10px; font: 800 26px var(--display); letter-spacing: -.04em; }.loop-item p { margin: 0; color: #b4bdcb; font-size: 13px; line-height: 1.45; }.loop-item-accent p { color: #34400e; }
+.handoff-checklist { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-dark); }
+.checklist-column { padding: 26px; }.checklist-column + .checklist-column { border-left: 1px solid var(--line-dark); }.checklist-column h3 { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; font: 800 27px var(--display); letter-spacing: -.04em; }.checklist-column h3 span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--ink); font: 20px/1 var(--display); }.caution-column h3 span { background: #fff0e7; color: #a74e25; }
+.checklist-column ul { display: grid; gap: 13px; margin: 0; padding: 0; list-style: none; color: var(--ink-soft); font-size: 14px; line-height: 1.4; }.checklist-column li { position: relative; padding-left: 23px; }.checklist-column li::before { content: ""; position: absolute; left: 0; top: .6em; width: 9px; height: 2px; background: var(--accent-dark); }.caution-column li::before { background: var(--orange); }
+.guide-template-section { padding-top: 0; }.template-card { display: grid; grid-template-columns: .8fr 1.2fr; gap: 30px; padding: 34px; background: var(--blue-soft); }.template-intro h2 { margin-bottom: 14px; font-size: 50px; }.template-intro > p:last-child { max-width: 330px; color: #4e5791; font-size: 15px; line-height: 1.45; }
+.guide-prompt { overflow: hidden; background: var(--ink); color: var(--paper); box-shadow: 10px 10px 0 rgba(104,116,238,.3); }.prompt-topline { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line-dark); color: #aeb7c7; font: 10px var(--mono); text-transform: uppercase; }.guide-prompt pre { padding: 22px; font-size: 12px; line-height: 1.65; }.prompt-label { color: var(--accent); }.prompt-instruction { color: #b7bdff; }
+
+@media (max-width: 980px) {
+  .guide-hero { grid-template-columns: 1fr; gap: 28px; }.handoff-visual { max-width: 650px; width: 100%; }.loop-grid { grid-template-columns: repeat(3, 1fr); }.loop-item:last-child { grid-column: span 3; min-height: 170px; }.loop-item:last-child h3 { margin-top: 35px; }.template-card { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .guide-hero { padding-top: 44px; padding-bottom: 58px; }.back-link { margin-bottom: 34px; }.handoff-visual { min-height: 350px; }.handoff-node { width: 112px; height: 112px; padding: 12px; }.handoff-node strong { font-size: 23px; }.human-node { left: 5%; }.agent-node { right: 5%; }.handoff-line { left: 11%; right: 11%; }.guide-signal .shell { gap: 14px; min-height: 90px; }.guide-signal p { font-size: 13px; }.guide-grid-three, .handoff-checklist, .template-card { grid-template-columns: 1fr; }.guide-card { min-height: auto; }.guide-card h3 { margin-top: 34px; }.loop-grid { grid-template-columns: 1fr 1fr; }.loop-item:last-child { grid-column: span 2; }.template-card { padding: 24px 20px; }.template-intro h2 { font-size: 42px; }.guide-prompt pre { font-size: 11px; padding: 18px; }.checklist-column + .checklist-column { border-top: 1px solid var(--line-dark); border-left: 0; }
+}
+@media (max-width: 440px) {
+  .guide-hero-copy h1 { font-size: 50px; }.handoff-visual { min-height: 310px; }.handoff-node { width: 96px; height: 96px; }.handoff-node strong { font-size: 20px; }.handoff-node > span:last-child { font-size: 7px; }.handoff-line { left: 9%; right: 9%; }.handoff-caption { right: 12px; bottom: 12px; font-size: 8px; }.loop-grid { grid-template-columns: 1fr; }.loop-item:last-child { grid-column: auto; }.loop-item { min-height: 170px; }.loop-item h3, .loop-item:last-child h3 { margin-top: 35px; }
+}
