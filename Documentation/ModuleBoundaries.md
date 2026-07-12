@@ -1,5 +1,7 @@
 # Module Boundaries
 
+> **Archived.** Historical dependency graph reference only. See [ARCHIVE.md](../ARCHIVE.md). Do not expand this package unless explicitly asked.
+
 `Package.swift` is the definitive dependency graph. The current non-empty edges are:
 
 ```text
