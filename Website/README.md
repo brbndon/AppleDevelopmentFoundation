@@ -1,6 +1,15 @@
 # Foundation website
 
-This is an isolated React + Tailwind SPA powered by Vite that describes the Apple Development Foundation package. The site deliberately lives outside the Swift package targets and does not change package source, products, or module dependencies. Its summaries are derived from the repository README and `Documentation/` source-of-truth files.
+This is an isolated React + Tailwind SPA powered by Vite that introduces the **skills + MCP** product of this repository. The site deliberately lives outside the Swift package targets and does not change package source, products, or module dependencies.
+
+Authoritative entry points in the repository:
+
+- [README.md](../README.md) — install skills and skill inventory
+- [MCP.md](../MCP.md) — XcodeBuildMCP setup, tools, and copy-paste prompts
+- [.agents/skills/](../.agents/skills/) — reusable Codex skills (the live product)
+- [ARCHIVE.md](../ARCHIVE.md) — archived Swift package, examples, and historical docs
+
+The website includes a clearly labeled archived-package reference section. Do not treat that material as active integration guidance.
 
 ## Install and preview locally
 

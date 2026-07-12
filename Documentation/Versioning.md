@@ -1,5 +1,7 @@
 # Versioning and Compatibility
 
+> **Archived.** Historical versioning and compatibility reference only. See [ARCHIVE.md](../ARCHIVE.md). Do not expand this package unless explicitly asked.
+
 This package follows semantic versioning once shared outside its local repository: patch releases fix compatible behavior and documentation; minor releases add compatible public APIs; major releases may remove or change source-visible behavior.
 
 A breaking change includes removing or renaming a product, public declaration, case, parameter, generic constraint, platform availability, default behavior, documented security guarantee, or skill name. Deprecate public APIs before removal whenever practical and include a migration note in `CHANGELOG.md`. Raise iOS 17 or macOS 14 only in a major release unless consumers explicitly agree otherwise.

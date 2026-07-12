@@ -1,5 +1,7 @@
 # Verification Limitations
 
+> **Archived.** Historical verification limitations reference only. See [ARCHIVE.md](../ARCHIVE.md). Do not expand this package unless explicitly asked.
+
 The SwiftPM executable examples are implemented and compiled by `./Scripts/verify.sh`. Their reusable state and I/O behavior is unit-tested where practical. They are not signed, distributable iOS or macOS applications and therefore do not prove:
 
 - real iOS or macOS application lifecycle behavior;

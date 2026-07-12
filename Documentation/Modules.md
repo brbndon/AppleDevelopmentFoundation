@@ -1,5 +1,7 @@
 # Module API Guide
 
+> **Archived.** Historical module API reference only. See [ARCHIVE.md](../ARCHIVE.md). Do not expand this package unless explicitly asked.
+
 | Module | Use it for | Non-goal | Public entry points | Platform/testing/extension notes |
 | --- | --- | --- | --- | --- |
 | AppFoundation | deterministic time/IDs, app environment flags, generic errors | a global service locator or SwiftUI environment key | `AppClock`, `FixedAppClock`, `IdentifierProviding`, `FixedIdentifierProvider`, `AppEnvironment` | iOS/macOS; inject deterministic values in tests; add only genuine cross-project boundaries. |

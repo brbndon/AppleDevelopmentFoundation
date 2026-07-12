@@ -1,5 +1,7 @@
 # Skill Evaluation
 
+> **Repo product:** skills under `.agents/skills/` are the live product. The Swift package and most of `Documentation/` are archived reference — see [ARCHIVE.md](../ARCHIVE.md).
+
 This is a manual semantic review of the repository-local skills. `./Scripts/verify-skills.sh` validates manifest/frontmatter paths and `./Scripts/test-install-skills.sh` validates installer behavior. Explicit invocation is supported by the documented `$skill-name` form, but this environment exposes no reliable automatic-trigger test harness; automatic activation is **not tested or claimed**.
 
 | Skill | Should trigger (two examples) | Should not trigger (two examples) | Overlap risk and explicit invocation | Scope |

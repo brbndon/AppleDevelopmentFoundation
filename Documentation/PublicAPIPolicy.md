@@ -1,5 +1,7 @@
 # Public API Policy
 
+> **Archived.** Historical public API policy reference only. See [ARCHIVE.md](../ARCHIVE.md). Do not expand this package unless explicitly asked.
+
 Library declarations are internal by default. A declaration becomes public only when two plausible application integrations need to name it directly, it cannot remain inside a public initializer or closure, and its behavior can be tested and documented without application terminology.
 
 Every retained public declaration needs a DocC-compatible comment, stable additive semantics, an iOS 17/macOS 14 constraint unless a narrower availability is documented, and focused behavioral tests where it has observable logic. Public stored properties are reserved for immutable configuration or state clients genuinely need to inspect; mutable state remains actor- or main-actor-owned. Do not expose speculative protocols, type erasure, test helpers, implementation storage, or extensions merely to support examples.
