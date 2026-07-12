@@ -2,7 +2,7 @@ import AppFoundation
 import XCTest
 
 final class AppFoundationTests: XCTestCase {
-    func testFixedClockAlwaysReturnsConfiguredDate() {
+    func testFixedAppClockAlwaysReturnsConfiguredDate() {
         let date = Date(timeIntervalSinceReferenceDate: 42)
         XCTAssertEqual(FixedAppClock(date).now(), date)
     }

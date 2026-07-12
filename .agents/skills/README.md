@@ -1,6 +1,6 @@
 # Local skills
 
-These source-controlled skills are intentionally general Apple-development workflows. They are discoverable from this repository according to the installed Codex local-skill conventions; optionally symlink them to the user scope with `./Scripts/install-skills.sh`. See `Documentation/SkillAuthoringGuide.md` and `manifest.json`.
+These source-controlled skills are intentionally general Apple-development workflows. They are discoverable from this repository according to the installed Codex local-skill conventions; optionally symlink them to the user scope with `./Scripts/install-skills.sh`.
 
 | Skill | Use for | Do not use for |
 | --- | --- | --- |
@@ -15,3 +15,4 @@ These source-controlled skills are intentionally general Apple-development workf
 | apple-security-privacy-review | files, logging, permissions, sensitive data | visual-only polish |
 | swift-testing-verification | meaningful change verification | planning-only requests |
 | codex-skill-maintainer | skill changes | product code changes |
+| codex-bootstrap | bootstrapping new iOS/macOS projects using these skills | rebuilding the old full package |

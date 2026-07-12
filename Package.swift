@@ -42,5 +42,7 @@ let package = Package(
         .testTarget(name: "FileKitTests", dependencies: ["FileKit", "TestingSupport"]),
         .testTarget(name: "FeedbackKitTests", dependencies: ["FeedbackKit"]),
         .testTarget(name: "MediaKitTests", dependencies: ["MediaKit", "TestingSupport"]),
+        .testTarget(name: "LoggingKitTests", dependencies: ["LoggingKit"]),
+        .testTarget(name: "AppShellKitTests", dependencies: ["AppShellKit"]),
     ]
 )

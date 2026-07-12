@@ -11,6 +11,7 @@
     {"name":"apple-accessibility-review","path":"apple-accessibility-review","scope":"repository-or-user","purpose":"Review accessibility","installable":true,"scripts":false,"modules":["DesignSystem"]},
     {"name":"apple-security-privacy-review","path":"apple-security-privacy-review","scope":"repository-or-user","purpose":"Review privacy and security","installable":true,"scripts":false,"modules":["FileKit","LoggingKit"]},
     {"name":"swift-testing-verification","path":"swift-testing-verification","scope":"repository-or-user","purpose":"Verify changes","installable":true,"scripts":false,"modules":[]},
-    {"name":"codex-skill-maintainer","path":"codex-skill-maintainer","scope":"repository","purpose":"Maintain local skills","installable":true,"scripts":false,"modules":[]}
+    {"name":"codex-skill-maintainer","path":"codex-skill-maintainer","scope":"repository","purpose":"Maintain local skills","installable":true,"scripts":false,"modules":[]},
+    {"name":"codex-bootstrap","path":"codex-bootstrap","scope":"repository-or-user","purpose":"Bootstrap new iOS/macOS projects using these skills","installable":true,"scripts":false,"modules":[]}
   ]
 }
