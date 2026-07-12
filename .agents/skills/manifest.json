@@ -1,6 +1,7 @@
 {
   "version": 1,
   "skills": [
+    {"name":"apple-development-foundation","path":"apple-development-foundation","scope":"repository-or-user","purpose":"Reference-first skill router with optional foundation audits","installable":true,"scripts":false,"modules":[]},
     {"name":"apple-platform-planner","path":"apple-platform-planner","scope":"repository-or-user","purpose":"Plan Apple features","installable":true,"scripts":false,"modules":[]},
     {"name":"swiftui-component-author","path":"swiftui-component-author","scope":"repository-or-user","purpose":"Author reusable SwiftUI","installable":true,"scripts":false,"modules":[]},
     {"name":"apple-design-system","path":"apple-design-system","scope":"repository-or-user","purpose":"Design-system changes","installable":true,"scripts":false,"modules":[]},
@@ -11,6 +12,7 @@
     {"name":"apple-accessibility-review","path":"apple-accessibility-review","scope":"repository-or-user","purpose":"Review accessibility","installable":true,"scripts":false,"modules":[]},
     {"name":"apple-security-privacy-review","path":"apple-security-privacy-review","scope":"repository-or-user","purpose":"Review privacy and security","installable":true,"scripts":false,"modules":[]},
     {"name":"swift-testing-verification","path":"swift-testing-verification","scope":"repository-or-user","purpose":"Verify changes","installable":true,"scripts":false,"modules":[]},
+    {"name":"maestro-apple-app-testing","path":"maestro-apple-app-testing","scope":"repository-or-user","purpose":"Thorough Maestro testing for Apple apps","installable":true,"scripts":false,"modules":[]},
     {"name":"codex-skill-maintainer","path":"codex-skill-maintainer","scope":"repository","purpose":"Maintain local skills","installable":true,"scripts":false,"modules":[]},
     {"name":"codex-bootstrap","path":"codex-bootstrap","scope":"repository-or-user","purpose":"Bootstrap new iOS/macOS projects using these skills","installable":true,"scripts":false,"modules":[]}
   ]

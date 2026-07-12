@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "skill_id": "apple-development-foundation",
+  "name": "Apple Development Foundation master",
+  "kind": "master",
+  "description": "Reference-first catalog for routing Apple-platform tasks to relevant child skills, with optional foundation audits and installer verification.",
+  "source": {
+    "repository_root": ".",
+    "agent_guidance": "AGENTS.md",
+    "inventory_manifest": ".agents/skills/manifest.json",
+    "human_inventory": ".agents/skills/README.md"
+  },
+  "invocation": {
+    "explicit_skill": "$apple-development-foundation",
+    "automatic_activation": false,
+    "note": "Explicit invocation is the reliable disambiguator; select child skills according to their own descriptions and exclusions."
+  },
+  "routing": {
+    "procedure": [
+      "Read this catalog first and shortlist parent skills by ID, role, and purpose.",
+      "Read only the shortlisted child SKILL.md files and follow their instructions.",
+      "Do not imply an audit, repository scan, installer action, or verification run for ordinary task routing.",
+      "Use codex-bootstrap when the request is a new consumer Apple-platform project."
+    ],
+    "consumer_verification": "App-code verification is owned by the selected child skill, such as swift-testing-verification or maestro-apple-app-testing."
+  },
+  "parent_skills": [
+    {
+      "id": "codex-bootstrap",
+      "path": ".agents/skills/codex-bootstrap/SKILL.md",
+      "role": "orchestration",
+      "purpose": "Bootstrap a new consumer iOS or macOS SwiftUI project and chain relevant foundation skills."
+    },
+    {
+      "id": "apple-platform-planner",
+      "path": ".agents/skills/apple-platform-planner/SKILL.md",
+      "role": "planning",
+      "purpose": "Plan a new iOS, macOS, or shared Apple-platform feature."
+    },
+    {
+      "id": "swift-package-module-author",
+      "path": ".agents/skills/swift-package-module-author/SKILL.md",
+      "role": "architecture",
+      "purpose": "Add an independently importable Swift Package module in the active workspace."
+    },
+    {
+      "id": "reusable-code-extractor",
+      "path": ".agents/skills/reusable-code-extractor/SKILL.md",
+      "role": "architecture",
+      "purpose": "Extract proven application code into a neutral shared module or package."
+    },
+    {
+      "id": "apple-design-system",
+      "path": ".agents/skills/apple-design-system/SKILL.md",
+      "role": "ui-foundation",
+      "purpose": "Add or change reusable semantic design-system tokens and components."
+    },
+    {
+      "id": "swiftui-component-author",
+      "path": ".agents/skills/swiftui-component-author/SKILL.md",
+      "role": "ui-foundation",
+      "purpose": "Create or refactor reusable SwiftUI components."
+    },
+    {
+      "id": "ios-macos-platform-adaptation",
+      "path": ".agents/skills/ios-macos-platform-adaptation/SKILL.md",
+      "role": "platform",
+      "purpose": "Adapt concrete behavior that genuinely diverges between iOS and macOS."
+    },
+    {
+      "id": "swift-concurrency-review",
+      "path": ".agents/skills/swift-concurrency-review/SKILL.md",
+      "role": "quality",
+      "purpose": "Review async/await, actors, observation, Sendable correctness, and cancellation."
+    },
+    {
+      "id": "apple-accessibility-review",
+      "path": ".agents/skills/apple-accessibility-review/SKILL.md",
+      "role": "quality",
+      "purpose": "Review reusable SwiftUI UI for accessibility and platform interaction."
+    },
+    {
+      "id": "apple-security-privacy-review",
+      "path": ".agents/skills/apple-security-privacy-review/SKILL.md",
+      "role": "quality",
+      "purpose": "Review storage, file access, logging, permissions, imports, and sensitive data."
+    },
+    {
+      "id": "swift-testing-verification",
+      "path": ".agents/skills/swift-testing-verification/SKILL.md",
+      "role": "verification",
+      "purpose": "Select and run focused verification after meaningful Apple-platform changes."
+    },
+    {
+      "id": "maestro-apple-app-testing",
+      "path": ".agents/skills/maestro-apple-app-testing/SKILL.md",
+      "role": "verification",
+      "purpose": "Build, inspect, and test Apple apps with Maestro end-to-end workflows."
+    },
+    {
+      "id": "codex-skill-maintainer",
+      "path": ".agents/skills/codex-skill-maintainer/SKILL.md",
+      "role": "maintenance",
+      "purpose": "Create, review, update, and validate this repository's local skills."
+    }
+  ],
+  "audit": {
+    "when_requested": true,
+    "discovery": [
+      "Read the current project's AGENTS.md and local skill directories.",
+      "Read .agents/skills/manifest.json when auditing this foundation repository.",
+      "Resolve each parent skill path relative to the foundation repository root."
+    ],
+    "comparison": [
+      "Compare skill IDs first, then resolve paths and inspect frontmatter and semantic contracts.",
+      "Classify differences using the definitions below; do not use conflicting as an audit classification."
+    ],
+    "classifications": {
+      "missing": "A catalog parent skill absent from the target inventory.",
+      "extra": "A target-local skill outside the catalog that is not intentionally external.",
+      "stale": "A matching skill ID whose resolved path, frontmatter, or catalog contract is outdated or broken.",
+      "duplicate": "Multiple target entries representing the same catalog skill.",
+      "external": "An intentionally documented third-party skill outside this repository's catalog; exclude it from missing and extra findings."
+    },
+    "verification_scope": "Run these commands only when auditing this foundation repository or its installer; they do not verify consumer app code.",
+    "verification_commands": [
+      "./Scripts/verify-skills.sh",
+      "./Scripts/test-install-skills.sh",
+      "./Scripts/install-skills.sh --dry-run"
+    ],
+    "api_calls": []
+  },
+  "example_prompt": "Use $apple-development-foundation to route this iOS import-flow task to the relevant child skills. Read the catalog first, then read only the selected child SKILL.md files; do not audit or run foundation verification."
+}

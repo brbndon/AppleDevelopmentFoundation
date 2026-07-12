@@ -7,8 +7,19 @@ This repository is a **skills and MCP/commands reference** for Apple development
 - Maintain, install, and verify skills: `./Scripts/install-skills.sh`, `./Scripts/verify-skills.sh`, `./Scripts/test-install-skills.sh`
 - Keep skills neutral and reusable: no business models, branding, secrets, user-specific paths, or hidden network behavior
 - Prefer **XcodeBuildMCP** for Apple build, test, simulator, and UI inspection — see `MCP.md`
+- For Maestro app testing, use `$maestro-apple-app-testing` as the main workflow; combine XcodeBuildMCP for Apple builds/simulators with Maestro MCP and CLI flows for UI inspection and regression coverage.
 - Use `$codex-bootstrap` or the `codex-bootstrap` skill when starting a new iOS/macOS SwiftUI project with these skills
 - Update skills through `.agents/skills/`; see `Documentation/SkillAuthoringGuide.md` before changing skill behavior
+
+## Skill routing
+
+For new-chat Apple-platform skill selection and explicitly requested foundation
+audits, use [`apple-development-foundation`](.agents/skills/apple-development-foundation/SKILL.md).
+It reads [`master-skill.json`](.agents/skills/apple-development-foundation/master-skill.json)
+to shortlist relevant child skills before reading their instructions. Explicit
+invocation is required; ordinary routing does not imply an audit, repository
+scan, installer action, or verification run. The catalog defines the detailed
+inventory, audit classifications, and foundation-only verification workflow.
 
 ## Skills apply to consumer apps
 
