@@ -183,6 +183,67 @@ const mcpTools = [
   ["SwiftPM", "build, run, test Swift Package Manager projects"]
 ];
 
+const workflowScenarios = [
+  {
+    id: "ios",
+    label: "New iOS app",
+    request: "Build a native iOS app using AppleDevelopmentFoundation.",
+    context: "New consumer workspace · iOS 17+ · SwiftUI",
+    branch: "iOS delivery lane",
+    outcome: "SwiftUI app, one resolved simulator, and optional Maestro coverage for high-risk UI flows.",
+    stages: {
+      route: ["codex-bootstrap", "apple-platform-planner when the scope is broad"],
+      guidance: ["apple-design-system", "swiftui-component-author", "apple-accessibility-review"],
+      inspect: ["Consumer app structure", "Existing design system or neutral token layer"],
+      build: ["SwiftUI app shell", "Platform-native controls and accessibility"],
+      verify: ["XcodeBuildMCP simulator build and tests", "Maestro flows when end-to-end UI coverage applies"]
+    }
+  },
+  {
+    id: "macos",
+    label: "New macOS app",
+    request: "Build a native macOS app using AppleDevelopmentFoundation.",
+    context: "New consumer workspace · macOS 14+ · SwiftUI",
+    branch: "macOS delivery lane",
+    outcome: "Native macOS app structure, window and command behavior, plus macOS-target verification.",
+    stages: {
+      route: ["codex-bootstrap", "apple-platform-planner when the scope is broad"],
+      guidance: ["apple-design-system", "swiftui-component-author", "apple-accessibility-review"],
+      inspect: ["Consumer app structure", "Window, menu, and keyboard conventions"],
+      build: ["macOS app shell", "Native windows, commands, and pointer/keyboard behavior"],
+      verify: ["XcodeBuildMCP macOS build, run, and tests", "Manual window and command checks when required"]
+    }
+  },
+  {
+    id: "feature",
+    label: "Existing-app feature",
+    request: "Add a feature to an existing app using the framework.",
+    context: "Existing consumer workspace · platform determined by the app",
+    branch: "Targeted change lane",
+    outcome: "A scoped change that follows the app’s architecture, APIs, tests, and platform conventions.",
+    stages: {
+      route: ["apple-platform-planner when planning is requested", "Only the skills triggered by the affected work"],
+      guidance: ["swiftui-component-author for reusable UI", "security, accessibility, concurrency, or adaptation review when applicable"],
+      inspect: ["AGENTS.md, affected feature, tests, and dependencies", "Existing platform and framework conventions"],
+      build: ["Smallest compatible feature change", "Established consumer APIs and ownership boundaries"],
+      verify: ["Focused tests and affected-target build", "Simulator or macOS checks; Maestro when UI regression coverage applies"]
+    }
+  }
+];
+
+const workflowStages = [
+  { id: "request", number: "01", title: "Receive the request", copy: "Codex identifies the outcome, target platform, constraints, and whether the task is new work or a change inside an existing app." },
+  { id: "instructions", number: "02", title: "Read operating instructions", copy: "Repository-level AGENTS.md and local consumer-workspace instructions establish the rules and boundaries before implementation begins.", files: ["AGENTS.md", "consumer workspace instructions"] },
+  { id: "route", number: "03", title: "Route through the Foundation", copy: "When AppleDevelopmentFoundation is explicitly named or invoked, its master skill becomes the entry point. It is not an automatic background audit.", files: [".agents/skills/apple-development-foundation/SKILL.md", "master-skill.json"], scenarioKey: "route" },
+  { id: "catalog", number: "04", title: "Shortlist the right skills", copy: "The catalog is read first; Codex opens only the child SKILL.md files relevant to this task, rather than treating the whole inventory as mandatory.", files: [".agents/skills/apple-development-foundation/master-skill.json", "selected child SKILL.md files"] },
+  { id: "guidance", number: "05", title: "Apply focused guidance", copy: "Architecture, UI, platform, accessibility, privacy, concurrency, and workflow guidance are layered only where the work calls for them.", scenarioKey: "guidance" },
+  { id: "inspect", number: "06", title: "Inspect the consumer project", copy: "Codex studies the active app’s code, modules, dependencies, tests, and established patterns. The Foundation repository stays a reference, not the app being built.", scenarioKey: "inspect" },
+  { id: "plan", number: "07", title: "Make a plan when needed", copy: "Broad work and planning requests produce a bounded implementation plan with platform split, ownership, risks, and verification. Straightforward implementation requests proceed after inspection." },
+  { id: "build", number: "08", title: "Build within the app’s conventions", copy: "Codex creates or modifies the consumer application with SwiftUI, native platform behavior, and the project’s established APIs—not the archived Foundation package.", scenarioKey: "build" },
+  { id: "verify", number: "09", title: "Verify the result", copy: "Verification begins with the project context in XcodeBuildMCP, then runs the smallest relevant builds, tests, UI inspection, and automation. Results are reported only when actually run.", files: ["MCP.md", "project tests and .maestro flows when present"], scenarioKey: "verify" },
+  { id: "report", number: "10", title: "Report the handoff", copy: "The final handoff names changed files, behavior, applied skills, verification evidence, unavailable checks, limitations, and remaining manual work." }
+];
+
 function Brand({ footer = false }) {
   return (
     <a className={`brand${footer ? " footer-brand" : ""}`} href="#top" aria-label="Apple Development Foundation home">
@@ -192,7 +253,7 @@ function Brand({ footer = false }) {
   );
 }
 
-function SiteHeader({ menuOpen, setMenuOpen, guide }) {
+function SiteHeader({ menuOpen, setMenuOpen, page }) {
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -209,18 +270,26 @@ function SiteHeader({ menuOpen, setMenuOpen, guide }) {
           Menu
         </button>
         <nav id="site-nav" className={`site-nav${menuOpen ? " is-open" : ""}`} aria-label="Primary navigation">
-          {guide ? (
+          {page === "guide" ? (
             <>
               <a href="#top" onClick={closeMenu}>Home</a>
               <a href="#guide-start" onClick={closeMenu}>Start a task</a>
               <a href="#handoff" onClick={closeMenu}>Handoff check</a>
               <a className="nav-cta" href="#guide-template" onClick={closeMenu}>Use the brief <span aria-hidden="true">↗</span></a>
             </>
+          ) : page === "workflow" ? (
+            <>
+              <a href="#top" onClick={closeMenu}>Home</a>
+              <a href="#workflow-scenarios" onClick={closeMenu}>Requests</a>
+              <a href="#workflow-map" onClick={closeMenu}>Execution trace</a>
+              <a className="nav-cta" href="#workflow-report" onClick={closeMenu}>See the handoff <span aria-hidden="true">↗</span></a>
+            </>
           ) : (
             <>
               <a href="#modules" onClick={closeMenu}>Skills</a>
               <a href="#apis" onClick={closeMenu}>MCP</a>
               <a href="#agents" onClick={closeMenu}>Agent behavior</a>
+              <a href="#workflow" onClick={closeMenu}>Workflow <span aria-hidden="true">↗</span></a>
               <a href="#guide" onClick={closeMenu}>Agent guide <span aria-hidden="true">↗</span></a>
               <a className="nav-cta" href="#quick-start" onClick={closeMenu}>Start here <span aria-hidden="true">↗</span></a>
             </>
@@ -597,6 +666,116 @@ and report changes, evidence, and remaining risks.</span></code></pre></div>
   );
 }
 
+function WorkflowPage() {
+  const [scenarioId, setScenarioId] = useState("ios");
+  const [activeStageId, setActiveStageId] = useState("request");
+  const scenario = workflowScenarios.find((item) => item.id === scenarioId) ?? workflowScenarios[0];
+  const activeStage = workflowStages.find((item) => item.id === activeStageId) ?? workflowStages[0];
+  const activeDetails = activeStage.scenarioKey ? scenario.stages[activeStage.scenarioKey] : activeStage.files;
+
+  function resetWorkflow() {
+    setScenarioId("ios");
+    setActiveStageId("request");
+  }
+
+  return (
+    <div className="workflow-page">
+      <section id="workflow" className="workflow-hero section-shell">
+        <div>
+          <a className="back-link" href="#top">← Back to home</a>
+          <p className="eyebrow"><span className="pulse" aria-hidden="true"></span> Interactive execution trace</p>
+          <h1>See what happens after you ask Codex to build.</h1>
+          <p className="hero-lede">Choose a request, then follow the live route through instructions, Foundation skill routing, consumer-app work, verification, and handoff.</p>
+        </div>
+        <aside className="workflow-truth" aria-label="How Foundation routing starts">
+          <span className="workflow-truth-mark" aria-hidden="true">$</span>
+          <p className="workflow-truth-label">Routing truth</p>
+          <p><strong>Explicit invocation matters.</strong> AppleDevelopmentFoundation’s master skill reads its catalog first and selects only relevant child skills. It does not imply an audit or automatic verification run.</p>
+        </aside>
+      </section>
+
+      <section id="workflow-scenarios" className="workflow-controls-shell">
+        <div className="shell workflow-controls">
+          <div><p className="eyebrow">Select an entry request</p><h2>Start the trace.</h2></div>
+          <div className="scenario-tabs" role="group" aria-label="Example request">
+            {workflowScenarios.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`scenario-tab${item.id === scenario.id ? " is-active" : ""}`}
+                aria-pressed={item.id === scenario.id}
+                onClick={() => { setScenarioId(item.id); setActiveStageId("request"); }}
+              >
+                <span>{item.label}</span><small>{item.context}</small>
+              </button>
+            ))}
+          </div>
+          <button className="workflow-reset" type="button" onClick={resetWorkflow}>Reset trace <span aria-hidden="true">↺</span></button>
+        </div>
+      </section>
+
+      <section id="workflow-map" className="workflow-trace-section">
+        <div className="shell">
+          <div className="trace-heading">
+            <div><p className="eyebrow">Current request</p><p className="trace-request">“{scenario.request}”</p></div>
+            <div className="trace-branch"><span>Selected branch</span><strong>{scenario.branch}</strong></div>
+          </div>
+          <div className="workflow-trace" aria-label={`${scenario.label} workflow stages`}>
+            <svg className="trace-connectors" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true">
+              {workflowStages.slice(0, -1).map((stage, index) => (
+                <path key={stage.id} className={index < workflowStages.findIndex((item) => item.id === activeStage.id) ? "is-traversed" : ""} d={`M 500 ${62 + index * 72} L 500 ${106 + index * 72}`} pathLength="1" />
+              ))}
+              <path className="trace-branch-line" d="M 500 494 C 680 494 745 530 745 590" pathLength="1" />
+            </svg>
+            <ol className="trace-stages">
+              {workflowStages.map((stage) => {
+                const isActive = stage.id === activeStage.id;
+                const isPast = workflowStages.findIndex((item) => item.id === stage.id) < workflowStages.findIndex((item) => item.id === activeStage.id);
+                return (
+                  <li key={stage.id} className={`trace-stage${isActive ? " is-active" : ""}${isPast ? " is-past" : ""}`}>
+                    <button type="button" aria-pressed={isActive} aria-controls="workflow-stage-details" onClick={() => setActiveStageId(stage.id)}>
+                      <span className="trace-stage-number">{stage.number}</span>
+                      <span className="trace-stage-title">{stage.title}</span>
+                      <span className="trace-stage-action">{isActive ? "Inspecting" : "Inspect"} <span aria-hidden="true">↗</span></span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+            <div className="trace-platform-output" aria-label="Selected platform output"><span>{scenario.id === "ios" ? "iOS" : scenario.id === "macos" ? "macOS" : "Consumer app"}</span><strong>{scenario.id === "ios" ? "Simulator + Maestro" : scenario.id === "macos" ? "Windows + commands" : "Focused change"}</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="workflow-detail-section">
+        <div className="shell workflow-detail-grid">
+          <article id="workflow-stage-details" className="stage-detail" aria-live="polite">
+            <p className="eyebrow">Stage {activeStage.number}</p>
+            <h2>{activeStage.title}</h2>
+            <p>{activeStage.copy}</p>
+            {activeDetails?.length ? <ul aria-label={`Relevant files or skills for ${activeStage.title}`}>{activeDetails.map((item) => <li key={item}><code>{item}</code></li>)}</ul> : null}
+          </article>
+          <aside className="branch-detail">
+            <p className="eyebrow">This request leads to</p>
+            <h3>{scenario.branch}</h3>
+            <p>{scenario.outcome}</p>
+            <div className="branch-tags">
+              {scenario.stages.verify.map((item) => <span key={item}>{item}</span>)}
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="workflow-report" className="workflow-report-section">
+        <div className="shell workflow-report">
+          <div><p className="eyebrow">The handoff</p><h2>Every route ends with evidence, not a promise.</h2></div>
+          <div className="report-list"><span>Changed files and user-visible behavior</span><span>Applied skills and relevant platform decisions</span><span>Builds, tests, UI checks, and exact outcomes</span><span>Limitations, unavailable checks, and remaining manual work</span></div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function Footer() {
   return (
     <footer className="site-footer">
@@ -610,11 +789,12 @@ function Footer() {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [guide, setGuide] = useState(() => window.location.hash === "#guide");
+  const getPage = () => window.location.hash.startsWith("#guide") ? "guide" : window.location.hash.startsWith("#workflow") ? "workflow" : "home";
+  const [page, setPage] = useState(getPage);
 
   useEffect(() => {
     const updatePage = () => {
-      setGuide(window.location.hash === "#guide");
+      setPage(getPage());
       setMenuOpen(false);
       window.scrollTo({ top: 0, behavior: "auto" });
     };
@@ -625,9 +805,9 @@ export default function App() {
   return (
     <div className="min-h-screen">
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <SiteHeader menuOpen={menuOpen} setMenuOpen={setMenuOpen} guide={guide} />
+      <SiteHeader menuOpen={menuOpen} setMenuOpen={setMenuOpen} page={page} />
       <main id="main-content">
-        {guide ? <AgentGuide /> : <><Hero /><SignalStrip /><QuickStart /><ModulesSection /><ApiPatterns /><AgentBehavior /><Ownership /><DocumentationLinks /></>}
+        {page === "guide" ? <AgentGuide /> : page === "workflow" ? <WorkflowPage /> : <><Hero /><SignalStrip /><QuickStart /><ModulesSection /><ApiPatterns /><AgentBehavior /><Ownership /><DocumentationLinks /></>}
       </main>
       <Footer />
     </div>
