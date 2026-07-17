@@ -1,0 +1,30 @@
+---
+title: Copy-paste prompts
+description: Ready-to-paste prompts for routing skills, bootstrap, and verification sessions.
+---
+
+# Copy-paste prompts
+
+## Point a session at these skills
+
+> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `$apple-development-foundation` for routing when the task is broad, then apply `$codex-bootstrap`, `$swiftui-tab-navigation`, `$apple-design-system`, `$swiftui-component-author`, and review skills as needed. Prefer XcodeBuildMCP for build, test, and simulator work.
+
+## Bootstrap a new SwiftUI app
+
+> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. If the app has multiple peer destinations, use `$swiftui-tab-navigation` for native primary navigation. Use the consumer’s design system or create a minimal neutral one. Verify with XcodeBuildMCP. Do not modify AppleDevelopmentFoundation’s archived package.
+
+## Verify after bootstrap or feature work
+
+> Call `session_show_defaults`, then build and test on the iOS simulator with XcodeBuildMCP. Report scheme, simulator, and any failures with the next actionable tool call.
+
+## Maestro UI regression
+
+> Use `$maestro-apple-app-testing` with XcodeBuildMCP for simulator build/install. Author or update Maestro flows for the critical paths, run them, and diagnose flakes with hierarchy and screenshots.
+
+## Foundation skill maintenance
+
+> Use `$codex-skill-maintainer` to update skills under `.agents/skills/`. Follow `Documentation/SkillAuthoringGuide.md`, update `manifest.json` and the skills README, then run `./Scripts/verify-skills.sh` (and `./Scripts/test-install-skills.sh` if installer behavior changed).
+
+## Explicit foundation audit
+
+> Run an explicit Apple Development Foundation skill inventory audit with `$apple-development-foundation` using `master-skill.json` classifications. Do not treat ordinary routing as an audit. Report verification only if this foundation repo or its installer is in scope.

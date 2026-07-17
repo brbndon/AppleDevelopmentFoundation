@@ -1,0 +1,42 @@
+---
+title: Testing
+description: Combine swift-testing-verification, XcodeBuildMCP, and Maestro for Apple app verification.
+---
+
+# Testing
+
+## Unit and focused verification — `$swift-testing-verification`
+
+**Use after** a meaningful Apple-platform code change to select and run verification.
+
+**Do not use** for planning-only work or before implementation exists.
+
+Prefer the smallest set of tests that prove the change. Use XcodeBuildMCP to run them on the right simulator or macOS target.
+
+## End-to-end UI — `$maestro-apple-app-testing`
+
+**Use when** building, debugging, authoring, or thoroughly testing an Apple app with Maestro: simulator flows, UI inspection, screenshots, flaky-flow diagnosis, regression coverage.
+
+**Pair with:**
+
+- **XcodeBuildMCP** for build, install, boot, and simulator control
+- **Maestro MCP / CLI** for flow execution and UI automation
+
+Details: [Maestro](/tools/maestro).
+
+## Practical session pattern
+
+1. `session_show_defaults` (XcodeBuildMCP)
+2. Build and unit-test via MCP
+3. For UI: install/launch on simulator, then run Maestro flows
+4. On failure: capture logs/hierarchy/screenshot; fix; re-run the smallest failing slice
+5. Report scheme, device, commands, and residual risk
+
+## Skill maintenance tests (this repo)
+
+When changing skills or the installer:
+
+```bash
+./Scripts/verify-skills.sh
+./Scripts/test-install-skills.sh   # if installer behavior changed
+```

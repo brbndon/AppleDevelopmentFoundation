@@ -7,3 +7,7 @@ xcuserdata/
 Website/node_modules/
 Website/dist/
 Website/.vite/
+node_modules/
+.blume/
+.blume-verify/
+dist/

@@ -1,0 +1,56 @@
+---
+title: Skill routing
+description: How to shortlist foundation skills with apple-development-foundation and master-skill.json.
+---
+
+# Skill routing
+
+## Default entry: `$apple-development-foundation`
+
+Use the master skill when:
+
+- A **new chat** needs a curated shortlist for an Apple-platform task
+- The user asks for a **foundation audit** or inventory comparison
+
+Do **not** treat it as proof of automatic activation, a replacement for child skill instructions, or an implied repository scan.
+
+### Procedure
+
+1. Read `.agents/skills/apple-development-foundation/master-skill.json` (machine-readable catalog).
+2. Shortlist only children relevant to the request (IDs, roles, purposes in the JSON).
+3. Read only those children’s `SKILL.md` files and follow their workflows.
+4. For a new consumer project, use `$codex-bootstrap` after routing.
+5. Run foundation verification commands from the JSON **only** for an explicit audit of this repository or its installer.
+
+:::warning
+Ordinary routing does **not** mean: install skills, scan the whole repo, run `./Scripts/verify-skills.sh`, or audit inventories. Those require an explicit user request.
+:::
+
+## Direct invocation
+
+When the task already matches a skill, invoke it by name:
+
+```
+$codex-bootstrap
+$swiftui-tab-navigation
+$swiftui-component-author
+$maestro-apple-app-testing
+…
+```
+
+Full table: [Skills inventory](/skills).
+
+## Catalog sources of truth
+
+| Artifact | Role |
+| --- | --- |
+| `.agents/skills/apple-development-foundation/master-skill.json` | Router catalog + audit definitions |
+| `.agents/skills/manifest.json` | Install/verify inventory |
+| `.agents/skills/README.md` | Human-readable use / do-not-use table |
+| Each skill’s `SKILL.md` | Executable instructions |
+
+When skill names or purposes change, update those files first; keep this docs site in sync.
+
+## External skills
+
+Some workflows stay **outside** this repo (for example App Store marketing screenshots via `$app-store-screenshots`). See [External skills](/reference/external-skills).

@@ -1,0 +1,45 @@
+---
+title: XcodeBuildMCP
+description: Preferred MCP for Apple build, test, simulator, device, and UI inspection sessions.
+---
+
+# XcodeBuildMCP
+
+Prefer **XcodeBuildMCP** tools instead of raw `xcodebuild`, `xcrun`, or `simctl` for iOS/macOS build, test, simulator, and UI inspection.
+
+Canonical reference in-repo: `MCP.md`. Upstream: [xcodebuildmcp.com](https://xcodebuildmcp.com).
+
+## Install and configure
+
+1. Add XcodeBuildMCP to the agent host’s MCP server list.
+2. Enable workflows beyond the default simulator set when needed: [configuration docs](https://xcodebuildmcp.com/docs/configuration).
+3. After changing `.xcodebuildmcp/config.yaml`, reload or restart the MCP session.
+
+Only simulator workflow tools are enabled by default. Device, macOS, debugging, and UI automation require explicit workflow configuration.
+
+## Every session
+
+1. Call **`session_show_defaults`** before the first build/run/test action.
+2. Use **`discover_projs`** only when defaults show missing or incorrect project/workspace context — do not run discovery speculatively or in parallel with show-defaults.
+3. For simulator run intent, prefer the **combined build-and-run** tool over separate build then run.
+4. Report active context (project/workspace, scheme, simulator/device) and the exact failing step on errors.
+
+## Tool map (representative)
+
+| Task | Tools |
+| --- | --- |
+| Project discovery | `discover_projs`, scheme listing, build-settings inspection |
+| Simulator build/run/test | build-and-run (preferred for run), build, test, install, launch |
+| Simulator state | boot, erase, location, appearance |
+| macOS | build, run, test (macOS workflow enabled) |
+| Physical device | build, test, install, launch (device workflow + signing) |
+| Logs | stream and capture from simulators and devices |
+| UI inspection | screenshots, view hierarchy with coordinates, taps/swipes/gestures |
+| SwiftPM | build, run, test packages |
+| Scaffolding | generate new iOS/macOS project templates |
+
+Host skills such as the global `xcodebuildmcp` skill may add capability notes; still follow this session discipline.
+
+## Verify after bootstrap or feature work
+
+> Call `session_show_defaults`, then build and test on the iOS simulator with XcodeBuildMCP. Report scheme, simulator, and any failures with the next actionable tool call.

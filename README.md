@@ -4,6 +4,24 @@ Reusable Codex skills for Apple development (design system, SwiftUI, concurrency
 
 This repo's primary purpose is **skills + command references**. The original Swift package was exploratory and is archived — see [ARCHIVE.md](ARCHIVE.md).
 
+## Agent playbook (Blume docs)
+
+Agent-facing workflow docs live under [`docs/`](docs/) and are served with [Blume](https://useblume.dev).
+
+**Production:** [https://brbndon.github.io/AppleDevelopmentFoundation/](https://brbndon.github.io/AppleDevelopmentFoundation/) (GitHub Pages via `.github/workflows/docs.yml`).
+
+```bash
+npm install
+npm run dev      # local docs site
+npm run build    # static build + llms.txt artifacts
+npm run validate # link check
+npm run preview  # serve production build locally
+```
+
+Requires **Node.js 22.12+**. One-time GitHub setup: **Settings → Pages → Source: GitHub Actions**.
+
+Start with the [quickstart](docs/quickstart.mdx) and [session workflow](docs/workflow/index.mdx). The site covers skill routing, consumer-workspace rules, XcodeBuildMCP, Maestro, scripts, and copy-paste prompts for agentic coders.
+
 ## Install skills
 
 ```bash
@@ -23,6 +41,7 @@ Point Codex at this repo when bootstrapping apps:
 
 | Skill | One-liner |
 | --- | --- |
+| `apple-development-foundation` | Reference-first child-skill router with optional foundation audits |
 | `codex-bootstrap` | Bootstrap a new iOS/macOS SwiftUI project using these skills |
 | `apple-platform-planner` | Plan a platform feature before implementation |
 | `swiftui-tab-navigation` | Build native app-level tabs with system Liquid Glass behavior |
@@ -35,6 +54,13 @@ Point Codex at this repo when bootstrapping apps:
 | `apple-accessibility-review` | Review reusable UI accessibility |
 | `apple-security-privacy-review` | Review files, logging, permissions, and sensitive data |
 | `swift-testing-verification` | Verify meaningful changes with focused tests |
+| `maestro-apple-app-testing` | Test Apple apps end to end with Maestro |
 | `codex-skill-maintainer` | Maintain and update skills in this repo |
 
 Full use/do-not-use table: [.agents/skills/README.md](.agents/skills/README.md). Manifest: [.agents/skills/manifest.json](.agents/skills/manifest.json).
+
+For a single reusable baseline in a new chat, invoke `$apple-development-foundation`; it uses its [machine-readable catalog](.agents/skills/apple-development-foundation/master-skill.json) to shortlist child skills before reading their instructions. Audits and foundation verification are explicit requests.
+
+## External skill routing
+
+For App Store asset work, use the globally installed [`app-store-screenshots`](https://github.com/ParthJadhav/app-store-screenshots) skill (`$app-store-screenshots`). It is the focused workflow for App Store marketing screenshots, device mockups, exportable screenshot sets, and screenshot-editor scaffolding. It is intentionally referenced here rather than copied into this repository or added to the local manifest.

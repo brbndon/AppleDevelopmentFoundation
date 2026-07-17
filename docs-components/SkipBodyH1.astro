@@ -1,0 +1,13 @@
+---
+/**
+ * Filters body-level `#` headings out of rendered HTML.
+ *
+ * Blume already emits the page title as `<h1>` from frontmatter. Authors may
+ * still keep a leading `# Title` in MDX for readable source and agent-facing
+ * `.md` / llms.txt mirrors — this component drops those body H1s so they do
+ * not duplicate the chrome title. Only MDX content uses this map; the layout
+ * title H1 is unaffected.
+ *
+ * Prefer `##` for in-page sections. Mid-page body `#` headings are also omitted.
+ */
+---

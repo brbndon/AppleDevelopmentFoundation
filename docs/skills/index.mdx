@@ -1,0 +1,44 @@
+---
+title: Skills inventory
+description: Local Codex skills for Apple development — when to use each and what to avoid.
+---
+
+# Skills inventory
+
+Source of truth: `.agents/skills/README.md` and `manifest.json`. Re-sync this page when those change.
+
+## Inventory
+
+| Skill | Use for | Do not use for |
+| --- | --- | --- |
+| `apple-development-foundation` | Reference-first child-skill routing; explicit foundation audits | Replacing child instructions; implied audits/verification |
+| `codex-bootstrap` | New iOS/macOS SwiftUI projects in the **consumer** workspace | One-off screens; archived package work in this repo |
+| `apple-platform-planner` | Planning a platform feature | Implementation-only requests |
+| `swiftui-tab-navigation` | App-level tabs / system Liquid Glass tab chrome | Page-style tabs, segmented controls, business screens |
+| `swiftui-component-author` | Reusable SwiftUI components | App-specific screen copy |
+| `apple-design-system` | Design-system tokens and components | Application branding |
+| `ios-macos-platform-adaptation` | Divergent iOS vs macOS behavior | Shared identical behavior |
+| `swift-package-module-author` | Independently importable SPM module in the active workspace | App-local feature; archived package here |
+| `reusable-code-extractor` | Proven app code → consumer shared module | Speculative abstraction; landing code in this repo |
+| `swift-concurrency-review` | async/await, actors, cancellation | Unrelated styling |
+| `apple-accessibility-review` | Reusable UI accessibility | Non-UI services |
+| `apple-security-privacy-review` | Files, logging, permissions, sensitive data | Visual-only polish |
+| `swift-testing-verification` | Verification after meaningful code changes | Planning-only work |
+| `maestro-apple-app-testing` | End-to-end Maestro UI testing | Non-testing product implementation |
+| `codex-skill-maintainer` | Creating/updating skills in this repo | Ordinary product code changes |
+
+## Guides in this section
+
+- [Bootstrap](/skills/bootstrap) — new consumer apps
+- [Reviews and quality](/skills/reviews-and-quality) — concurrency, a11y, security
+- [Testing](/skills/testing) — unit/UI verification stack
+- [Authoring skills](/skills/authoring) — maintaining this repo’s skills
+
+## Install and verify
+
+```bash
+./Scripts/install-skills.sh
+./Scripts/verify-skills.sh
+```
+
+Details: [Scripts](/tools/scripts).

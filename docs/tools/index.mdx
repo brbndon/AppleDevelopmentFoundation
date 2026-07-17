@@ -1,0 +1,44 @@
+---
+title: Tools overview
+description: Prerequisites and tooling for agentic Apple development with this foundation.
+---
+
+# Tools overview
+
+## Required for app work
+
+| Tool | Role |
+| --- | --- |
+| **Xcode** | Compile, sign, simulators, Instruments |
+| **XcodeBuildMCP** | Agent-facing build, test, sim, UI inspection (preferred over raw CLI) |
+| **Codex / Cursor / Claude Code** (or similar) | Host that loads skills and MCP servers |
+| **Swift 6** toolchain (via Xcode) | Language baseline for skills |
+
+## Strongly recommended
+
+| Tool | Role |
+| --- | --- |
+| **Maestro** (+ MCP if available) | Declarative UI flows and regression |
+| This repo’s **install/verify scripts** | Skill distribution integrity |
+
+## Optional (this docs site only)
+
+| Tool | Role |
+| --- | --- |
+| **Node.js 22.12+** | Run Blume (`npm run dev` / `build`) |
+| **npm** | Root package for Blume |
+
+## Deep dives
+
+- [XcodeBuildMCP](/tools/xcodebuildmcp)
+- [Maestro](/tools/maestro)
+- [Scripts](/tools/scripts)
+
+## Source files in the repo
+
+| File | Contents |
+| --- | --- |
+| `MCP.md` | MCP install notes, session workflow, prompts |
+| `AGENTS.md` | Always-on agent rules |
+| `.agents/skills/` | Skill source |
+| `Scripts/` | install / verify / test helpers |

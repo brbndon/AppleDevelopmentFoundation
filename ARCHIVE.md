@@ -17,6 +17,7 @@ The Swift package, examples, apps, and website in this repository are **archived
 | --- | --- |
 | `.agents/skills/` | Reusable Codex skills (the product) |
 | `MCP.md` | XcodeBuildMCP and command reference |
+| `docs/`, `blume.config.ts` | Agent playbook (Blume docs site) |
 | `README.md`, `AGENTS.md` | Entry points for humans and agents |
 
 ## Agent guidance

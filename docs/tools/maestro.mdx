@@ -1,0 +1,33 @@
+---
+title: Maestro
+description: End-to-end UI testing for Apple apps with Maestro, paired with XcodeBuildMCP.
+---
+
+# Maestro
+
+Use **`$maestro-apple-app-testing`** as the main workflow for thorough Apple UI testing: simulator flows, inspection, screenshots, flaky-flow diagnosis, and regression coverage.
+
+## Division of labor
+
+| Concern | Tooling |
+| --- | --- |
+| Build, install, boot simulator, capture hierarchy | **XcodeBuildMCP** |
+| Author and run flow YAML, assert UI, screenshots | **Maestro** (CLI and/or MCP) |
+| Choose what to cover and how to stabilize | **`$maestro-apple-app-testing`** skill |
+
+## Session outline
+
+1. Establish XcodeBuildMCP defaults (`session_show_defaults`).
+2. Build and install the app on a known simulator.
+3. Author or update Maestro flows under the consumer project’s agreed path.
+4. Run flows; on flake, narrow to one step, capture hierarchy/screenshot, fix selectors or waits.
+5. Keep flows deterministic: stable accessibility identifiers, explicit waits, avoid hard-coded sleeps when possible.
+
+## Do not use Maestro for
+
+- Pure unit or concurrency logic (use Swift Testing / XCTest via XcodeBuildMCP)
+- Non-testing product implementation (switch to authoring skills)
+
+## Skill path
+
+`.agents/skills/maestro-apple-app-testing/SKILL.md` — follow that file for host-specific MCP and CLI commands.

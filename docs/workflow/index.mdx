@@ -1,0 +1,63 @@
+---
+title: Session workflow
+description: End-to-end loop for agent sessions using foundation skills and XcodeBuildMCP.
+---
+
+# Session workflow
+
+A reliable agent session follows a fixed loop. Skip steps only when the task is clearly narrower than the loop.
+
+## Loop
+
+1. **Orient**
+   - Read always-on rules: repo `AGENTS.md` (when working in this foundation repo) or the consumer app’s agent instructions.
+   - Identify the **active workspace** (consumer app vs this skills reference).
+   - See [Consumer workspace](/workflow/consumer-workspace).
+
+2. **Route skills**
+   - Broad Apple-platform task or new chat: invoke `$apple-development-foundation`.
+   - Known task: invoke the specific skill (`$codex-bootstrap`, `$swift-concurrency-review`, …).
+   - Details: [Skill routing](/workflow/skill-routing).
+
+3. **Plan only when needed**
+   - Use `$apple-platform-planner` for multi-platform or multi-feature scope before writing files.
+   - Do not plan-for-planning on one-off screens.
+
+4. **Implement in the consumer workspace**
+   - Prefer Swift 6, SwiftUI, native observation, structured concurrency, focused views.
+   - Chain authoring skills (tabs → design system → components → platform adaptation) as the bootstrap skill describes.
+
+5. **Establish MCP session context**
+   - Before first build/run/test: `session_show_defaults`.
+   - Discover projects only when defaults are missing or wrong — not in parallel with show-defaults.
+   - Prefer combined build-and-run for simulator launch.
+
+6. **Review before ship**
+   - Shared UI: `$apple-accessibility-review`
+   - Async/actors: `$swift-concurrency-review`
+   - Files, logging, permissions: `$apple-security-privacy-review`
+
+7. **Verify**
+   - Meaningful code change: `$swift-testing-verification` + XcodeBuildMCP build/test.
+   - UI flows: `$maestro-apple-app-testing` with XcodeBuildMCP for simulators.
+   - Skill/manifest change in this repo: `./Scripts/verify-skills.sh` (and installer tests if install behavior changed).
+
+8. **Report**
+   - Active project/scheme/simulator, what ran, failures with the next actionable tool call.
+   - Which skills were applied and which to run next.
+
+## Do not
+
+| Anti-pattern | Instead |
+| --- | --- |
+| Expand `Sources/` in this repo by default | Work in the consumer app unless the user asked for package work |
+| Run raw `xcodebuild` / `simctl` when XcodeBuildMCP is available | Use MCP tools; report if MCP is unavailable |
+| Treat `$apple-development-foundation` as an automatic audit | Audits and installer verification are **explicit** requests only |
+| Copy business branding into skills | Keep skills neutral and reusable |
+| Skip a11y / security review on shared components | Run the review skills before calling work done |
+
+## Related
+
+- [Verification matrix](/reference/verification-matrix)
+- [XcodeBuildMCP](/tools/xcodebuildmcp)
+- [Skills inventory](/skills)

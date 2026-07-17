@@ -1,0 +1,46 @@
+---
+title: Reviews and quality
+description: When to run concurrency, accessibility, and security/privacy review skills.
+---
+
+# Reviews and quality
+
+Run review skills **after** the relevant code exists, and **before** calling shared or sensitive work complete.
+
+## Concurrency — `$swift-concurrency-review`
+
+**Use when:** async/await, actors, tasks, observation across isolation, `Sendable` diagnostics, cancellation.
+
+**Check for:** structured concurrency over ad-hoc threads; correct isolation; cancellation propagation; no blocking the main actor with long work; clear ownership of mutable state.
+
+## Accessibility — `$apple-accessibility-review`
+
+**Use when:** reviewing reusable SwiftUI UI.
+
+**Baseline expectations** (also always-on in `AGENTS.md`):
+
+- Dynamic Type
+- VoiceOver (labels, traits, order)
+- Keyboard access where applicable
+- Contrast
+- Reduce Motion
+- Differentiate Without Color
+- Descriptive label for icon-only controls
+
+## Security and privacy — `$apple-security-privacy-review`
+
+**Use when:** storage, file access, logging, permissions, imports, sensitive data.
+
+**Never log:** credentials, tokens, private content, raw imports, complete sensitive paths, security-scoped URLs.
+
+**Validate** imports before reading; respect sandbox and entitlements; prefer system pickers and scoped access patterns.
+
+## Suggested order after feature work
+
+1. Concurrency review (if async/actors)
+2. Security/privacy review (if files/logging/permissions)
+3. Accessibility review (if shared UI)
+4. `$swift-testing-verification` + XcodeBuildMCP
+5. `$maestro-apple-app-testing` for critical UI flows
+
+See also [Verification matrix](/reference/verification-matrix).

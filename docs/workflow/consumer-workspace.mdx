@@ -1,0 +1,52 @@
+---
+title: Consumer workspace
+description: Skills target the app the user is building — not this repository’s archived package.
+---
+
+# Consumer workspace
+
+## The rule
+
+Skills in Apple Development Foundation apply to the **active workspace**: the iOS/macOS app or Swift package the user is building. They do **not** land code in this reference repository’s archived `Sources/` unless the user explicitly asks for that.
+
+| Location | Agent should… |
+| --- | --- |
+| User’s app / package (consumer) | Implement features, components, tests, modules |
+| This repo `.agents/skills/` | Maintain skills only when asked (`$codex-skill-maintainer`) |
+| This repo `Sources/`, `Apps/`, `Examples/`, `Website/` | Leave alone unless explicitly requested |
+| This repo `docs/` | Update agent playbook when documenting the workflow |
+
+## Archive boundary
+
+The Swift package, examples, apps, and old website are **archived exploratory work**. See repo `ARCHIVE.md`.
+
+Do not:
+
+- Add modules with `./Scripts/create-module.sh` for “product” work
+- Rebuild DesignSystem / FileKit / ComponentKit here as live libraries
+- Treat package verification (`./Scripts/verify.sh`) as the default gate for skill work
+
+Do:
+
+- Create shared modules **inside the consumer repo** when extraction is needed (`$swift-package-module-author`, `$reusable-code-extractor`)
+- Use this foundation repo as skills + MCP/commands reference
+
+## New project bootstrap
+
+When the user wants a new app:
+
+1. Confirm platforms, navigation shape, and design-system constraints.
+2. Invoke `$codex-bootstrap` against the **consumer** path.
+3. Chain sibling skills as needed (tabs, design system, components, reviews).
+4. Verify with XcodeBuildMCP in that consumer project.
+
+Details: [Bootstrap](/skills/bootstrap).
+
+## Skill maintenance (this repo only)
+
+When the user is editing foundation skills themselves:
+
+1. Use `$codex-skill-maintainer`.
+2. Follow `Documentation/SkillAuthoringGuide.md`.
+3. Update `manifest.json` and `.agents/skills/README.md` when adding skills.
+4. Run `./Scripts/verify-skills.sh` and, if installer behavior changes, `./Scripts/test-install-skills.sh`.

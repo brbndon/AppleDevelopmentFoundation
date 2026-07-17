@@ -1,0 +1,80 @@
+---
+title: Quickstart
+description: Install foundation skills, point an agent at this repo, and complete a first verified session.
+sidebar:
+  order: 1
+---
+
+# Quickstart
+
+Get from a clone of this repository to a working agent session in a few minutes.
+
+## Prerequisites
+
+| Tool | Why |
+| --- | --- |
+| Xcode (recent stable) | Build/test iOS and macOS targets |
+| Node.js 22.12+ | Optional: this Blume docs site only |
+| Codex, Cursor, Claude Code, or similar | Host that can load skills and MCP servers |
+| [XcodeBuildMCP](https://xcodebuildmcp.com) | Preferred build/test/simulator MCP |
+
+See [Tools](/tools) for the full tool stack.
+
+## 1. Install skills
+
+From the repository root:
+
+```bash
+./Scripts/install-skills.sh
+./Scripts/verify-skills.sh
+```
+
+- `install-skills.sh` symlinks skills into the user scope (for example `~/.codex/skills`) when the host supports that layout.
+- `verify-skills.sh` checks the manifest and skill contracts.
+- Preview without writing: `./Scripts/install-skills.sh --dry-run`.
+
+:::note
+Agents can also load skills **from this repository path** without a global install if the host supports local skill discovery. Point the session at `/path/to/AppleDevelopmentFoundation/.agents/skills`.
+:::
+
+## 2. Configure XcodeBuildMCP
+
+Add XcodeBuildMCP to the agent host’s MCP server list. Enable workflows beyond the default simulator tools when you need device, macOS, debugging, or UI automation — see the [XcodeBuildMCP config docs](https://xcodebuildmcp.com/docs/configuration).
+
+Full session conventions: [XcodeBuildMCP](/tools/xcodebuildmcp) and repo root `MCP.md`.
+
+## 3. Open a session with the right prompt
+
+Paste something like:
+
+> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills`. Start with `$apple-development-foundation` for routing, or `$codex-bootstrap` when scaffolding a new iOS/macOS SwiftUI app in the **consumer** workspace. Prefer XcodeBuildMCP for build, test, and simulator work.
+
+More prompts: [Copy-paste prompts](/reference/prompts).
+
+## 4. First task checklist
+
+1. Confirm the **active workspace** is the consumer app/package (not this foundation repo unless the user asked for skill maintenance).
+2. Invoke `$apple-development-foundation` for a skill shortlist, or name the skill directly (`$codex-bootstrap`, `$swiftui-component-author`, …).
+3. Call `session_show_defaults` before the first build/run/test.
+4. Implement only what the task needs; apply review skills before shipping shared UI or sensitive code.
+5. Verify with XcodeBuildMCP (and Maestro when UI regression matters).
+
+## 5. Preview these docs locally
+
+```bash
+npm install
+npm run dev
+```
+
+Build and link-check:
+
+```bash
+npm run build
+npm run validate
+```
+
+## Next
+
+- [Session workflow](/workflow)
+- [Skill routing](/workflow/skill-routing)
+- [Bootstrap a new app](/skills/bootstrap)

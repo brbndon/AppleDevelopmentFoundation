@@ -1,0 +1,28 @@
+---
+title: Verification matrix
+description: What to run after skill work, consumer app work, or archived package changes.
+---
+
+# Verification matrix
+
+| Situation | What to run |
+| --- | --- |
+| Skill `SKILL.md` or `manifest.json` change | `./Scripts/verify-skills.sh` |
+| Installer behavior change | `./Scripts/verify-skills.sh` + `./Scripts/test-install-skills.sh` |
+| Consumer app feature / bugfix | XcodeBuildMCP build + tests; `$swift-testing-verification` |
+| Shared SwiftUI components | `$apple-accessibility-review` (+ design/component skills as needed) |
+| Async / actors | `$swift-concurrency-review` |
+| Files, logging, permissions, imports | `$apple-security-privacy-review` |
+| Critical UI flows | `$maestro-apple-app-testing` + XcodeBuildMCP |
+| New app bootstrap complete | Bootstrap checklist + MCP build/test (+ optional screenshot) |
+| Docs site (`docs/`, Blume config) | `npm run build` and `npm run validate` |
+| Archived package (`Sources/`, etc.) | **Only if user asked:** `./Scripts/verify.sh` — see `ARCHIVE.md` |
+
+## Reporting standard
+
+Always report:
+
+1. Active project / workspace / scheme
+2. Simulator or device
+3. What commands or MCP tools ran
+4. Pass/fail and the next actionable step on failure

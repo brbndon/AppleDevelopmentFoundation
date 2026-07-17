@@ -1,0 +1,50 @@
+---
+title: Bootstrap
+description: Scaffold a new iOS or macOS SwiftUI app in the consumer workspace with codex-bootstrap.
+---
+
+# Bootstrap
+
+Invoke **`$codex-bootstrap`** when starting a new iOS/macOS SwiftUI project or major feature set in the **consumer** workspace.
+
+## When not to use
+
+- One-off screens or copy tweaks → `$swiftui-component-author` (or smaller skills)
+- Editing this repo’s archived `Sources/` → only if the user explicitly asks
+- Planning-only requests → `$apple-platform-planner` without writing files
+
+## Skill chain (in order; skip what does not apply)
+
+1. `$apple-platform-planner` — broad multi-feature or multi-platform scope
+2. `$swiftui-tab-navigation` — multiple persistent peer destinations
+3. `$apple-design-system` — tokens, appearance, contrast, motion
+4. `$swiftui-component-author` — reusable components on that system
+5. `$ios-macos-platform-adaptation` — when platforms diverge
+6. `$swift-concurrency-review` — after async/actor code exists
+7. `$apple-security-privacy-review` — files, logging, permissions, imports
+8. `$apple-accessibility-review` — shared UI components
+9. `$swift-testing-verification` — before calling bootstrap complete
+
+Extraction of proven app code → `$reusable-code-extractor` into the **consumer’s** shared module, not into this foundation repo.
+
+## Skeleton expectations
+
+- SwiftUI `@main` entry with a single root shell
+- Native primary navigation only when the user listed multiple peer destinations
+- Platform-appropriate layout (Xcode project or SPM + app target)
+- Stub feature areas — no invented business domain unless the user supplied it
+- Design system lives in the **consumer** repo if needed
+
+## Verification (XcodeBuildMCP)
+
+1. `session_show_defaults`
+2. `discover_projs` only if defaults are wrong/missing
+3. Build on simulator (iOS) or native macOS target; prefer build-and-run for launch
+4. Run tests if present
+5. Optional screenshot or view hierarchy
+
+Full checklist in the skill: `.agents/skills/codex-bootstrap/references/bootstrap-checklist.md`.
+
+## Copy-paste prompt
+
+> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. If the app has multiple peer destinations, use `$swiftui-tab-navigation`. Use the consumer’s design system or create a minimal neutral one. Verify with XcodeBuildMCP. Do not modify AppleDevelopmentFoundation’s archived package.

@@ -1,0 +1,46 @@
+---
+title: Scripts
+description: Install, verify, and test foundation skills from Scripts/.
+---
+
+# Scripts
+
+Run from the repository root.
+
+## Skill scripts (live product)
+
+```bash
+./Scripts/install-skills.sh      # symlink skills to user scope
+./Scripts/verify-skills.sh       # validate manifest and skill contracts
+./Scripts/test-install-skills.sh # test installer behavior
+./Scripts/install-skills.sh --dry-run
+./Scripts/install-skills.sh --uninstall   # safe: only matching installer symlinks
+```
+
+### When to run which
+
+| Change | Command |
+| --- | --- |
+| Skill content or `manifest.json` | `./Scripts/verify-skills.sh` |
+| Installer behavior | also `./Scripts/test-install-skills.sh` |
+| Local agent wants skills in user scope | `./Scripts/install-skills.sh` |
+
+## Docs site (this Blume project)
+
+```bash
+npm install
+npm run dev        # blume dev
+npm run build      # blume build
+npm run validate   # blume validate
+npm run doctor     # blume doctor
+```
+
+## Archived package scripts (explicit request only)
+
+Do **not** use these for ordinary skill work:
+
+- `./Scripts/verify.sh` — package verification
+- `./Scripts/create-module.sh` — package modules
+- `./Scripts/build.sh`, `./Scripts/test.sh` — archived package tooling
+
+See `ARCHIVE.md`.

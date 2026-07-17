@@ -2,6 +2,8 @@
 
 This repository is a **skills and MCP/commands reference** for Apple development (iOS 17+, macOS 14+). Its product is reusable Codex skills under `.agents/skills/` plus command references in `MCP.md`. The Swift package under `Sources/` is archived exploratory code — do not expand it unless explicitly asked.
 
+Agent-facing playbook (install, routing, MCP, verification): Blume site under `docs/` (`npm run dev`). Keep always-on rules here; put longer onboarding in `docs/`.
+
 ## Primary work
 
 - Maintain, install, and verify skills: `./Scripts/install-skills.sh`, `./Scripts/verify-skills.sh`, `./Scripts/test-install-skills.sh`

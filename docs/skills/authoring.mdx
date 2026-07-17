@@ -1,0 +1,53 @@
+---
+title: Authoring skills
+description: Maintain Codex skills in this repository with codex-skill-maintainer and verification scripts.
+---
+
+# Authoring skills
+
+Use **`$codex-skill-maintainer`** when creating, reviewing, splitting, updating, or validating skills under `.agents/skills/`.
+
+## Authoring rules (summary)
+
+Full guide: `Documentation/SkillAuthoringGuide.md`.
+
+- One skill = one repeatable responsibility
+- Frontmatter: precise `name` and `description` (triggers **and** exclusions)
+- Keep operational instructions short; put durable references in `references/`
+- No business models, branding, secrets, user-specific paths, or hidden network behavior
+- Skills target the **consumer** workspace unless the skill is explicitly repository-scoped (`codex-skill-maintainer`)
+
+## Checklist when adding a skill
+
+1. Scaffold under `.agents/skills/<name>/SKILL.md` (template: `Templates/NewSkill/SKILL.md.template`)
+2. Add to `manifest.json`
+3. Update `.agents/skills/README.md` use / do-not-use table
+4. If the master router should know about it, update `apple-development-foundation/master-skill.json`
+5. Run:
+
+```bash
+./Scripts/verify-skills.sh
+./Scripts/test-install-skills.sh
+./Scripts/install-skills.sh --dry-run
+```
+
+6. Optionally refresh this Blume inventory page so agents do not read stale tables
+
+## Editing this Blume docs site
+
+Blume renders frontmatter `title` as the page `<h1>`. You may keep a matching leading `# Title` in the MDX body for readable source and agent-facing `.md` / `llms.txt` mirrors.
+
+Body `#` headings are **not** rendered in HTML — `components.ts` maps `h1` to `docs-components/SkipBodyH1.astro` so authors are not forced to delete them. Prefer `##` / `###` for in-page sections.
+
+## AGENTS.md vs skills vs docs
+
+| Artifact | Role |
+| --- | --- |
+| `AGENTS.md` | Always-on rules for this repository |
+| Skill `SKILL.md` | Conditional, repeatable workflows |
+| `docs/` (this site) | Agent playbook and onboarding |
+| `Documentation/*` | Mostly archived human architecture notes; skill guides remain useful |
+
+## Installer safety
+
+`install-skills.sh` never overwrites conflicting names or identical external links. `--uninstall` only removes a symlink whose destination still matches installer state (including a broken symlink left by a moved repository).
