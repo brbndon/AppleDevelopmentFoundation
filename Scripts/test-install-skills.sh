@@ -16,6 +16,7 @@ skills="$home/skills"
 
 CODEX_HOME="$home" "$installer" >/dev/null
 assert_link "$skills/apple-platform-planner"
+assert_link "$skills/swiftui-tab-navigation"
 assert_exists "$skills/.apple-development-foundation-links"
 
 repeat_output="$(CODEX_HOME="$home" "$installer")"
@@ -48,6 +49,7 @@ unrelated="$skills/unrelated-file"
 touch "$unrelated"
 CODEX_HOME="$home" "$installer" --uninstall >/dev/null
 assert_missing "$skills/apple-platform-planner"
+assert_missing "$skills/swiftui-tab-navigation"
 assert_exists "$unrelated"
 assert_missing "$skills/.apple-development-foundation-links"
 

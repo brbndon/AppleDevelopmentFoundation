@@ -13,6 +13,10 @@ for item in manifest['skills']:
     text = path.read_text()
     if not re.match(r'^---\nname: ' + re.escape(name) + r'\ndescription: .+\n---\n', text, re.S): raise SystemExit(f'invalid frontmatter: {path}')
     if 'Inputs:' not in text or 'Output:' not in text: raise SystemExit(f'missing semantic contract: {path}')
+    if '[TODO' in text: raise SystemExit(f'unresolved TODO: {path}')
+    for link in re.findall(r'\[[^]]+\]\(([^)#]+)', text):
+        if '://' not in link and not (path.parent / link).is_file():
+            raise SystemExit(f'broken skill reference: {path}: {link}')
 skill_paths = {path.parent.name for path in root.glob('*/SKILL.md')}
 if skill_paths != {item['path'] for item in manifest['skills']}:
     raise SystemExit('manifest and skill directories differ')

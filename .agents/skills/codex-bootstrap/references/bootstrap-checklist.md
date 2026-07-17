@@ -6,18 +6,21 @@ Use during and after `$codex-bootstrap` in the **consumer workspace**.
 
 - [ ] Platforms and minimum OS versions confirmed
 - [ ] SwiftUI app vs package layout decided
+- [ ] Primary navigation convention and peer destinations decided
 - [ ] Design system reuse vs new minimal layer decided
 - [ ] Planning-only vs implementation confirmed
 
 ## Structure
 
 - [ ] `@main` app entry and root shell view exist
+- [ ] Native tabs are used only for persistent peer destinations; system tab chrome is not recreated manually
 - [ ] No code landed in AppleDevelopmentFoundation `Sources/`
 - [ ] Shared modules live in consumer repo only
 
 ## Skills applied (as needed)
 
 - [ ] `apple-platform-planner` — broad scope
+- [ ] `swiftui-tab-navigation` — native app-level tab shell when applicable
 - [ ] `apple-design-system` — tokens and defaults
 - [ ] `swiftui-component-author` — reusable components
 - [ ] `ios-macos-platform-adaptation` — platform split

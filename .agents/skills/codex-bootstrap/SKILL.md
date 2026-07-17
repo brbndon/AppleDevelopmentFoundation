@@ -13,6 +13,7 @@ Confirm before writing files:
 
 - Target platforms (iOS, macOS, or both) and minimum OS versions
 - SwiftUI app vs Swift Package vs mixed (app + local packages)
+- Primary peer destinations and whether the app needs tabs, a sidebar, or no persistent navigation yet
 - Existing design system to reuse, or need for a minimal neutral token/component layer
 - Auth, persistence, networking, or entitlements constraints (app-owned; not prescribed here)
 - Planning-only vs implementation request
@@ -24,6 +25,7 @@ Inputs: bootstrap request + any existing design system or app constraints. If pl
 Create minimal clean structure in the **consumer workspace**:
 
 - SwiftUI `@main` app entry with a single root view shell
+- Native primary navigation only when the user supplied multiple peer destinations; use `swiftui-tab-navigation` for a tab shell
 - Platform-appropriate project layout (Xcode project or SPM + app target)
 - Empty or stub feature areas — no business domain models unless the user supplied them
 - If a shared design-system module is needed, create it in the consumer repo (local SPM target or app group), not in AppleDevelopmentFoundation
@@ -35,13 +37,14 @@ Do not copy or rebuild modules from AppleDevelopmentFoundation `Sources/`. Do no
 Apply skills in this order; skip steps that do not apply:
 
 1. **`apple-platform-planner`** — scope the feature set and platform split when the request is broad
-2. **`apple-design-system`** — semantic tokens, neutral defaults, appearance/contrast/motion
-3. **`swiftui-component-author`** — reusable components built on the design system
-4. **`ios-macos-platform-adaptation`** — when iOS and macOS behavior diverges
-5. **`swift-concurrency-review`** — after async/actor code exists
-6. **`apple-security-privacy-review`** — after file access, logging, imports, or permissions
-7. **`apple-accessibility-review`** — after shared UI components exist
-8. **`swift-testing-verification`** — before calling bootstrap complete
+2. **`swiftui-tab-navigation`** — when the app has multiple persistent peer destinations
+3. **`apple-design-system`** — semantic tokens, neutral defaults, appearance/contrast/motion
+4. **`swiftui-component-author`** — reusable components built on the design system
+5. **`ios-macos-platform-adaptation`** — when iOS and macOS behavior diverges
+6. **`swift-concurrency-review`** — after async/actor code exists
+7. **`apple-security-privacy-review`** — after file access, logging, imports, or permissions
+8. **`apple-accessibility-review`** — after shared UI components exist
+9. **`swift-testing-verification`** — before calling bootstrap complete
 
 For extraction from an existing app, use **`reusable-code-extractor`** into the consumer's shared module — not into this reference repo.
 

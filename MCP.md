@@ -47,11 +47,11 @@ See the `xcodebuildmcp` skill in your user skills for full capability notes.
 
 **Reference these skills in any Codex session:**
 
-> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `codex-bootstrap`, then apply `apple-design-system`, `swiftui-component-author`, and review skills as needed.
+> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `codex-bootstrap`, then apply `swiftui-tab-navigation`, `apple-design-system`, `swiftui-component-author`, and review skills as needed.
 
 **Bootstrap a new SwiftUI app:**
 
-> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. Use the consumer's design system or create a minimal neutral one. Verify with XcodeBuildMCP.
+> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. If the app has multiple peer destinations, use `$swiftui-tab-navigation` for native primary navigation. Use the consumer's design system or create a minimal neutral one. Verify with XcodeBuildMCP.
 
 **Verify after bootstrap or feature work:**
 

@@ -25,6 +25,7 @@ Point Codex at this repo when bootstrapping apps:
 | --- | --- |
 | `codex-bootstrap` | Bootstrap a new iOS/macOS SwiftUI project using these skills |
 | `apple-platform-planner` | Plan a platform feature before implementation |
+| `swiftui-tab-navigation` | Build native app-level tabs with system Liquid Glass behavior |
 | `swiftui-component-author` | Author reusable SwiftUI components |
 | `apple-design-system` | Add or change reusable design-system tokens and components |
 | `ios-macos-platform-adaptation` | Adapt behavior between iOS and macOS |

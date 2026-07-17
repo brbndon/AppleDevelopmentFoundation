@@ -3,6 +3,7 @@
   "skills": [
     {"name":"apple-development-foundation","path":"apple-development-foundation","scope":"repository-or-user","purpose":"Reference-first skill router with optional foundation audits","installable":true,"scripts":false,"modules":[]},
     {"name":"apple-platform-planner","path":"apple-platform-planner","scope":"repository-or-user","purpose":"Plan Apple features","installable":true,"scripts":false,"modules":[]},
+    {"name":"swiftui-tab-navigation","path":"swiftui-tab-navigation","scope":"repository-or-user","purpose":"Build native SwiftUI app-level tab navigation","installable":true,"scripts":false,"modules":[]},
     {"name":"swiftui-component-author","path":"swiftui-component-author","scope":"repository-or-user","purpose":"Author reusable SwiftUI","installable":true,"scripts":false,"modules":[]},
     {"name":"apple-design-system","path":"apple-design-system","scope":"repository-or-user","purpose":"Design-system changes","installable":true,"scripts":false,"modules":[]},
     {"name":"ios-macos-platform-adaptation","path":"ios-macos-platform-adaptation","scope":"repository-or-user","purpose":"Platform adaptation","installable":true,"scripts":false,"modules":[]},

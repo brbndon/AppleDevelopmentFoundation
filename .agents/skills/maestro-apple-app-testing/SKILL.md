@@ -34,8 +34,10 @@ remaining manual checks. Never claim a test passed without running it.
    debugging; use `maestro test` for repeatable YAML execution and CI-like coverage.
 5. Author flows with stable `testID`/accessibility selectors, explicit assertions,
    automatic waiting, conditional handling for permissions/onboarding, and reusable
-   subflows. Do not use arbitrary sleeps when a state assertion or wait can express
-   the condition.
+   subflows. Inspect system-generated controls such as SwiftUI tab buttons before
+   selecting them: an identifier inside `.tabItem` may not propagate to the generated
+   button, so use its confirmed accessibility label when no identifier is exposed.
+   Do not use arbitrary sleeps when a state assertion or wait can express the condition.
 6. Test the happy path, validation and error states, loading/empty states, relaunch
    and persistence behavior, navigation/back behavior, permissions, keyboard/input,
    and accessibility-visible labels. Cover the highest-risk flows first, then run the

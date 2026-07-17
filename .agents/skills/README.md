@@ -6,6 +6,7 @@ These source-controlled skills are intentionally general Apple-development workf
 | --- | --- | --- |
 | apple-development-foundation | reference-first child-skill routing and explicitly requested foundation audits | replacing child instructions, implied audits/verification, or claiming automatic activation |
 | apple-platform-planner | planning a platform feature | implementation-only requests |
+| swiftui-tab-navigation | native app-level SwiftUI tabs and system Liquid Glass tab chrome | page-style tabs, segmented controls, or business-specific screens |
 | swiftui-component-author | reusable SwiftUI components | app-specific screen copy |
 | apple-design-system | design-system changes | application branding |
 | ios-macos-platform-adaptation | divergent platform behavior | shared identical behavior |

@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 const installCopy = `./Scripts/install-skills.sh
 ./Scripts/verify-skills.sh`;
 
-const bootstrapPromptCopy = `Use the skills from /path/to/AppleDevelopmentFoundation/.agents/skills — start with codex-bootstrap, then apply apple-design-system, swiftui-component-author, and review skills as needed.
+const bootstrapPromptCopy = `Use the skills from /path/to/AppleDevelopmentFoundation/.agents/skills — start with codex-bootstrap, then apply swiftui-tab-navigation, apple-design-system, swiftui-component-author, and review skills as needed.
 
-Bootstrap a new iOS (or macOS) SwiftUI app using $codex-bootstrap. Use the consumer's design system or create a minimal neutral one. Verify with XcodeBuildMCP.`;
+Bootstrap a new iOS (or macOS) SwiftUI app using $codex-bootstrap. Use $swiftui-tab-navigation when the app has persistent peer destinations. Use the consumer's design system or create a minimal neutral one. Verify with XcodeBuildMCP.`;
 
 const skills = [
   {
@@ -25,69 +25,76 @@ const skills = [
   },
   {
     number: "03",
+    tag: "navigation",
+    name: "swiftui-tab-navigation",
+    description: "Build native app-level SwiftUI tabs that adopt system Liquid Glass behavior.",
+    code: "TabView · peer destinations"
+  },
+  {
+    number: "04",
     tag: "ui",
     name: "swiftui-component-author",
     description: "Author reusable SwiftUI components with accessibility and platform support.",
     code: "components · previews"
   },
   {
-    number: "04",
+    number: "05",
     tag: "design",
     name: "apple-design-system",
     description: "Add or change reusable design-system tokens and neutral components.",
     code: "tokens · semantic roles"
   },
   {
-    number: "05",
+    number: "06",
     tag: "platform",
     name: "ios-macos-platform-adaptation",
     description: "Adapt behavior between iOS and macOS when shared code diverges.",
     code: "split views · commands"
   },
   {
-    number: "06",
+    number: "07",
     tag: "packages",
     name: "swift-package-module-author",
     description: "Add an independently importable Swift Package module in the active workspace.",
     code: "SPM target · public API"
   },
   {
-    number: "07",
+    number: "08",
     tag: "extraction",
     name: "reusable-code-extractor",
     description: "Extract proven app code into a shared module in the consumer workspace.",
     code: "generalize · migrate"
   },
   {
-    number: "08",
+    number: "09",
     tag: "concurrency",
     name: "swift-concurrency-review",
     description: "Review async/await, actors, and structured concurrency.",
     code: "Sendable · cancellation"
   },
   {
-    number: "09",
+    number: "10",
     tag: "a11y",
     name: "apple-accessibility-review",
     description: "Review reusable UI accessibility across Dynamic Type, VoiceOver, and keyboard.",
     code: "labels · contrast"
   },
   {
-    number: "10",
+    number: "11",
     tag: "security",
     name: "apple-security-privacy-review",
     description: "Review files, logging, permissions, and sensitive data handling.",
     code: "imports · scoped access"
   },
   {
-    number: "11",
+    number: "12",
     tag: "testing",
     name: "swift-testing-verification",
     description: "Verify meaningful changes with focused tests and XcodeBuildMCP.",
     code: "build · test · report"
   },
   {
-    number: "12",
+    number: "13",
     tag: "maintenance",
     name: "codex-skill-maintainer",
     description: "Maintain and update skills in this repository.",
@@ -193,7 +200,7 @@ const workflowScenarios = [
     outcome: "SwiftUI app, one resolved simulator, and optional Maestro coverage for high-risk UI flows.",
     stages: {
       route: ["codex-bootstrap", "apple-platform-planner when the scope is broad"],
-      guidance: ["apple-design-system", "swiftui-component-author", "apple-accessibility-review"],
+      guidance: ["swiftui-tab-navigation when the app has peer destinations", "apple-design-system", "swiftui-component-author", "apple-accessibility-review"],
       inspect: ["Consumer app structure", "Existing design system or neutral token layer"],
       build: ["SwiftUI app shell", "Platform-native controls and accessibility"],
       verify: ["XcodeBuildMCP simulator build and tests", "Maestro flows when end-to-end UI coverage applies"]
@@ -223,7 +230,7 @@ const workflowScenarios = [
     outcome: "A scoped change that follows the app’s architecture, APIs, tests, and platform conventions.",
     stages: {
       route: ["apple-platform-planner when planning is requested", "Only the skills triggered by the affected work"],
-      guidance: ["swiftui-component-author for reusable UI", "security, accessibility, concurrency, or adaptation review when applicable"],
+      guidance: ["swiftui-tab-navigation for app-level peer destinations", "swiftui-component-author for reusable UI", "security, accessibility, concurrency, or adaptation review when applicable"],
       inspect: ["AGENTS.md, affected feature, tests, and dependencies", "Existing platform and framework conventions"],
       build: ["Smallest compatible feature change", "Established consumer APIs and ownership boundaries"],
       verify: ["Focused tests and affected-target build", "Simulator or macOS checks; Maestro when UI regression coverage applies"]
@@ -316,7 +323,7 @@ function Hero() {
           <a className="button button-secondary" href="#guide">Agent guide <span aria-hidden="true">→</span></a>
         </div>
         <dl className="hero-facts" aria-label="Repository facts">
-          <div><dt>12</dt><dd>reusable skills</dd></div>
+          <div><dt>13</dt><dd>reusable skills</dd></div>
           <div><dt>2</dt><dd>Apple platforms</dd></div>
           <div><dt>1</dt><dd>primary MCP</dd></div>
         </dl>
@@ -436,7 +443,7 @@ function ModulesSection() {
       <div className="section-intro split-intro">
         <div>
           <p className="eyebrow">02 / skill inventory</p>
-          <h2>Twelve focused skills. One consumer workspace.</h2>
+          <h2>Thirteen focused skills. One consumer workspace.</h2>
         </div>
         <p>Each skill has a narrow job, explicit triggers, and documented exclusions. Invoke with <code>$skill-name</code> or name the skill in your request. Full inventory: <code>.agents/skills/README.md</code>.</p>
       </div>

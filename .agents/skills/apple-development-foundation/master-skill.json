@@ -38,6 +38,12 @@
       "purpose": "Plan a new iOS, macOS, or shared Apple-platform feature."
     },
     {
+      "id": "swiftui-tab-navigation",
+      "path": ".agents/skills/swiftui-tab-navigation/SKILL.md",
+      "role": "navigation",
+      "purpose": "Add or refactor native app-level SwiftUI tab navigation, including system Liquid Glass behavior."
+    },
+    {
       "id": "swift-package-module-author",
       "path": ".agents/skills/swift-package-module-author/SKILL.md",
       "role": "architecture",

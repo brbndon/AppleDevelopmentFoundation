@@ -1,0 +1,4 @@
+interface:
+  display_name: "SwiftUI Tab Navigation"
+  short_description: "Build native SwiftUI tab shells that adopt system Liquid Glass."
+  default_prompt: "Use $swiftui-tab-navigation to implement or refactor this app primary tab navigation with native SwiftUI containers and verify its platform behavior."
