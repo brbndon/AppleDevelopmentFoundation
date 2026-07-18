@@ -17,6 +17,8 @@ swift test
 python3 - <<'PY'
 import pathlib, re, sys
 for path in pathlib.Path('.').glob('**/*.md'):
+    if any(part in path.parts for part in ['node_modules', '.build', '.git']):
+        continue
     text = path.read_text()
     for link in re.findall(r'\[[^]]+\]\(([^)#]+)', text):
         if '://' not in link and not (path.parent / link).exists():

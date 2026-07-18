@@ -16,6 +16,9 @@ let package = Package(
         .library(name: "FeedbackKit", targets: ["FeedbackKit"]),
         .library(name: "LoggingKit", targets: ["LoggingKit"]),
         .library(name: "AppShellKit", targets: ["AppShellKit"]),
+        .library(name: "ShapeKit", targets: ["ShapeKit"]),
+        .library(name: "ShaderKit", targets: ["ShaderKit"]),
+        .library(name: "ComponentKit", targets: ["ComponentKit"]),
     ],
     targets: [
         .target(name: "AppFoundation"),
@@ -29,6 +32,21 @@ let package = Package(
         .target(name: "FeedbackKit", dependencies: ["DesignSystem"]),
         .target(name: "LoggingKit"),
         .target(name: "AppShellKit"),
+        .target(name: "ShapeKit", dependencies: ["DesignSystem"]),
+        .target(name: "ComponentKit", dependencies: ["DesignSystem", "FeedbackKit", "ShapeKit"]),
+        .target(
+            name: "ShaderKit",
+            dependencies: ["DesignSystem"],
+            resources: [
+                .process("BurnEffect.metal"),
+                .process("EmberReveal.metal"),
+                .process("PixelSnap.metal"),
+                .process("RippleEffect.metal"),
+                .process("GlitchEffect.metal"),
+                .process("ChromaticAberration.metal"),
+                .process("Halftone.metal"),
+            ]
+        ),
         .executableTarget(name: "FoundationGallery", dependencies: ["DesignSystem", "FormKit", "FeedbackKit", "OnboardingKit"], path: "Examples/FoundationGallery"),
         .executableTarget(name: "iOSExample", dependencies: ["DesignSystem", "FormKit"], path: "Examples/iOSExample"),
         .executableTarget(name: "macOSExample", dependencies: ["DesignSystem", "AppShellKit"], path: "Examples/macOSExample"),
@@ -44,5 +62,8 @@ let package = Package(
         .testTarget(name: "MediaKitTests", dependencies: ["MediaKit", "TestingSupport"]),
         .testTarget(name: "LoggingKitTests", dependencies: ["LoggingKit"]),
         .testTarget(name: "AppShellKitTests", dependencies: ["AppShellKit"]),
+        .testTarget(name: "ShapeKitTests", dependencies: ["ShapeKit"]),
+        .testTarget(name: "ShaderKitTests", dependencies: ["ShaderKit"]),
+        .testTarget(name: "ComponentKitTests", dependencies: ["ComponentKit"]),
     ]
 )
