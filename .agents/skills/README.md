@@ -1,24 +1,27 @@
 # Local skills
 
-These source-controlled skills are intentionally general Apple-development workflows. They are discoverable from this repository according to the installed Codex local-skill conventions; optionally symlink them to the user scope with `./Scripts/install-skills.sh`.
+These source-controlled skills are intentionally general Apple-development workflows. They are discoverable from this repository according to the installed Codex local-skill conventions; optionally symlink them to the user scope with `./Scripts/install-skills.sh`. Catalog metadata is generated from [`manifest.json`](manifest.json); update the manifest and run `./Scripts/generate-skill-catalog.py` rather than editing the table directly.
 
+<!-- BEGIN GENERATED SKILL CATALOG -->
+<!-- Generated from .agents/skills/manifest.json. Do not edit this section directly. -->
 | Skill | Use for | Do not use for |
 | --- | --- | --- |
-| apple-development-foundation | reference-first child-skill routing and explicitly requested foundation audits | replacing child instructions, implied audits/verification, or claiming automatic activation |
-| apple-platform-planner | planning a platform feature | implementation-only requests |
+| apple-development-foundation | reference-first child-skill routing and explicitly requested foundation audits | replacing child instructions, implied audits or verification, or claiming automatic activation |
+| codex-bootstrap | bootstrapping new iOS or macOS projects in the consumer workspace using these skills | one-off screens or editing archived package code in this repository |
+| apple-platform-planner | planning an Apple-platform feature | implementation-only requests |
 | swiftui-tab-navigation | native app-level SwiftUI tabs and system Liquid Glass tab chrome | page-style tabs, segmented controls, or business-specific screens |
 | swiftui-component-author | reusable SwiftUI components | app-specific screen copy |
 | apple-design-system | design-system changes | application branding |
 | ios-macos-platform-adaptation | divergent platform behavior | shared identical behavior |
-| swift-package-module-author | a reusable package target in the active workspace | an app-local feature or archived package work here |
-| reusable-code-extractor | generalizing proven app code into consumer shared modules | speculative extraction or landing code in this repo's archived package |
+| swift-package-module-author | a reusable package target in the active workspace | an app-local feature or archived package work in this repository |
+| reusable-code-extractor | generalizing proven app code into consumer shared modules | speculative extraction or landing code in this repository's archived package |
 | swift-concurrency-review | async/await and actor review | unrelated styling |
 | apple-accessibility-review | reusable UI accessibility | a non-UI service |
-| apple-security-privacy-review | files, logging, permissions, sensitive data | visual-only polish |
+| apple-security-privacy-review | files, logging, permissions, and sensitive data | visual-only polish |
 | swift-testing-verification | meaningful change verification | planning-only requests |
 | maestro-apple-app-testing | thorough Maestro testing for Apple apps | non-testing product implementation |
 | codex-skill-maintainer | skill changes | product code changes |
-| codex-bootstrap | bootstrapping new iOS/macOS projects in the consumer workspace using these skills | one-off screens, editing archived package code in this repo |
+<!-- END GENERATED SKILL CATALOG -->
 
 The master catalog and resolvable parent-skill paths are defined in [`apple-development-foundation/master-skill.json`](apple-development-foundation/master-skill.json). It first shortlists skills from the catalog, then reads only selected child instructions; invoke it explicitly as `$apple-development-foundation`.
 

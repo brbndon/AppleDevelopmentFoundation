@@ -40,16 +40,16 @@ $maestro-apple-app-testing
 
 Full table: [Skills inventory](/skills).
 
-## Catalog sources of truth
+## Catalog ownership
 
 | Artifact | Role |
 | --- | --- |
-| `.agents/skills/apple-development-foundation/master-skill.json` | Router catalog + audit definitions |
-| `.agents/skills/manifest.json` | Install/verify inventory |
-| `.agents/skills/README.md` | Human-readable use / do-not-use table |
+| `.agents/skills/manifest.json` | Canonical inventory, router metadata, and audit definitions |
+| `.agents/skills/apple-development-foundation/master-skill.json` | Generated router projection |
+| `.agents/skills/README.md` | Generated human-readable use / do-not-use table |
 | Each skill’s `SKILL.md` | Executable instructions |
 
-When skill names or purposes change, update those files first; keep this docs site in sync.
+When catalog metadata changes, update the manifest and run `./Scripts/generate-skill-catalog.py`. Keep executable instructions hand-written in each `SKILL.md`.
 
 ## External skills
 

@@ -72,13 +72,14 @@ import sys
 
 for skill in json.load(open(sys.argv[1], encoding="utf-8"))["skills"]:
     if skill.get("installable"):
-        print(skill["name"])
+        print(f'{skill["name"]}\t{skill["path"]}')
 PY
 
-while IFS= read -r name; do
+while IFS=$'\t' read -r name skill_path; do
   [[ "$name" =~ ^[a-z0-9-]+$ ]] || { echo "Invalid skill name in manifest: $name" >&2; exit 1; }
+  [[ "$skill_path" =~ ^[a-z0-9-]+$ ]] || { echo "Invalid skill path in manifest: $skill_path" >&2; exit 1; }
   link="$target/$name"
-  expected="$source/$name"
+  expected="$source/$skill_path"
   if [[ -e "$link" || -L "$link" ]]; then
     if state_contains "$name" "$(readlink "$link" 2>/dev/null || true)"; then
       echo "Already installed (installer-owned): $name"

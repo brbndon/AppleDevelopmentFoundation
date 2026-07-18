@@ -1,16 +1,17 @@
 ---
 name: codex-bootstrap
-description: Use when bootstrapping a new iOS or macOS SwiftUI project or major feature set in the consumer workspace. Chain skills from this repo (design system, components, reviews). Do not use for one-off screens, editing this repo's archived package, or rebuilding AppleDevelopmentFoundation Sources unless explicitly asked.
+description: Use when bootstrapping a new iOS or macOS SwiftUI project or major feature set in the consumer workspace. Chain skills from this repo (design system, components, reviews). Do not use for one-off screens, editing this repo's archived package, or rebuilding AppleDevelopmentFoundation archive/Sources unless explicitly asked.
 ---
 
 # Codex bootstrap
 
-Bootstrap a **consumer app or package** in the active workspace using sibling skills from this repo. Do not add code to AppleDevelopmentFoundation's archived `Sources/` unless the user explicitly requests package work.
+Bootstrap a **consumer app or package** in the active workspace using sibling skills from this repo. Do not add code to AppleDevelopmentFoundation's `archive/Sources/` unless the user explicitly requests package work.
 
 ## Step 1 — Intake
 
 Confirm before writing files:
 
+- Explicit consumer repository path and whether project-local operating guidance is authorized
 - Target platforms (iOS, macOS, or both) and minimum OS versions
 - SwiftUI app vs Swift Package vs mixed (app + local packages)
 - Primary peer destinations and whether the app needs tabs, a sidebar, or no persistent navigation yet
@@ -20,7 +21,32 @@ Confirm before writing files:
 
 Inputs: bootstrap request + any existing design system or app constraints. If planning-only, output the plan and skill selection without writing files.
 
-## Step 2 — Skeleton expectations
+## Step 2 — Project-local operating guidance
+
+Before creating project files:
+
+1. Inspect the consumer repository's root `AGENTS.md` and every applicable scoped
+   `AGENTS.md`. Summarize the instructions that already govern the bootstrap.
+2. Preserve existing instructions exactly. Never replace, append to, or merge an
+   existing `AGENTS.md` without the user's explicit authorization for that edit.
+3. If no consumer `AGENTS.md` exists, propose the neutral contract from
+   [assets/consumer-AGENTS.md.template](assets/consumer-AGENTS.md.template) and
+   create it only when project-local guidance is within the authorized bootstrap
+   scope. The foundation repository's
+   `Scripts/init-consumer-guidance.sh --target <consumer> --dry-run` can preview
+   the file; the non-dry-run form refuses conflicts by default.
+4. Customize project/workspace, scheme, configuration, platforms, deployment
+   versions, exact simulator or `.xcodebuildmcp/config.yaml`, and repository-native
+   formatter/linter/test commands from inspected consumer configuration. Leave an
+   explicit placeholder when a value cannot be established; do not invent it.
+5. If existing guidance lacks this engineering baseline, show the missing sections
+   and ask for authorization before merging them. A bootstrap can continue under
+   existing instructions when guidance changes are not authorized.
+
+Never modify global `~/.codex/AGENTS.md` or infer the foundation repository itself
+as the consumer target.
+
+## Step 3 — Skeleton expectations
 
 Create minimal clean structure in the **consumer workspace**:
 
@@ -30,9 +56,9 @@ Create minimal clean structure in the **consumer workspace**:
 - Empty or stub feature areas — no business domain models unless the user supplied them
 - If a shared design-system module is needed, create it in the consumer repo (local SPM target or app group), not in AppleDevelopmentFoundation
 
-Do not copy or rebuild modules from AppleDevelopmentFoundation `Sources/`. Do not run `./Scripts/create-module.sh` in the skills reference repo.
+Do not copy or rebuild modules from AppleDevelopmentFoundation `archive/Sources/`. Do not run `./archive/Scripts/create-module.sh` in the skills reference repo.
 
-## Step 3 — Skill chaining order
+## Step 4 — Skill chaining order
 
 Apply skills in this order; skip steps that do not apply:
 
@@ -48,25 +74,46 @@ Apply skills in this order; skip steps that do not apply:
 
 For extraction from an existing app, use **`reusable-code-extractor`** into the consumer's shared module — not into this reference repo.
 
-## Step 4 — XcodeBuildMCP verification
+## Step 5 — XcodeBuildMCP verification
 
 Use XcodeBuildMCP (see repo `MCP.md`) — not raw `xcodebuild`/`simctl`:
 
-1. `session_show_defaults` — establish or confirm project, scheme, simulator/device
+1. `session_show_defaults` — establish or confirm project/workspace, scheme,
+   configuration, and simulator/device; report all five before the first action
 2. `discover_projs` — only if defaults are missing or wrong
-3. Build on simulator (iOS) or native target (macOS); prefer combined build-and-run for simulator launch
-4. Run tests if the skeleton includes them
-5. Optional: screenshot or view hierarchy to confirm the shell launches
+3. Resolve and reuse one exact `simulatorId`; prefer combined build-and-run for a
+   simulator launch
+4. Before simulator testing, wait for other `xcodebuild`, `xctest`, or project
+   test-runner processes for the same project to finish
+5. Run `test_sim` without a redundant preceding build and default to
+   `extraArgs: ["-parallel-testing-enabled", "NO"]`
+6. Optional: screenshot or view hierarchy to confirm the shell launches
+
+If an MCP capability is unavailable, follow this ladder without skipping tiers:
+
+1. XcodeBuildMCP MCP tools.
+2. Matching XcodeBuildMCP CLI workflow only when active repository/user policy
+   explicitly permits CLI fallback.
+3. Repository-native raw Apple tooling only when active policy authorizes it;
+   obtain explicit approval when that policy requires it.
+4. Report blocked when no authorized path exists.
+
+Never infer fallback permission from shell access or an installed command. Preserve
+the same project/workspace, scheme, configuration, exact destination, serialized
+test scope, and reporting in any authorized fallback.
 
 Report scheme, simulator/device, and any failure with the next actionable tool call. Full checklist: [references/bootstrap-checklist.md](references/bootstrap-checklist.md).
 
-## Step 5 — Handoff
+## Step 6 — Handoff
 
 Output:
 
 - Initial project structure and key files created in the consumer workspace
+- Whether consumer `AGENTS.md` was created, preserved, or left as a proposed merge
 - Which skills were applied and which to invoke next
-- Verification results from XcodeBuildMCP
+- Verification results or blocker from the authorized capability ladder, including
+  project/workspace, scheme, configuration, exact simulator/device, tools/commands,
+  and residual risk
 - Explicit stop: do not expand AppleDevelopmentFoundation archived package unless asked
 
 ## Stop conditions
@@ -75,4 +122,5 @@ Stop and ask when:
 
 - User wants to rebuild or extend AppleDevelopmentFoundation's archived package
 - No clear consumer workspace (which repo/app to bootstrap)
+- Project-local guidance is requested but permission to create or merge it is unclear
 - Request is a single screen or copy change — use `swiftui-component-author` directly instead

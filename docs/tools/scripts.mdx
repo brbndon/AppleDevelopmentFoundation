@@ -10,23 +10,36 @@ Run from the **Apple Development Foundation** repository root. These scripts mai
 ## Skill scripts (live product)
 
 ```bash
+./Scripts/generate-skill-catalog.py # update checked-in catalog projections
+./Scripts/generate-skill-catalog.py --check
+./Scripts/validate-skill-evaluations.py # validate behavioral fixtures
 ./Scripts/install-skills.sh      # symlink skills to user scope
 ./Scripts/verify-skills.sh       # validate manifest and skill contracts
 ./Scripts/test-install-skills.sh # test installer behavior
 ./Scripts/install-skills.sh --dry-run
 ./Scripts/install-skills.sh --uninstall   # safe: only matching installer symlinks
+./Scripts/init-consumer-guidance.sh --target /path/to/consumer --dry-run
+./Scripts/test-consumer-guidance.sh
 ```
 
 ### When to run which
 
 | Change | Command |
 | --- | --- |
+| Catalog metadata | `./Scripts/generate-skill-catalog.py` then `--check` |
+| Behavioral routing fixtures | `./Scripts/validate-skill-evaluations.py` |
 | Skill content or `manifest.json` | `./Scripts/verify-skills.sh` |
 | Installer behavior | also `./Scripts/test-install-skills.sh` |
 | Local agent wants skills in user scope | `./Scripts/install-skills.sh` |
 | Preview install without writing | `./Scripts/install-skills.sh --dry-run` |
+| Preview/create a consumer operating contract | `./Scripts/init-consumer-guidance.sh --target <consumer> [--dry-run]` |
+| Consumer initializer behavior | `./Scripts/test-consumer-guidance.sh` |
 
 ### Installer behavior (evidence from the script)
+
+This is a **Codex installer**, not a universal agent-host installer. Do not change
+`CODEX_HOME` to an invented Cursor, Claude Code, or other third-party path. Manual
+compatibility requirements are documented under [Agent host support](/reference/host-support).
 
 | Item | Detail |
 | --- | --- |
@@ -44,6 +57,18 @@ Run from the **Apple Development Foundation** repository root. These scripts mai
 | `Skip … (not the recorded installer-owned link)` | During `--uninstall`, path was not safe to remove |
 
 Required tools: `awk`, `python3`, `readlink`. Missing `manifest.json` fails the install.
+
+## Consumer guidance initializer
+
+`init-consumer-guidance.sh` copies the neutral, self-contained
+`.agents/skills/codex-bootstrap/assets/consumer-AGENTS.md.template` contract into
+one explicitly selected consumer repository. The asset travels with the installed
+bootstrap skill. The initializer requires `--target`, supports `--dry-run`, refuses this foundation
+repository, and treats any existing `AGENTS.md` path as a conflict. It never reads
+or writes global `~/.codex/AGENTS.md`.
+
+The former `install-global-instructions.sh` entry point is a retired compatibility
+stub that exits with migration instructions and performs no writes.
 
 ## Docs site (this Blume project)
 
@@ -65,14 +90,15 @@ Do **not** use these for ordinary skill or consumer-app work:
 
 | Script | Role |
 | --- | --- |
-| `./Scripts/verify.sh` | Archived package verification |
-| `./Scripts/create-module.sh` | Package modules |
-| `./Scripts/build.sh`, `./Scripts/test.sh` | Archived package tooling |
+| `./archive/Scripts/verify.sh` | Archived package verification (run from `archive/`) |
+| `./archive/Scripts/create-module.sh` | Archived package modules |
+| `./archive/Scripts/build.sh`, `./archive/Scripts/test.sh` | Archived package tooling |
 
-See `ARCHIVE.md`.
+The archived environment bootstrap and old-site verifier live there as well. See `ARCHIVE.md` and `archive/README.md`.
 
 ## Related
 
 - [Troubleshooting](/reference/troubleshooting)
+- [Agent host support](/reference/host-support)
 - [Authoring skills](/skills/authoring)
 - [Verification matrix](/reference/verification-matrix)

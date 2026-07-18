@@ -15,7 +15,7 @@ Invoke **`$codex-bootstrap`** when starting a new iOS/macOS SwiftUI project or m
 ## When not to use
 
 - One-off screens or copy tweaks → `$swiftui-component-author` (or smaller skills)
-- Editing this repo’s archived `Sources/` → only if the user explicitly asks
+- Editing this repo’s `archive/Sources/` → only if the user explicitly asks
 - Planning-only requests → `$apple-platform-planner` without writing files
 - Unclear consumer path → stop and ask which app/repo to bootstrap
 
@@ -35,20 +35,44 @@ Extraction of proven app code → `$reusable-code-extractor` into the **consumer
 
 ## Skeleton expectations
 
+- Inspect root and scoped consumer `AGENTS.md` files before writing
+- Preserve existing instructions; propose a merge and wait for explicit authorization
+- If no file exists and creation is authorized, initialize from the portable
+  `assets/consumer-AGENTS.md.template` skill asset or preview with
+  `./Scripts/init-consumer-guidance.sh --target <consumer> --dry-run`
+- Never modify global `~/.codex/AGENTS.md`
 - SwiftUI `@main` entry with a single root shell
 - Native primary navigation only when the user listed multiple peer destinations
 - Platform-appropriate layout (Xcode project or SPM + app target)
 - Stub feature areas — no invented business domain unless the user supplied it
 - Design system lives in the **consumer** repo if needed
-- Do not copy or rebuild modules from this repo’s archived `Sources/`
+- Do not copy or rebuild modules from this repo’s `archive/Sources/`
 
 ## Verification (XcodeBuildMCP)
 
-1. `session_show_defaults` (then `session_set_defaults` if needed)
+1. `session_show_defaults`; report project/workspace, scheme, configuration, and
+   exact simulator/device (then `session_set_defaults` if needed)
 2. `discover_projs` only if defaults are still wrong/missing
-3. Simulator: prefer **`build_run_sim`** (CLI: `simulator build-and-run`). macOS: **`build_run_macos`**
-4. Tests if present: `test_sim` / `test_macos`
-5. Optional `screenshot` / `snapshot_ui`
+3. Simulator: prefer **`build_run_sim`**. macOS: **`build_run_macos`**
+4. Before simulator tests, wait for any same-project `xcodebuild`, `xctest`, or
+   project test runner; use `test_sim` without a redundant build and default to
+   `extraArgs: ["-parallel-testing-enabled", "NO"]`
+5. Tests on macOS if present: `test_macos`
+6. Optional `screenshot` / `snapshot_ui`
+
+If MCP is unavailable, use the XcodeBuildMCP CLI only when active policy explicitly
+permits it. Use repository-native raw Apple tooling only when active policy
+authorizes it and obtain approval when required. Otherwise report blocked. Preserve
+project/workspace, scheme, configuration, exact destination, serialized test scope,
+commands/tools, and residual risk through every authorized fallback.
+
+## Existing consumer instructions
+
+`$codex-bootstrap` treats consumer guidance as user-owned. It may inspect and
+summarize an existing `AGENTS.md`, but it does not replace, append, or merge it
+silently. If baseline sections are missing, the skill proposes the specific merge
+and waits for authorization. If guidance edits are declined, bootstrap continues
+under the existing contract when the rest of the requested work is still clear.
 
 ## Copy-paste prompt
 

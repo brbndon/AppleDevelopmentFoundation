@@ -1,0 +1,54 @@
+---
+title: Agent host support
+description: Verified host support, manual compatibility boundaries, and the evidence required before claiming another host works.
+---
+
+# Agent host support
+
+Apple Development Foundation is **Codex-first**. Host support is based on repository implementation and verification, not on whether a product appears capable of reading Markdown.
+
+## Support tiers
+
+| Tier | Hosts | What this repository provides |
+| --- | --- | --- |
+| **Supported and verified** | Codex | Skills under `.agents/skills/`; installer to `${CODEX_HOME:-$HOME/.codex}/skills`; `$skill-name` examples; installer and skill-contract verification scripts |
+| **Documented/manual compatibility** | Other hosts whose official documentation confirms compatible skill discovery and MCP support | Portable skill source and MCP guidance for manual integration. The operator must follow that host's authoritative documentation and verify discovery, invocation, MCP tools, and an end-to-end Apple check |
+| **Unverified** | Hosts without confirmed compatible skill discovery or MCP support | Documentation may still be read as a reference, but this repository does not claim the framework runs as an integrated agent workflow |
+
+Cursor, Claude Code, and similar products are **not claimed as equivalent supported hosts**. This repository currently contains no verified installer, configuration adapter, or host-specific test path for them. Do not point `install-skills.sh` at an invented third-party directory or translate `$skill-name` into unverified syntax.
+
+## Codex support contract
+
+The verified repository path is:
+
+1. Source-controlled skills live in `.agents/skills/<name>/SKILL.md`.
+2. `./Scripts/install-skills.sh` symlinks installable skills into `${CODEX_HOME:-$HOME/.codex}/skills` without overwriting conflicts.
+3. Skills are invoked as `$skill-name` or named explicitly in a request.
+4. `./Scripts/verify-skills.sh` validates skill contracts; `./Scripts/test-install-skills.sh` validates Codex installer behavior.
+5. XcodeBuildMCP is registered using the active Codex and XcodeBuildMCP documentation; this repository does not write host MCP configuration.
+
+The direct source path may also be supplied to a Codex session when local repository skill discovery is available. The global installer is optional.
+
+## Evidence required for another host
+
+Before upgrading a host from manual compatibility to supported, add all of the following:
+
+- authoritative host documentation for skill discovery, invocation, and MCP registration;
+- a real repository adapter or installer using only documented paths and syntax;
+- conflict-safe install/uninstall behavior with automated tests;
+- a verified invocation path for at least one foundation skill;
+- a verified XcodeBuildMCP session that reports project/workspace, scheme, configuration, exact simulator/device, tools used, and residual risk;
+- troubleshooting and maintenance ownership for the adapter.
+
+Until that path exists, describe the host as manual or unverified and make the operator validate it locally.
+
+## Tool availability is separate from host support
+
+A supported host can still lack a required MCP workflow, and a manually compatible host may expose some tools. In either case, follow the [XcodeBuildMCP capability ladder](/tools/xcodebuildmcp#capability-and-fallback-ladder). Missing tools never grant permission to bypass active repository or user policy.
+
+## Related
+
+- [Quickstart](/quickstart)
+- [Scripts](/tools/scripts)
+- [XcodeBuildMCP](/tools/xcodebuildmcp)
+- [Troubleshooting](/reference/troubleshooting)

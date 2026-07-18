@@ -5,7 +5,7 @@ description: Preferred MCP for Apple build, test, simulator, device, and UI insp
 
 # XcodeBuildMCP
 
-Prefer **XcodeBuildMCP** tools instead of raw `xcodebuild`, `xcrun`, or `simctl` for iOS/macOS build, test, simulator, and UI inspection.
+Prefer **XcodeBuildMCP MCP tools** for iOS/macOS build, test, simulator, and UI inspection. A missing tool does not itself authorize CLI or raw Xcode fallback.
 
 | | |
 | --- | --- |
@@ -24,7 +24,9 @@ XcodeBuildMCP exposes the **same implementations** two ways. Names differ:
 | **MCP** (agent tool list) | Underscored tool id | `build_run_sim`, `discover_projs`, `session_show_defaults` |
 | **CLI** (shell / CI) | `xcodebuildmcp <workflow> <verb>` | `xcodebuildmcp simulator build-and-run` |
 
-This playbook prefers **MCP names** (coding agents’ primary path). When the host has shell but no MCP tools, use the CLI column.
+This playbook prefers **MCP names**. The CLI column is a capability reference,
+not automatic fallback permission; use it only when the active repository or user
+policy explicitly permits XcodeBuildMCP CLI fallback.
 
 List everything installed locally:
 
@@ -42,7 +44,24 @@ Interactive config: `xcodebuildmcp setup`. Optional agent skill install: `xcodeb
 2. If defaults are empty or wrong: **`session_set_defaults`** (and/or seed `sessionDefaults` in config). Use **`discover_projs`** only when you still need to find projects — **not** speculatively, and **not in parallel** with show-defaults.
 3. For simulator **run** intent, prefer **`build_run_sim`** (one-shot build + install + launch) over separate `build_sim` → `install_app_sim` → `launch_app_sim`.
 4. Prefer **`simulatorId`** (exact UDID) over name-only selection; avoid unstable “latest OS” churn when pinning a device for Maestro.
-5. Report active context (project/workspace, scheme, simulator/device) and the **exact failing tool** on errors.
+5. Report active context (project/workspace, scheme, configuration, exact simulator/device) and the **exact failing tool** on errors.
+
+## Capability and fallback ladder
+
+Use the first authorized capability in this order:
+
+| Tier | Path | Authorization rule |
+| --- | --- | --- |
+| 1 | **XcodeBuildMCP MCP tools** | Preferred. Use the live tool list and enable the required workflow when possible |
+| 2 | **XcodeBuildMCP CLI** | Only when active repository/user policy explicitly permits CLI fallback; shell access and installation are not permission |
+| 3 | **Repository-native raw Xcode tooling** (`xcodebuild`, `xcrun`, `simctl`, or a documented wrapper) | Only when active policy authorizes it. Obtain explicit approval when that policy requires it |
+| 4 | **Blocked report** | Required when no authorized capability remains; state the failed capability, policy boundary, unrun checks, and next action |
+
+Any fallback must preserve the project/workspace, scheme, configuration, exact
+simulator/device, serialized execution, test scope, and applicable repository
+commands. Every handoff reports those values, the exact tools or commands, outcomes,
+and residual risk. None of these tiers weakens approvals for destructive actions,
+deployment, publishing, credentials, or user data.
 
 ## Install and configure
 
@@ -126,7 +145,9 @@ Exact advertised set depends on `enabledWorkflows` and XcodeBuildMCP version. Pr
 | Doctor | `doctor` | `xcodebuildmcp doctor` |
 
 :::note Do not invent tool ids
-If a tool is missing from the host list, enable the workflow and restart MCP — do not fall back to raw `xcodebuild` without reporting the blocker. Upstream live catalog: [Tools reference](https://xcodebuildmcp.com/docs/tools).
+If a tool is missing from the host list, enable the workflow and restart MCP.
+If it remains unavailable, return to the capability ladder; do not infer fallback
+permission. Upstream live catalog: [Tools reference](https://xcodebuildmcp.com/docs/tools).
 :::
 
 ## `launchArgs` vs `extraArgs`
@@ -140,9 +161,10 @@ Official contract (build-and-run and launch tools):
 
 Applies to MCP tools such as `build_run_sim`, `build_run_device`, `build_run_macos`, `launch_app_sim`, `launch_app_device`, `launch_mac_app` (and their CLI counterparts).
 
-## CLI recipes (shell / CI / agents without MCP tools)
+## CLI recipes (when explicitly permitted)
 
-Same config file as MCP. Synopsis: `xcodebuildmcp <workflow> <tool> [options]`.
+These examples use the same config file as MCP. They are available only at tier 2
+of the capability ladder. Synopsis: `xcodebuildmcp <workflow> <tool> [options]`.
 
 ```shell
 # Build + run simulator (preferred one-shot)
@@ -181,7 +203,8 @@ Stateful tools (log capture, video, LLDB, some SwiftPM runs) use a **per-workspa
 | Wrong scheme or simulator | `session_show_defaults` → `session_set_defaults` or config; prefer `simulatorId` |
 | Empty or wrong project path | Fix workspace root; `discover_projs` only if defaults still wrong |
 | Signing / device install errors | Fix signing in Xcode; enable `device` only when needed; report exact tool failure |
-| Agent used raw `xcodebuild` | Prefer MCP; if MCP unavailable, use CLI recipes above or report blocker |
+| MCP is unavailable | Report the exact failure; use CLI only when active policy explicitly permits it, then consider only an authorized repository-native fallback |
+| Agent used raw `xcodebuild` | Stop if authorization was not established; confirm active policy and preserve the complete target/test context in any approved fallback |
 | Flaky simulator selection | Pin one **`simulatorId`**; avoid `useLatestOS` / name-only churn for regression |
 | MCP and CLI disagree on device | Same UDID + app state for both |
 | Daemon / video / debug stuck (CLI) | `xcodebuildmcp daemon status` · `daemon logs` · [CLI daemon docs](https://xcodebuildmcp.com/docs/cli) |
@@ -192,7 +215,7 @@ More rows: [Troubleshooting](/reference/troubleshooting).
 
 ```text
 Goal: Prove the consumer app builds and tests on the intended target.
-Constraints: XcodeBuildMCP MCP tools if available; else CLI. No silent raw xcodebuild. Report residual risk.
+Constraints: Follow the capability ladder: MCP tools; explicitly permitted XcodeBuildMCP CLI; authorized repository-native tooling; otherwise blocked. No silent fallback.
 Inputs: Active consumer project, scheme, simulatorId or macOS target.
 Done when: session_show_defaults reported; build_run_sim or build/test executed; outcomes stated.
 Verification: Prefer build_run_sim for launch; never claim pass without running the tool.

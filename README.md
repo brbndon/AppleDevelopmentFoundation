@@ -2,7 +2,7 @@
 
 Reusable Codex skills for Apple development (design system, SwiftUI, concurrency, security, etc.).
 
-This repo's primary purpose is **skills + command references**. The original Swift package was exploratory and is archived — see [ARCHIVE.md](ARCHIVE.md).
+This repo's primary purpose is **skills + command references**. The original Swift package and demos are contained under [`archive/`](archive/) — see [ARCHIVE.md](ARCHIVE.md).
 
 ## Agent playbook (Blume docs)
 
@@ -21,6 +21,24 @@ npm run preview  # serve production build locally
 Requires **Node.js 22.12+**. One-time GitHub setup: **Settings → Pages → Source: GitHub Actions**.
 
 Start with the [quickstart](docs/quickstart.mdx) and [session workflow](docs/workflow/index.mdx). The site covers skill routing, consumer-workspace rules, XcodeBuildMCP, Maestro, scripts, and copy-paste prompts for agentic coders.
+
+## Agent host support
+
+Codex is the supported and verified host. The installer targets
+`${CODEX_HOME:-$HOME/.codex}/skills`, and invocation examples use `$skill-name`.
+Other skill- and MCP-capable hosts have documentation-only/manual compatibility;
+the repository does not currently ship verified Cursor or Claude Code adapters.
+See [Agent host support](docs/reference/host-support.mdx).
+
+## Repository map
+
+| Path | Purpose |
+| --- | --- |
+| `.agents/skills/` | Live reusable skills |
+| `Scripts/` | Live catalog, installer, consumer-guidance, and verification tools |
+| `docs/`, `MCP.md` | Live agent playbook and command reference |
+| `Templates/` | Skill and consumer-project templates |
+| `archive/` | Preserved exploratory package, demos, old website, historical documentation, and package tooling |
 
 ## Install skills
 

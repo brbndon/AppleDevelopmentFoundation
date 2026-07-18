@@ -5,10 +5,10 @@ export default defineMeta({
   icon: "book-marked",
   order: 5,
   pages: [
+    "host-support",
     "prompts",
     "verification-matrix",
     "troubleshooting",
     "external-skills",
   ],
 });
-

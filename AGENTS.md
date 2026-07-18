@@ -1,6 +1,8 @@
 # Apple Development Foundation
 
-This repository is a **skills and MCP/commands reference** for Apple development (iOS 17+, macOS 14+). Its product is reusable Codex skills under `.agents/skills/` plus command references in `MCP.md`. The Swift package under `Sources/` is archived exploratory code — do not expand it unless explicitly asked.
+This repository is a **Codex-first skills and MCP/commands reference** for Apple development (iOS 17+, macOS 14+). Codex is the supported and verified agent host: skills use `.agents/skills/`, the installer targets `${CODEX_HOME:-$HOME/.codex}/skills`, and examples use `$skill-name`. Other skill- and MCP-capable hosts have documentation-only/manual compatibility unless this repository adds and verifies a host adapter. See `docs/reference/host-support.mdx`.
+
+The exploratory Swift package and demos are isolated under `archive/` — do not expand them unless explicitly asked.
 
 Agent-facing playbook (install, routing, MCP, verification): Blume site under `docs/` (`npm run dev`). Keep always-on rules here; put longer onboarding in `docs/`.
 
@@ -8,10 +10,10 @@ Agent-facing playbook (install, routing, MCP, verification): Blume site under `d
 
 - Maintain, install, and verify skills: `./Scripts/install-skills.sh`, `./Scripts/verify-skills.sh`, `./Scripts/test-install-skills.sh`
 - Keep skills neutral and reusable: no business models, branding, secrets, user-specific paths, or hidden network behavior
-- Prefer **XcodeBuildMCP** for Apple build, test, simulator, and UI inspection — see `MCP.md`
+- Follow the Apple verification capability ladder in `MCP.md`: XcodeBuildMCP MCP tools first; XcodeBuildMCP CLI only when the active project/user policy explicitly permits it; repository-native raw Xcode tooling only when that policy authorizes it; otherwise report blocked. Never infer fallback permission from tool availability.
 - For Maestro app testing, use `$maestro-apple-app-testing` as the main workflow; combine XcodeBuildMCP for Apple builds/simulators with Maestro MCP and CLI flows for UI inspection and regression coverage.
 - Use `$codex-bootstrap` or the `codex-bootstrap` skill when starting a new iOS/macOS SwiftUI project with these skills
-- Update skills through `.agents/skills/`; see `Documentation/SkillAuthoringGuide.md` before changing skill behavior
+- Update skills through `.agents/skills/`; see `docs/skills/skill-authoring-guide.mdx` before changing skill behavior
 
 ## Skill routing
 
@@ -25,7 +27,7 @@ inventory, audit classifications, and foundation-only verification workflow.
 
 ## Skills apply to consumer apps
 
-Skills target the **active workspace** (the app or package the user is building), not this repository's archived modules. Do not add code to `Sources/`, create modules with `./Scripts/create-module.sh`, or treat `DesignSystem` / `FileKit` here as live products unless the user explicitly asks to work on archived package code.
+Skills target the **active workspace** (the app or package the user is building), not this repository's archived modules. Do not add code to `archive/Sources/`, create modules with `./archive/Scripts/create-module.sh`, or treat `DesignSystem` / `FileKit` here as live products unless the user explicitly asks to work on archived package code.
 
 ## Apple development defaults (when writing Swift in any workspace)
 
@@ -36,6 +38,6 @@ All SwiftUI components must support Dynamic Type, VoiceOver, keyboard access, co
 ## Verification
 
 - Skill or manifest changes: `./Scripts/verify-skills.sh` (and `./Scripts/test-install-skills.sh` if installer behavior changes)
-- Archived package changes (only when explicitly requested): `./Scripts/verify.sh` — see `ARCHIVE.md` and `Documentation/ModuleBoundaries.md`
+- Archived package changes (only when explicitly requested): `cd archive && ./Scripts/verify.sh` — see `ARCHIVE.md` and `archive/Documentation/ModuleBoundaries.md`
 
 Avoid broad unrelated refactors. Report commands not available locally.

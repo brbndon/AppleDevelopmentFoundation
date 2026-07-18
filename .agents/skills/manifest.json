@@ -1,20 +1,269 @@
 {
+  "schema_version": 2,
   "version": 1,
+  "router": {
+    "skill_id": "apple-development-foundation",
+    "name": "Apple Development Foundation master",
+    "kind": "master",
+    "description": "Reference-first catalog for routing Apple-platform tasks to relevant child skills, with optional foundation audits and installer verification.",
+    "source": {
+      "repository_root": ".",
+      "agent_guidance": "AGENTS.md",
+      "inventory_manifest": ".agents/skills/manifest.json",
+      "human_inventory": ".agents/skills/README.md"
+    },
+    "invocation": {
+      "explicit_skill": "$apple-development-foundation",
+      "automatic_activation": false,
+      "note": "Explicit invocation is the reliable disambiguator; select child skills according to their own descriptions and exclusions."
+    },
+    "routing": {
+      "procedure": [
+        "Read this catalog first and shortlist parent skills by ID, role, and purpose.",
+        "Read only the shortlisted child SKILL.md files and follow their instructions.",
+        "Do not imply an audit, repository scan, installer action, or verification run for ordinary task routing.",
+        "Use codex-bootstrap when the request is a new consumer Apple-platform project."
+      ],
+      "consumer_verification": "App-code verification is owned by the selected child skill, such as swift-testing-verification or maestro-apple-app-testing."
+    },
+    "audit": {
+      "when_requested": true,
+      "discovery": [
+        "Read the current project's AGENTS.md and local skill directories.",
+        "Read .agents/skills/manifest.json when auditing this foundation repository.",
+        "Resolve each parent skill path relative to the foundation repository root."
+      ],
+      "comparison": [
+        "Compare skill IDs first, then resolve paths and inspect frontmatter and semantic contracts.",
+        "Classify differences using the definitions below; do not use conflicting as an audit classification."
+      ],
+      "classifications": {
+        "missing": "A catalog parent skill absent from the target inventory.",
+        "extra": "A target-local skill outside the catalog that is not intentionally external.",
+        "stale": "A matching skill ID whose resolved path, frontmatter, or catalog contract is outdated or broken.",
+        "duplicate": "Multiple target entries representing the same catalog skill.",
+        "external": "An intentionally documented third-party skill outside this repository's catalog; exclude it from missing and extra findings."
+      },
+      "verification_scope": "Run these commands only when auditing this foundation repository or its installer; they do not verify consumer app code.",
+      "verification_commands": [
+        "./Scripts/verify-skills.sh",
+        "./Scripts/test-install-skills.sh",
+        "./Scripts/install-skills.sh --dry-run"
+      ],
+      "api_calls": []
+    },
+    "example_prompt": "Use $apple-development-foundation to route this iOS import-flow task to the relevant child skills. Read the catalog first, then read only the selected child SKILL.md files; do not audit or run foundation verification."
+  },
   "skills": [
-    {"name":"apple-development-foundation","path":"apple-development-foundation","scope":"repository-or-user","purpose":"Reference-first skill router with optional foundation audits","installable":true,"scripts":false,"modules":[]},
-    {"name":"apple-platform-planner","path":"apple-platform-planner","scope":"repository-or-user","purpose":"Plan Apple features","installable":true,"scripts":false,"modules":[]},
-    {"name":"swiftui-tab-navigation","path":"swiftui-tab-navigation","scope":"repository-or-user","purpose":"Build native SwiftUI app-level tab navigation","installable":true,"scripts":false,"modules":[]},
-    {"name":"swiftui-component-author","path":"swiftui-component-author","scope":"repository-or-user","purpose":"Author reusable SwiftUI","installable":true,"scripts":false,"modules":[]},
-    {"name":"apple-design-system","path":"apple-design-system","scope":"repository-or-user","purpose":"Design-system changes","installable":true,"scripts":false,"modules":[]},
-    {"name":"ios-macos-platform-adaptation","path":"ios-macos-platform-adaptation","scope":"repository-or-user","purpose":"Platform adaptation","installable":true,"scripts":false,"modules":[]},
-    {"name":"swift-package-module-author","path":"swift-package-module-author","scope":"repository-or-user","purpose":"Add package modules in the active workspace","installable":true,"scripts":false,"modules":[]},
-    {"name":"reusable-code-extractor","path":"reusable-code-extractor","scope":"repository-or-user","purpose":"Extract proven reusable code into consumer shared modules","installable":true,"scripts":false,"modules":[]},
-    {"name":"swift-concurrency-review","path":"swift-concurrency-review","scope":"repository-or-user","purpose":"Review concurrency","installable":true,"scripts":false,"modules":[]},
-    {"name":"apple-accessibility-review","path":"apple-accessibility-review","scope":"repository-or-user","purpose":"Review accessibility","installable":true,"scripts":false,"modules":[]},
-    {"name":"apple-security-privacy-review","path":"apple-security-privacy-review","scope":"repository-or-user","purpose":"Review privacy and security","installable":true,"scripts":false,"modules":[]},
-    {"name":"swift-testing-verification","path":"swift-testing-verification","scope":"repository-or-user","purpose":"Verify changes","installable":true,"scripts":false,"modules":[]},
-    {"name":"maestro-apple-app-testing","path":"maestro-apple-app-testing","scope":"repository-or-user","purpose":"Thorough Maestro testing for Apple apps","installable":true,"scripts":false,"modules":[]},
-    {"name":"codex-skill-maintainer","path":"codex-skill-maintainer","scope":"repository","purpose":"Maintain local skills","installable":true,"scripts":false,"modules":[]},
-    {"name":"codex-bootstrap","path":"codex-bootstrap","scope":"repository-or-user","purpose":"Bootstrap new iOS/macOS projects using these skills","installable":true,"scripts":false,"modules":[]}
+    {
+      "name": "apple-development-foundation",
+      "path": "apple-development-foundation",
+      "description": "Use to reference-first route an Apple-platform task to this repository's relevant child skills, or when an audit or comparison is explicitly requested. Do not treat it as a replacement for child instructions, an implied repository audit, or proof of automatic activation.",
+      "role": "router",
+      "scope": "repository-or-user",
+      "purpose": "Reference-first skill router with optional foundation audits",
+      "use_for": "reference-first child-skill routing and explicitly requested foundation audits",
+      "do_not_use_for": "replacing child instructions, implied audits or verification, or claiming automatic activation",
+      "installable": true,
+      "router_included": false,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "codex-bootstrap",
+      "path": "codex-bootstrap",
+      "description": "Use when bootstrapping a new iOS or macOS SwiftUI project or major feature set in the consumer workspace. Chain skills from this repo (design system, components, reviews). Do not use for one-off screens, editing this repo's archived package, or rebuilding AppleDevelopmentFoundation archive/Sources unless explicitly asked.",
+      "role": "orchestration",
+      "scope": "repository-or-user",
+      "purpose": "Bootstrap a new consumer iOS or macOS SwiftUI project and chain relevant foundation skills",
+      "use_for": "bootstrapping new iOS or macOS projects in the consumer workspace using these skills",
+      "do_not_use_for": "one-off screens or editing archived package code in this repository",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "apple-platform-planner",
+      "path": "apple-platform-planner",
+      "description": "Use when planning a new iOS, macOS, or shared Apple-platform feature. Do not use for implementation-only requests or non-Apple planning.",
+      "role": "planning",
+      "scope": "repository-or-user",
+      "purpose": "Plan a new iOS, macOS, or shared Apple-platform feature",
+      "use_for": "planning an Apple-platform feature",
+      "do_not_use_for": "implementation-only requests",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "swiftui-tab-navigation",
+      "path": "swiftui-tab-navigation",
+      "description": "Use when adding, replacing, or refactoring an app-level SwiftUI tab shell, including adopting the system Liquid Glass tab-bar appearance on iOS 26. Do not use for page-style TabView content, segmented controls, business-specific screen implementation, or navigation that has no peer destinations.",
+      "role": "navigation",
+      "scope": "repository-or-user",
+      "purpose": "Add or refactor native app-level SwiftUI tab navigation, including system Liquid Glass behavior",
+      "use_for": "native app-level SwiftUI tabs and system Liquid Glass tab chrome",
+      "do_not_use_for": "page-style tabs, segmented controls, or business-specific screens",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "swiftui-component-author",
+      "path": "swiftui-component-author",
+      "description": "Use when creating or refactoring a reusable SwiftUI component. Do not use for business-specific screens, non-UI services, or design-token-only changes.",
+      "role": "ui-foundation",
+      "scope": "repository-or-user",
+      "purpose": "Create or refactor reusable SwiftUI components",
+      "use_for": "reusable SwiftUI components",
+      "do_not_use_for": "app-specific screen copy",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "apple-design-system",
+      "path": "apple-design-system",
+      "description": "Use when adding or changing reusable design-system tokens or components. Do not use for application branding, app-specific screens, or a general accessibility audit.",
+      "role": "ui-foundation",
+      "scope": "repository-or-user",
+      "purpose": "Add or change reusable semantic design-system tokens and components",
+      "use_for": "design-system changes",
+      "do_not_use_for": "application branding",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "ios-macos-platform-adaptation",
+      "path": "ios-macos-platform-adaptation",
+      "description": "Use when an Apple-platform feature genuinely behaves differently on iOS and macOS. Do not use when native behavior is identical or when only planning a new feature.",
+      "role": "platform",
+      "scope": "repository-or-user",
+      "purpose": "Adapt concrete behavior that genuinely diverges between iOS and macOS",
+      "use_for": "divergent platform behavior",
+      "do_not_use_for": "shared identical behavior",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "swift-package-module-author",
+      "path": "swift-package-module-author",
+      "description": "Use when adding an independently importable Swift Package module in the active workspace. Do not use for an app-local feature, extraction review, or editing AppleDevelopmentFoundation archived package code unless explicitly asked.",
+      "role": "architecture",
+      "scope": "repository-or-user",
+      "purpose": "Add an independently importable Swift Package module in the active workspace",
+      "use_for": "a reusable package target in the active workspace",
+      "do_not_use_for": "an app-local feature or archived package work in this repository",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "reusable-code-extractor",
+      "path": "reusable-code-extractor",
+      "description": "Use when extracting a proven implementation from an application into a shared module or package in the consumer workspace. Do not use for speculative abstraction, landing code in the AppleDevelopmentFoundation archived package, or an app-local refactor that should stay local.",
+      "role": "architecture",
+      "scope": "repository-or-user",
+      "purpose": "Extract proven application code into a neutral shared module or package",
+      "use_for": "generalizing proven app code into consumer shared modules",
+      "do_not_use_for": "speculative extraction or landing code in this repository's archived package",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "swift-concurrency-review",
+      "path": "swift-concurrency-review",
+      "description": "Use when reviewing async/await, actors, tasks, observation, Sendable diagnostics, or cancellation. Do not use for unrelated UI styling or synchronous API design.",
+      "role": "quality",
+      "scope": "repository-or-user",
+      "purpose": "Review async/await, actors, observation, Sendable correctness, and cancellation",
+      "use_for": "async/await and actor review",
+      "do_not_use_for": "unrelated styling",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "apple-accessibility-review",
+      "path": "apple-accessibility-review",
+      "description": "Use when reviewing reusable SwiftUI UI for accessibility. Do not use for non-UI code, general design-token work, or pixel-only critique.",
+      "role": "quality",
+      "scope": "repository-or-user",
+      "purpose": "Review reusable SwiftUI UI for accessibility and platform interaction",
+      "use_for": "reusable UI accessibility",
+      "do_not_use_for": "a non-UI service",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "apple-security-privacy-review",
+      "path": "apple-security-privacy-review",
+      "description": "Use when reviewing storage, file access, logging, permissions, imports, or sensitive data. Do not use for purely visual changes or unrelated API style review.",
+      "role": "quality",
+      "scope": "repository-or-user",
+      "purpose": "Review storage, file access, logging, permissions, imports, and sensitive data",
+      "use_for": "files, logging, permissions, and sensitive data",
+      "do_not_use_for": "visual-only polish",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "swift-testing-verification",
+      "path": "swift-testing-verification",
+      "description": "Use after a meaningful Apple-platform code change to select and run verification. Do not use for planning-only work or before an implementation exists.",
+      "role": "verification",
+      "scope": "repository-or-user",
+      "purpose": "Select and run focused verification after meaningful Apple-platform changes",
+      "use_for": "meaningful change verification",
+      "do_not_use_for": "planning-only requests",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "maestro-apple-app-testing",
+      "path": "maestro-apple-app-testing",
+      "description": "Use when building, debugging, authoring, or thoroughly testing an Apple app with Maestro, including iOS simulator flows, UI inspection, screenshots, flaky-flow diagnosis, and end-to-end regression coverage. Do not use for non-testing product implementation or standalone unit tests.",
+      "role": "verification",
+      "scope": "repository-or-user",
+      "purpose": "Build, inspect, and test Apple apps with Maestro end-to-end workflows",
+      "use_for": "thorough Maestro testing for Apple apps",
+      "do_not_use_for": "non-testing product implementation",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
+      "name": "codex-skill-maintainer",
+      "path": "codex-skill-maintainer",
+      "description": "Use when creating, reviewing, splitting, updating, or validating this repository's local Codex skills. Do not use for ordinary product code changes or global-skill installation.",
+      "role": "maintenance",
+      "scope": "repository",
+      "purpose": "Create, review, update, and validate this repository's local skills",
+      "use_for": "skill changes",
+      "do_not_use_for": "product code changes",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    }
   ]
 }

@@ -4,10 +4,12 @@ DerivedData/
 *.xcuserstate
 xcuserdata/
 .xcodebuildmcp/
-Website/node_modules/
-Website/dist/
-Website/.vite/
+archive/Website/node_modules/
+archive/Website/dist/
+archive/Website/.vite/
 node_modules/
 .blume/
 .blume-verify/
 dist/
+__pycache__/
+*.py[cod]

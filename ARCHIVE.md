@@ -1,15 +1,15 @@
-# Archived package surface
+# Archive boundary
 
-The Swift package, examples, apps, and website in this repository are **archived exploratory work**. They are preserved for history and reference only.
+The repository's former Swift package, examples, apps, website, historical package documentation, and package tooling are contained in [`archive/`](archive/). They are preserved for history and reference only.
 
 ## What is archived
 
 | Path | Status |
 | --- | --- |
-| `Sources/`, `Tests/`, `Package.swift` | Exploratory Swift package — not consumed or maintained as a product |
-| `Documentation/` (except skill guides) | Historical architecture and module-boundary reference |
-| `Apps/`, `Examples/`, `Website/` | Exploratory demos and marketing — not the repo's primary purpose |
-| `Scripts/create-module.sh`, `Scripts/verify.sh` | Package tooling — use only when explicitly working on archived package code |
+| `archive/Sources/`, `archive/Tests/`, `archive/Package.swift` | Exploratory Swift package — not consumed or maintained as a product |
+| `archive/Documentation/` | Historical architecture and module-boundary reference |
+| `archive/Apps/`, `archive/Examples/`, `archive/Website/` | Exploratory demos and superseded marketing site |
+| `archive/Scripts/` | Package, demo-site, and environment tooling — use only for explicitly requested archive work |
 
 ## What is live
 
@@ -18,11 +18,14 @@ The Swift package, examples, apps, and website in this repository are **archived
 | `.agents/skills/` | Reusable Codex skills (the product) |
 | `MCP.md` | XcodeBuildMCP and command reference |
 | `docs/`, `blume.config.ts` | Agent playbook (Blume docs site) |
+| `docs/skills/skill-authoring-guide.mdx`, `docs/skills/skill-evaluation.mdx` | Live skill-maintenance guidance and evaluation inputs |
+| `Scripts/` | Live skill catalog, install, consumer-guidance, and verification tooling |
+| `Templates/` | Skill and consumer templates |
 | `README.md`, `AGENTS.md` | Entry points for humans and agents |
 
 ## Agent guidance
 
-Do **not** add modules, expand public APIs, refactor package code, or "improve" archived targets unless the user explicitly asks. Skills in this repo apply to **consumer apps and packages in the user's active workspace**, not to landing code here.
+Do **not** add modules, expand public APIs, refactor package code, or "improve" archived targets unless the user explicitly asks. Skills in this repo apply to **consumer apps and packages in the user's active workspace**, not to landing code in `archive/`. See [`archive/README.md`](archive/README.md) for the preserved layout.
 
 ## History note
 

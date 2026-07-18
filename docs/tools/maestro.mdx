@@ -40,7 +40,7 @@ If Maestro or its MCP server is unavailable, **stop and report** the exact block
 
 1. `session_show_defaults` (XcodeBuildMCP) — report project, scheme, configuration, **simulatorId**.
 2. Resolve and reuse **one exact simulator ID**. Do **not** use `OS=latest` / unstable name-only selection.
-3. Build and install/launch with XcodeBuildMCP: prefer **`build_run_sim`** (CLI: `simulator build-and-run`).
+3. Build and install/launch with XcodeBuildMCP: prefer MCP **`build_run_sim`**; use the matching CLI only when active policy explicitly permits it.
 4. Inspect the screen (Maestro MCP and/or `snapshot_ui` / hierarchy tools) before editing selectors.
 5. Author or update flows under the consumer project’s agreed path (often `.maestro/`).
 6. Run the smallest relevant flow; then tagged suite / full suite when practical.

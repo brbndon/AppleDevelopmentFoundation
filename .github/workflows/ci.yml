@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  skills:
+    name: Skills and installer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check generated skill catalog
+        run: ./Scripts/generate-skill-catalog.py --check
+
+      - name: Validate behavioral evaluation fixtures
+        run: ./Scripts/validate-skill-evaluations.py
+
+      - name: Verify skills
+        run: ./Scripts/verify-skills.sh
+
+      - name: Test installer behavior
+        run: ./Scripts/test-install-skills.sh
+
+      - name: Dry-run installer
+        run: ./Scripts/install-skills.sh --dry-run
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Validate links
+        run: npm run validate
+
+      - name: Build
+        run: npm run build

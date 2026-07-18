@@ -10,5 +10,7 @@ export default defineMeta({
     "reviews-and-quality",
     "testing",
     "authoring",
+    "skill-authoring-guide",
+    "skill-evaluation",
   ],
 });

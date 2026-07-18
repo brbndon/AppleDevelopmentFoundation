@@ -14,7 +14,7 @@ Use **`$codex-skill-maintainer`** when creating, reviewing, splitting, updating,
 
 ## Authoring rules (summary)
 
-Full guide: `Documentation/SkillAuthoringGuide.md`.
+Full guide: [Skill authoring guide](/skills/skill-authoring-guide).
 
 - One skill = one repeatable responsibility  
 - Frontmatter: precise `name` and `description` (triggers **and** exclusions)  
@@ -25,18 +25,26 @@ Full guide: `Documentation/SkillAuthoringGuide.md`.
 ## Checklist when adding a skill
 
 1. Scaffold under `.agents/skills/<name>/SKILL.md` (template: `Templates/NewSkill/SKILL.md.template` if present)  
-2. Add to `manifest.json`  
-3. Update `.agents/skills/README.md` use / do-not-use table  
-4. If the master router should know about it, update `apple-development-foundation/master-skill.json`  
-5. Run:
+2. Add its canonical metadata to `.agents/skills/manifest.json`; `name` is the stable skill ID and must exactly match frontmatter
+3. Set `router_included` to control whether it appears in the master router
+4. Add at least two `should_use` and two `should_not_use` prompt cases to `Evaluations/skill-routing.json`, with complete routing, workspace, authorization, audit, verification, stop, and handoff expectations
+5. Regenerate and check the derived README, site inventory, and router catalog:
 
 ```bash
+./Scripts/generate-skill-catalog.py
+./Scripts/generate-skill-catalog.py --check
+```
+
+6. Run:
+
+```bash
+./Scripts/validate-skill-evaluations.py
 ./Scripts/verify-skills.sh
 ./Scripts/test-install-skills.sh
 ./Scripts/install-skills.sh --dry-run
 ```
 
-6. Refresh the Blume [Skills inventory](/skills) table and its **last reviewed** note so agents do not read stale inventories  
+7. Keep executable procedure in `SKILL.md`; the catalog generator never creates skill instructions
 
 ## Installer safety
 
@@ -64,7 +72,10 @@ Body `#` headings are **not** rendered in HTML — `components.ts` maps `h1` to 
 | `AGENTS.md` | Always-on rules for this repository |
 | Skill `SKILL.md` | Conditional, repeatable workflows |
 | `docs/` (this site) | Agent playbook and onboarding |
-| `Documentation/*` | Mostly archived human architecture notes; skill guides remain useful |
+| `docs/skills/skill-authoring-guide.mdx` | Canonical live skill-maintenance guide |
+| `Evaluations/skill-routing.json` | Machine-readable prompt expectations and framework boundaries |
+| `docs/skills/skill-evaluation.mdx` | Behavioral evaluation scope, guarantees, and manual/model limits |
+| `archive/Documentation/` | Historical package architecture notes |
 
 ## Related
 

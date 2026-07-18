@@ -14,12 +14,16 @@ Get from a clone of this repository to a working agent session in a few minutes.
 | Tool | Why |
 | --- | --- |
 | Xcode (recent stable) | Build/test iOS and macOS targets |
-| Codex, Cursor, Claude Code, or similar | Host that can load skills and MCP servers |
+| Codex | Supported and verified host for this repository's installer, skill discovery, and `$skill-name` workflow |
 | [XcodeBuildMCP](https://xcodebuildmcp.com) | Preferred build/test/simulator MCP |
 | Node.js 22.12+ | **Optional** — this Blume docs site only |
 | [Maestro](https://maestro.mobile.dev) | **Optional** until you need UI flows |
 
 See [Tools](/tools) for the full stack.
+
+Other skill- and MCP-capable hosts have documentation-only/manual compatibility;
+this repository does not provide verified Cursor or Claude Code adapters. Read
+[Agent host support](/reference/host-support) before adapting these instructions.
 
 ## 1. Install skills
 
@@ -38,7 +42,7 @@ From the repository root:
 | State file | `.apple-development-foundation-links` under the target (installer-owned only) |
 
 :::note Load without global install
-If the host supports local skill discovery, point the session at:
+In Codex, you may point the session at:
 
 `/path/to/AppleDevelopmentFoundation/.agents/skills`
 
@@ -58,7 +62,23 @@ Global install is optional.
 
 ## 2. Configure XcodeBuildMCP
 
-1. Add XcodeBuildMCP to the agent host’s MCP server list (host-specific config file).
+First, give an explicitly selected consumer repository its project-local operating
+contract. Preview before writing:
+
+```bash
+./Scripts/init-consumer-guidance.sh --target /path/to/consumer --dry-run
+./Scripts/init-consumer-guidance.sh --target /path/to/consumer
+```
+
+The initializer copies the installed bootstrap skill's
+`.agents/skills/codex-bootstrap/assets/consumer-AGENTS.md.template` to the consumer
+root as `AGENTS.md`. It
+refuses an existing `AGENTS.md` and never edits global `~/.codex/AGENTS.md`; review
+and manually merge approved sections when consumer instructions already exist.
+Customize the template's project/workspace, scheme, configuration, platforms,
+deployment versions, simulator/config, and repository-native verification commands.
+
+1. Add XcodeBuildMCP to Codex’s MCP server list using current Codex and XcodeBuildMCP documentation.
 2. In the **consumer** (or monorepo) workspace root, create project-local config when you need more than the default simulator tools:
 
 ```yaml
@@ -78,7 +98,15 @@ enabledWorkflows: ["simulator", "ui-automation", "debugging"]
 
 Interactive setup: `xcodebuildmcp setup`. List tools: `xcodebuildmcp tools`. Diagnostics: `xcodebuildmcp doctor`. Session discipline: [XcodeBuildMCP](/tools/xcodebuildmcp) and repo `MCP.md`.
 
-Host MCP registration is product-specific (Codex, Cursor, Claude Code). Use the host’s MCP docs; this site does not invent a single universal JSON path.
+MCP registration is host-specific. This repository verifies the Codex workflow
+but does not write host configuration. For any manual compatibility attempt, use
+the host's authoritative documentation and do not invent paths or syntax. See
+[Agent host support](/reference/host-support).
+
+For build, run, and test fallback, follow the deterministic
+[capability ladder](/tools/xcodebuildmcp#capability-and-fallback-ladder): MCP tools;
+explicitly permitted XcodeBuildMCP CLI; authorized repository-native tooling;
+otherwise report blocked.
 
 ## 3. Open a session with a structured prompt
 
@@ -86,7 +114,7 @@ Minimal paste:
 
 ```text
 Goal: Use Apple Development Foundation skills for this Apple-platform task.
-Constraints: Work only in the consumer workspace. Prefer XcodeBuildMCP. Do not expand AppleDevelopmentFoundation archived Sources/.
+Constraints: Work only in the consumer workspace. Follow the authorized XcodeBuildMCP capability ladder. Do not expand AppleDevelopmentFoundation archive/Sources/.
 Inputs: Skills at /path/to/AppleDevelopmentFoundation/.agents/skills
 Done when: Task implemented, reviews applied if shared/sensitive UI, verification reported.
 Verification: session_show_defaults, then MCP build/test; report scheme, simulator, residual risk.
@@ -98,11 +126,15 @@ More scenarios: [Copy-paste prompts](/reference/prompts).
 
 1. Confirm **active workspace** = consumer app/package (not this foundation repo unless skill maintenance was requested).
 2. Route: `$apple-development-foundation` for a shortlist, or invoke the skill directly (`$codex-bootstrap`, `$swiftui-component-author`, …).
-3. Call **`session_show_defaults`** before the first build/run/test; fix via **`session_set_defaults`** if needed.
-4. For simulator launch, prefer MCP **`build_run_sim`** (CLI: `simulator build-and-run`).
+3. Call **`session_show_defaults`** before the first build/run/test; report the
+   project/workspace, scheme, configuration, and exact simulator/device, then fix
+   missing values via **`session_set_defaults`** if needed.
+4. For simulator launch, prefer MCP **`build_run_sim`**. Use the matching CLI only when active policy explicitly permits that fallback.
 5. Implement only what the task needs; run review skills before shipping shared UI or sensitive code.
-6. Verify with XcodeBuildMCP (and Maestro when UI regression matters); pin **`simulatorId`** when sharing a device with Maestro.
-7. Report project/scheme/simulatorId, what ran, and residual risk.
+6. Verify with XcodeBuildMCP (and Maestro when UI regression matters); pin
+   **`simulatorId`**, wait for same-project test processes, and keep simulator tests
+   serialized with parallel testing disabled by default.
+7. Report project/workspace, scheme, configuration, exact simulator/device, what ran, and residual risk.
 
 Scenario paths: [Task recipes](/workflow/task-recipes).
 
@@ -110,7 +142,8 @@ Scenario paths: [Task recipes](/workflow/task-recipes).
 
 | Check | Pass looks like |
 | --- | --- |
-| Skills | Host can resolve `$codex-bootstrap` / foundation skills, or path load works |
+| Skills | Codex can resolve `$codex-bootstrap` / foundation skills, or its repository path load works |
+| Consumer contract | Project-local `AGENTS.md` exists or approved rules were merged without replacing existing instructions |
 | Verify script | `./Scripts/verify-skills.sh` exits 0 after install or skill edits |
 | MCP | `session_show_defaults` returns usable project/scheme/simulator (or clear missing fields you then fix) |
 | App work | Build/test via MCP succeeds for the consumer target |
@@ -132,6 +165,7 @@ Requires Node.js ≥ 22.12. App/skill work does **not** require the docs site.
 2. [Session workflow](/workflow) — full loop when the task spans multiple steps  
 3. [Skill routing](/workflow/skill-routing) — `$apple-development-foundation` shortlist  
 4. [Bootstrap a new app](/skills/bootstrap) — new consumer SwiftUI project  
-5. [Troubleshooting](/reference/troubleshooting) — install / MCP / Maestro blockers  
+5. [Agent host support](/reference/host-support) — verified vs manual compatibility
+6. [Troubleshooting](/reference/troubleshooting) — install / MCP / Maestro blockers
 
 Agent feed (after deploy): site-root `llms.txt`. Skills source of truth: `.agents/skills/manifest.json` + each `SKILL.md`.

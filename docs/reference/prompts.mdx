@@ -5,7 +5,7 @@ description: Structured, scenario-based prompts for routing skills, bootstrap, v
 
 # Copy-paste prompts
 
-Each prompt is an **agent contract**: goal, constraints, inputs, done definition, verification. Replace `/path/to/…` and task specifics. Prefer `$skill-name` invocation your host understands.
+Each prompt is an **agent contract**: goal, constraints, inputs, done definition, verification. Replace `/path/to/…` and task specifics. `$skill-name` is the verified Codex invocation; other hosts require a manually verified equivalent described in [Agent host support](/reference/host-support).
 
 ## Point a session at these skills
 
@@ -13,8 +13,8 @@ Each prompt is an **agent contract**: goal, constraints, inputs, done definition
 Goal: Use Apple Development Foundation skills for Apple-platform work in this session.
 Constraints:
 - Work only in the consumer workspace unless the user asked for foundation skill maintenance.
-- Prefer XcodeBuildMCP over raw xcodebuild/simctl.
-- Do not expand AppleDevelopmentFoundation archived Sources/, Website/, or package modules.
+- Follow the Apple verification capability ladder: MCP tools; explicitly permitted XcodeBuildMCP CLI; authorized repository-native tools; otherwise report blocked.
+- Do not expand AppleDevelopmentFoundation `archive/Sources/`, `archive/Website/`, or package modules.
 - Ordinary routing is not an audit, install, or full-repo scan.
 Inputs:
 - Skills path: /path/to/AppleDevelopmentFoundation/.agents/skills
@@ -64,7 +64,7 @@ Constraints:
 - Tokens/appearance: $apple-design-system in the consumer repo — no application branding baked into foundation skills.
 - Components: $swiftui-component-author on the consumer design system.
 - Platform divergence only when needed: $ios-macos-platform-adaptation.
-- Do not land code in AppleDevelopmentFoundation archived Sources/.
+- Do not land code in AppleDevelopmentFoundation `archive/Sources/`.
 Inputs: Consumer path, existing design system (if any), peer destinations list if tabs.
 Done when: Shared UI builds; a11y review on reusable surfaces; handoff lists residual risk.
 Verification: session_show_defaults → MCP build; $apple-accessibility-review; $swift-testing-verification if APIs/logic changed.
@@ -101,7 +101,7 @@ Verification: Strict concurrency build when relevant; then verification matrix f
 
 ```text
 Goal: Prove the consumer target builds and tests on the intended device class.
-Constraints: XcodeBuildMCP only if available; report if MCP is missing instead of silent CLI fallback.
+Constraints: Follow active policy: XcodeBuildMCP MCP tools first; CLI only when explicitly permitted; repository-native raw Xcode tools only when authorized; otherwise report blocked.
 Inputs: Project/workspace, scheme, simulator or macOS target.
 Done when: Defaults shown; build and tests executed; outcomes and next tool call on failure reported.
 Verification:
@@ -109,7 +109,7 @@ Verification:
 2. discover_projs only if defaults still wrong/missing
 3. build_run_sim for launch (or build_run_macos / build_run_device)
 4. test_sim / test_macos if present
-Never claim pass without running the tool. MCP names above; CLI: xcodebuildmcp simulator build-and-run, etc.
+Never claim pass without running an authorized tool. Report project/workspace, scheme, configuration, exact destination, command/tool, and residual risk.
 ```
 
 ## Maestro UI regression
@@ -132,11 +132,11 @@ Verification: Smallest flow after each change → tagged suite → full suite wh
 Goal: Update foundation skills under .agents/skills/ as requested.
 Constraints:
 - Use $codex-skill-maintainer.
-- Follow Documentation/SkillAuthoringGuide.md.
+- Follow docs/skills/skill-authoring-guide.mdx.
 - Keep skills neutral (no branding, secrets, user-specific paths, hidden network).
-- Update manifest.json, .agents/skills/README.md, and master-skill.json when the router should know.
+- Update canonical manifest.json metadata and run ./Scripts/generate-skill-catalog.py; do not edit generated inventories directly.
 Inputs: Skill change request.
-Done when: Contracts pass and docs inventory note updated if tables changed.
+Done when: Contracts pass and generated catalog projections are current.
 Verification: ./Scripts/verify-skills.sh; ./Scripts/test-install-skills.sh if installer behavior changed; install --dry-run.
 ```
 
@@ -158,3 +158,4 @@ Verification: Per master-skill.json verification commands when applicable.
 - [Task recipes](/workflow/task-recipes)
 - [Verification matrix](/reference/verification-matrix)
 - [Quickstart](/quickstart)
+- [Agent host support](/reference/host-support)

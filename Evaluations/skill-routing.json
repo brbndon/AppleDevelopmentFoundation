@@ -1,0 +1,991 @@
+{
+  "schema_version": 1,
+  "activation_claim": "Fixtures define prompt expectations; they do not guarantee automatic skill activation in any host.",
+  "skills": [
+    {
+      "skill_id": "apple-development-foundation",
+      "should_use": [
+        {
+          "id": "foundation-router-use-route-import",
+          "prompt": "Use the Apple Development Foundation catalog to route this iOS document-import task to the relevant child skills; do not audit the repository.",
+          "expected": {
+            "skill_ids": ["apple-development-foundation", "apple-security-privacy-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "foundation-router-use-explicit-audit",
+          "prompt": "Use $apple-development-foundation to audit this foundation repository's skill inventory against its canonical catalog.",
+          "expected": {
+            "skill_ids": ["apple-development-foundation", "codex-skill-maintainer"],
+            "workspace_classification": "foundation-repository",
+            "implementation_authorized": false,
+            "audit_expected": true,
+            "verification_category": "foundation-audit",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "foundation-router-skip-child-implementation",
+          "prompt": "Implement the approved reusable SwiftUI error banner and verify it in the consumer app.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "foundation-router-skip-ordinary-installer-check",
+          "prompt": "For this ordinary app task, scan the whole foundation repository and run its installer checks even though I only asked for app routing.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "none",
+            "stop_condition": "outside-scope",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": false }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "codex-bootstrap",
+      "should_use": [
+        {
+          "id": "bootstrap-use-new-ios-app",
+          "prompt": "Bootstrap a new iOS SwiftUI app in /Projects/Journal with Timeline and Settings as peer destinations.",
+          "expected": {
+            "skill_ids": ["codex-bootstrap", "swiftui-tab-navigation", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "bootstrap-use-shared-app-skeleton",
+          "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens.",
+          "expected": {
+            "skill_ids": ["codex-bootstrap", "apple-design-system", "ios-macos-platform-adaptation", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "bootstrap-skip-one-settings-screen",
+          "prompt": "Add one reusable settings-row component to my existing app.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "bootstrap-skip-foundation-archive",
+          "prompt": "Bootstrap a demo by expanding AppleDevelopmentFoundation archive/Sources even though I have not authorized archived package work.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "foundation-archive",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "none",
+            "stop_condition": "request-clarification",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "apple-platform-planner",
+      "should_use": [
+        {
+          "id": "planner-use-shared-import-plan",
+          "prompt": "Plan a shared iOS and macOS document-import feature, including architecture, privacy risks, and verification; do not implement it.",
+          "expected": {
+            "skill_ids": ["apple-platform-planner", "apple-security-privacy-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "planner-use-macos-settings-plan",
+          "prompt": "Design an implementation plan for a new macOS settings feature with no repository changes.",
+          "expected": {
+            "skill_ids": ["apple-platform-planner"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "planner-skip-approved-implementation",
+          "prompt": "Implement the already approved native tab-shell plan in the consumer app.",
+          "expected": {
+            "skill_ids": ["swiftui-tab-navigation", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "planner-skip-web-dashboard",
+          "prompt": "Plan a React web analytics dashboard.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "non-apple-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "swiftui-tab-navigation",
+      "should_use": [
+        {
+          "id": "tab-navigation-use-native-peers",
+          "prompt": "Add native Home, Search, and Settings peer tabs to this SwiftUI app and preserve each tab's navigation stack.",
+          "expected": {
+            "skill_ids": ["swiftui-tab-navigation", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "tab-navigation-use-replace-custom-bar",
+          "prompt": "Replace this custom app-level SwiftUI tab bar with the native system tab shell and verify iOS 26 appearance.",
+          "expected": {
+            "skill_ids": ["swiftui-tab-navigation", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "tab-navigation-skip-page-carousel",
+          "prompt": "Build a reusable page-style photo carousel using TabView paging.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "tab-navigation-skip-settings-button",
+          "prompt": "Add one reusable settings button to an existing screen; there are no peer destinations.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "swiftui-component-author",
+      "should_use": [
+        {
+          "id": "component-use-error-banner",
+          "prompt": "Create a reusable SwiftUI error banner for three features, with Dynamic Type and VoiceOver support.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "apple-accessibility-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "component-use-refactor-picker",
+          "prompt": "Refactor this reusable SwiftUI picker into a focused configurable component with previews and tests.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "component-skip-checkout-screen",
+          "prompt": "Implement the business-specific checkout screen and payment rules.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "component-skip-actor-review",
+          "prompt": "Review this actor and its Sendable diagnostics without editing code.",
+          "expected": {
+            "skill_ids": ["swift-concurrency-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "apple-design-system",
+      "should_use": [
+        {
+          "id": "design-system-use-spacing-tokens",
+          "prompt": "Add reusable semantic spacing tokens to the consumer app's shared design-system package.",
+          "expected": {
+            "skill_ids": ["apple-design-system", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "design-system-use-neutral-button-style",
+          "prompt": "Change the shared neutral button style for increased contrast and Reduce Motion behavior.",
+          "expected": {
+            "skill_ids": ["apple-design-system", "apple-accessibility-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "design-system-skip-app-branding",
+          "prompt": "Apply our product's marketing campaign colors to one app-specific launch screen.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "design-system-skip-voiceover-audit",
+          "prompt": "Audit the existing reusable controls for VoiceOver issues; do not edit them.",
+          "expected": {
+            "skill_ids": ["apple-accessibility-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "ios-macos-platform-adaptation",
+      "should_use": [
+        {
+          "id": "platform-adaptation-use-settings-commands",
+          "prompt": "Adapt the existing shared settings feature so macOS uses commands and iOS keeps in-app navigation.",
+          "expected": {
+            "skill_ids": ["ios-macos-platform-adaptation", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "platform-adaptation-use-document-panels",
+          "prompt": "Implement the known iOS sheet versus macOS document-panel behavior for this existing import feature.",
+          "expected": {
+            "skill_ids": ["ios-macos-platform-adaptation", "apple-security-privacy-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "platform-adaptation-skip-identical-view",
+          "prompt": "Keep this native SwiftUI view identical on iOS and macOS because its behavior does not diverge.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "platform-adaptation-skip-new-onboarding-plan",
+          "prompt": "Plan a new shared onboarding flow before any concrete platform divergence exists; make no changes.",
+          "expected": {
+            "skill_ids": ["apple-platform-planner"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "swift-package-module-author",
+      "should_use": [
+        {
+          "id": "module-author-use-two-apps",
+          "prompt": "Add an independently importable Swift Package module used by two apps in this consumer workspace.",
+          "expected": {
+            "skill_ids": ["swift-package-module-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "module-author-use-file-validation-target",
+          "prompt": "Create a focused SwiftPM target for shared file validation with two consumers, tests, and a minimal public API.",
+          "expected": {
+            "skill_ids": ["swift-package-module-author", "apple-security-privacy-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "module-author-skip-app-helper",
+          "prompt": "Add a private helper used by one app feature only.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "module-author-skip-proven-cache-extraction",
+          "prompt": "Extract this tested app cache into the consumer workspace's existing shared package for two products.",
+          "expected": {
+            "skill_ids": ["reusable-code-extractor", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "reusable-code-extractor",
+      "should_use": [
+        {
+          "id": "extractor-use-proven-cache",
+          "prompt": "Extract this proven and tested app cache into a neutral shared module in the consumer workspace for two apps.",
+          "expected": {
+            "skill_ids": ["reusable-code-extractor", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "extractor-use-tested-component",
+          "prompt": "Generalize this shipping app's tested empty-state component for two consumer products without carrying branding across.",
+          "expected": {
+            "skill_ids": ["reusable-code-extractor", "swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "extractor-skip-speculative-cache",
+          "prompt": "Invent a generic cache package even though there is no working implementation, test evidence, or second consumer.",
+          "expected": {
+            "skill_ids": ["apple-platform-planner"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "request-clarification",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "extractor-skip-foundation-archive-target",
+          "prompt": "Move this app-specific code into AppleDevelopmentFoundation archive/Sources without explicit archived-package authorization.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "foundation-archive",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "none",
+            "stop_condition": "outside-scope",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "swift-concurrency-review",
+      "should_use": [
+        {
+          "id": "concurrency-review-use-actor-audit",
+          "prompt": "Audit these actors for isolation and Sendable problems; report findings only and do not edit.",
+          "expected": {
+            "skill_ids": ["swift-concurrency-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "concurrency-review-use-cancellation-fix",
+          "prompt": "Fix cancellation propagation and strict-concurrency warnings in this image loader, then verify the change.",
+          "expected": {
+            "skill_ids": ["swift-concurrency-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "concurrency-review-skip-button-colors",
+          "prompt": "Change the reusable button's semantic colors for increased contrast.",
+          "expected": {
+            "skill_ids": ["apple-design-system", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "concurrency-review-skip-sync-api",
+          "prompt": "Review the naming of this entirely synchronous value-type API.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "apple-accessibility-review",
+      "should_use": [
+        {
+          "id": "accessibility-review-use-voiceover",
+          "prompt": "Review this reusable SwiftUI control for VoiceOver grouping, labels, and Dynamic Type; findings only.",
+          "expected": {
+            "skill_ids": ["apple-accessibility-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "accessibility-review-use-keyboard-fix",
+          "prompt": "Fix macOS keyboard focus order and icon-only labels in this shared SwiftUI component, then verify both platforms.",
+          "expected": {
+            "skill_ids": ["apple-accessibility-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "accessibility-review-skip-file-parser",
+          "prompt": "Review this non-UI file parser for path traversal and unsafe logging.",
+          "expected": {
+            "skill_ids": ["apple-security-privacy-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "accessibility-review-skip-token-names",
+          "prompt": "Rename the shared semantic spacing tokens; no UI accessibility review is requested.",
+          "expected": {
+            "skill_ids": ["apple-design-system", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "apple-security-privacy-review",
+      "should_use": [
+        {
+          "id": "security-review-use-import-audit",
+          "prompt": "Review this document-import flow for path traversal, scoped-resource lifetime, and unsafe recovery behavior; do not edit.",
+          "expected": {
+            "skill_ids": ["apple-security-privacy-review"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "security-review-use-logging-fix",
+          "prompt": "Remove sensitive data from logging and add focused privacy tests for the consumer app.",
+          "expected": {
+            "skill_ids": ["apple-security-privacy-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "security-review-skip-empty-state",
+          "prompt": "Polish the reusable empty-state layout and animation without changing data access or logging.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "apple-accessibility-review", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "security-review-skip-protocol-name",
+          "prompt": "Review whether this generic in-memory protocol should be renamed; it handles no sensitive data.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "swift-testing-verification",
+      "should_use": [
+        {
+          "id": "testing-use-public-api-change",
+          "prompt": "The public SwiftUI API change is complete; run the smallest relevant checks and package-wide verification where required.",
+          "expected": {
+            "skill_ids": ["swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "testing-use-swiftdata-fix",
+          "prompt": "Verify the completed SwiftData migration fix on one exact simulator with serialized tests and report all outcomes.",
+          "expected": {
+            "skill_ids": ["swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "testing-skip-preimplementation-test-plan",
+          "prompt": "Plan test coverage for a proposed feature before any implementation exists; make no changes and run nothing.",
+          "expected": {
+            "skill_ids": ["apple-platform-planner"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "testing-skip-feature-plan",
+          "prompt": "Write a zero-context architecture plan for a new iOS feature and do not implement or test it.",
+          "expected": {
+            "skill_ids": ["apple-platform-planner"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "planning",
+            "stop_condition": "plan-only",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "maestro-apple-app-testing",
+      "should_use": [
+        {
+          "id": "maestro-use-onboarding-flow",
+          "prompt": "Author and run a Maestro regression flow for onboarding on the configured iOS simulator.",
+          "expected": {
+            "skill_ids": ["maestro-apple-app-testing"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-ui-e2e",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "maestro-use-flaky-ui-debug",
+          "prompt": "Debug this flaky iOS Maestro journey using hierarchy and screenshots, reproduce it, and report artifacts.",
+          "expected": {
+            "skill_ids": ["maestro-apple-app-testing"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-ui-e2e",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "maestro-skip-product-screen",
+          "prompt": "Implement the onboarding screen's reusable card component; do not author UI tests.",
+          "expected": {
+            "skill_ids": ["swiftui-component-author", "swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "maestro-skip-unit-tests",
+          "prompt": "Run the standalone Swift unit tests for this parser; no UI flow is involved.",
+          "expected": {
+            "skill_ids": ["swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "codex-skill-maintainer",
+      "should_use": [
+        {
+          "id": "skill-maintainer-use-review-skills",
+          "prompt": "Review every repository-local SKILL.md for trigger overlap and contract gaps; do not edit.",
+          "expected": {
+            "skill_ids": ["codex-skill-maintainer"],
+            "workspace_classification": "foundation-repository",
+            "implementation_authorized": false,
+            "audit_expected": true,
+            "verification_category": "skill-framework",
+            "stop_condition": "review-only",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "skill-maintainer-use-split-skill",
+          "prompt": "Split this ambiguous repository skill, update the catalog and behavioral fixtures, and verify the skill framework.",
+          "expected": {
+            "skill_ids": ["codex-skill-maintainer"],
+            "workspace_classification": "foundation-repository",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "skill-framework",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "skill-maintainer-skip-app-validation",
+          "prompt": "Implement input validation in my consumer iOS app and verify it.",
+          "expected": {
+            "skill_ids": ["swift-testing-verification"],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+          }
+        },
+        {
+          "id": "skill-maintainer-skip-global-install",
+          "prompt": "Install an existing skill into my global Codex directory without changing repository skill content.",
+          "expected": {
+            "skill_ids": [],
+            "workspace_classification": "foundation-repository",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "none",
+            "stop_condition": "outside-scope",
+            "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+          }
+        }
+      ]
+    }
+  ],
+  "framework_boundaries": [
+    {
+      "boundary_id": "ordinary-routing-no-audit",
+      "id": "boundary-ordinary-routing-no-audit",
+      "prompt": "Use $apple-development-foundation to shortlist skills for an iOS import feature. This is ordinary routing: do not scan or audit the foundation repository and do not run its verification scripts.",
+      "expected": {
+        "skill_ids": ["apple-development-foundation", "apple-security-privacy-review"],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "planning",
+        "stop_condition": "plan-only",
+        "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+      }
+    },
+    {
+      "boundary_id": "consumer-workspace-no-archive",
+      "id": "boundary-consumer-workspace-no-archive",
+      "prompt": "Extract the tested component into my consumer app's shared package; do not modify AppleDevelopmentFoundation archive/Sources.",
+      "expected": {
+        "skill_ids": ["reusable-code-extractor", "swiftui-component-author", "swift-testing-verification"],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": true,
+        "audit_expected": false,
+        "verification_category": "apple-code",
+        "stop_condition": "none",
+        "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+      }
+    },
+    {
+      "boundary_id": "review-only-no-edit",
+      "id": "boundary-review-only-no-edit",
+      "prompt": "Review this actor-isolated store for concurrency defects. Findings only: do not edit files or apply fixes.",
+      "expected": {
+        "skill_ids": ["swift-concurrency-review"],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "review",
+        "stop_condition": "review-only",
+        "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+      }
+    },
+    {
+      "boundary_id": "missing-xcodebuildmcp-policy",
+      "id": "boundary-missing-xcodebuildmcp-policy",
+      "prompt": "Verify the completed iOS change. XcodeBuildMCP is unavailable, and neither CLI nor raw Xcode fallback is authorized by active policy.",
+      "expected": {
+        "skill_ids": ["swift-testing-verification"],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "apple-code",
+        "stop_condition": "report-blocked",
+        "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+      }
+    },
+    {
+      "boundary_id": "planning-only-no-implementation",
+      "id": "boundary-planning-only-no-implementation",
+      "prompt": "Plan a new shared Apple-platform search feature. Do not implement it, edit files, or run implementation verification.",
+      "expected": {
+        "skill_ids": ["apple-platform-planner"],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "planning",
+        "stop_condition": "plan-only",
+        "handoff": { "report_exact_checks": false, "report_residual_risk": true }
+      }
+    },
+    {
+      "boundary_id": "installer-conflicts-preserved",
+      "id": "boundary-installer-conflicts-preserved",
+      "prompt": "Test the foundation skill installer when the destination already contains a conflicting file, directory, and external symlink; preserve every conflict.",
+      "expected": {
+        "skill_ids": ["codex-skill-maintainer"],
+        "workspace_classification": "foundation-repository",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "installer-behavior",
+        "stop_condition": "preserve-conflict",
+        "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+      }
+    },
+    {
+      "boundary_id": "handoff-exact-checks-and-risk",
+      "id": "boundary-handoff-exact-checks-and-risk",
+      "prompt": "After verifying this completed Swift change, hand off the exact tools or commands and outcomes, every skipped or failed check, and residual risk.",
+      "expected": {
+        "skill_ids": ["swift-testing-verification"],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "apple-code",
+        "stop_condition": "none",
+        "handoff": { "report_exact_checks": true, "report_residual_risk": true }
+      }
+    }
+  ]
+}

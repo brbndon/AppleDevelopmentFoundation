@@ -1,0 +1,43 @@
+---
+title: Skill authoring guide
+description: Canonical maintenance workflow for repository-local Codex skills and their generated catalog.
+---
+
+# Skill Authoring Guide
+
+> **Repo product:** skills under `.agents/skills/` are the live product. Historical package material is isolated under `archive/` — see the repository root `ARCHIVE.md`.
+
+Repository source skills live in `.agents/skills/<name>/SKILL.md`; Codex discovers user skills from `~/.codex/skills` and repository skills using its configured local conventions. Explicitly invoke one with `$name` or name it in a request. A skill must have `name` and precise `description` frontmatter, one repeatable responsibility, triggers and exclusions, expected inputs/outputs, and verification. Keep operational instructions short; put durable long references in `references/`.
+
+Skills apply to the **consumer workspace** (the app or package the user is building), not to AppleDevelopmentFoundation's `archive/Sources/` unless explicitly requested.
+
+Use `AGENTS.md` for repository-wide always-on rules, a skill for conditional repeatable work, and normal documentation for human reference.
+
+## Catalog workflow
+
+`.agents/skills/manifest.json` is the canonical skill catalog. Its `name` is both the stable skill ID and the required `SKILL.md` frontmatter name. Keep the manifest's `description` exactly equal to the frontmatter description. The remaining catalog fields describe routing and human inventory metadata: `role`, discovery/install `scope`, concise `purpose`, `use_for`, `do_not_use_for`, `installable`, and `router_included`. Router procedure and explicitly requested audit behavior are also structured in the manifest.
+
+The manifest's `schema_version` identifies the expanded catalog contract. The legacy top-level `version` field, per-skill `scripts` and `modules` fields, and the generated router's schema version remain present for existing consumers.
+
+After changing catalog metadata, regenerate the checked-in README table, site inventory, and router catalog:
+
+```bash
+./Scripts/generate-skill-catalog.py
+./Scripts/generate-skill-catalog.py --check
+```
+
+Do not edit generated sections or `apple-development-foundation/master-skill.json` directly. Generated catalog files summarize discovery and routing; executable instructions remain hand-written in each `SKILL.md` and are never generated from the manifest.
+
+## Behavioral evaluation requirement
+
+Every catalog skill must have an entry in `Evaluations/skill-routing.json` with at least two `should_use` and two `should_not_use` prompt cases. Each case must name the expected skill ID or ordered shortlist and fully specify workspace classification, implementation authorization, audit expectation, verification category, stop condition, and handoff requirements. Add or update framework-boundary cases when a change affects consumer versus foundation scope, audit routing, review/planning authorization, tool fallback, installer conflicts, or verification reporting.
+
+The machine-readable contract is documented in `Evaluations/schema.json` and explained in `Evaluations/README.md`. Validate it with:
+
+```bash
+./Scripts/validate-skill-evaluations.py
+```
+
+Fixture validation proves schema completeness, valid catalog IDs, minimum positive/negative coverage, and required boundary presence. It does not execute a model or guarantee automatic host activation. Any optional model-run record must identify the host, model, model version, and evaluation date, and describe results as prompt conformance.
+
+Run `./Scripts/validate-skill-evaluations.py`, `./Scripts/verify-skills.sh`, `./Scripts/test-install-skills.sh`, then inspect `./Scripts/install-skills.sh --dry-run`. Install selected skills with `./Scripts/install-skills.sh`; `--uninstall` removes only a symlink whose destination still matches installer state, including a broken symlink left by a moved repository. Name conflicts and identical external links are never claimed or overwritten. See [Skill Evaluation](skill-evaluation.mdx) for behavioral coverage and activation limits.

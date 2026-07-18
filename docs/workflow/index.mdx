@@ -30,7 +30,7 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
 5. **Establish MCP session context**
    - Before first build/run/test: `session_show_defaults` (then `session_set_defaults` if needed).
    - `discover_projs` only when defaults are missing or wrong — not in parallel with show-defaults.
-   - Prefer **`build_run_sim`** for simulator launch (CLI: `simulator build-and-run`).
+   - Prefer **`build_run_sim`** for simulator launch. Use CLI only when active policy explicitly permits it.
 
 6. **Review before ship**
    - Shared UI: `$apple-accessibility-review`
@@ -43,15 +43,15 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
    - Skill/manifest change in this repo: `./Scripts/verify-skills.sh` (and installer tests if install behavior changed).
 
 8. **Report**
-   - Active project/scheme/simulator, what ran, failures with the next actionable tool call.
+   - Active project/workspace, scheme, configuration, exact simulator/device, what ran, and residual risk; report blocked when no authorized verification path exists.
    - Which skills were applied and which to run next.
 
 ## Do not
 
 | Anti-pattern | Instead |
 | --- | --- |
-| Expand `Sources/` in this repo by default | Work in the consumer app unless the user asked for package work |
-| Run raw `xcodebuild` / `simctl` when XcodeBuildMCP is available | Use MCP tools; report if MCP is unavailable |
+| Expand `archive/Sources/` in this repo by default | Work in the consumer app unless the user asked for package work |
+| Infer fallback permission from a missing MCP tool | Follow the capability ladder: explicitly permitted XcodeBuildMCP CLI, then authorized repository-native tooling, otherwise report blocked |
 | Treat `$apple-development-foundation` as an automatic audit | Audits and installer verification are **explicit** requests only |
 | Copy business branding into skills | Keep skills neutral and reusable |
 | Skip a11y / security review on shared components | Run the review skills before calling work done |

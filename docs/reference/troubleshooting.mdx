@@ -14,11 +14,26 @@ Use this page when a session is blocked. Match the symptom, apply the next step,
 | `Conflict; leaving untouched: …` | Target name already exists and is not installer-owned | Inspect the path; rename/remove only if you own it; re-run `./Scripts/install-skills.sh --dry-run` then install |
 | `Existing identical symlink is not installer-owned` | Correct destination, but not recorded as installer-owned | Leave it; skills still resolve. Optional: uninstall only after you understand ownership |
 | `Already installed (installer-owned)` | Prior successful install | No action unless paths moved |
-| Skills not visible to the host | Host does not read user-scope skills, or wrong `CODEX_HOME` | Confirm target `${CODEX_HOME:-$HOME/.codex}/skills`. Or point the session at `/path/to/AppleDevelopmentFoundation/.agents/skills` without global install |
+| Skills not visible in Codex | Wrong `CODEX_HOME` or Codex did not discover the repository/user skill | Confirm target `${CODEX_HOME:-$HOME/.codex}/skills`. Or point the Codex session at `/path/to/AppleDevelopmentFoundation/.agents/skills` without global install |
+| Skills not visible in another host | No verified adapter, or incompatible discovery | Do not repurpose the Codex installer or invent host syntax. Follow the host's authoritative docs, validate manually, and keep the integration classified as manual/unverified — [Agent host support](/reference/host-support) |
 | `--uninstall` removed nothing useful | No matching installer state, or link destination changed | Read state under the skills target (`.apple-development-foundation-links`); never force-delete unrelated skills |
 | `verify-skills.sh` fails | Manifest / `SKILL.md` contract drift | Fix under `.agents/skills/` with `$codex-skill-maintainer`; do not skip verification |
 
 Installer **never** overwrites conflicting names. Details: [Scripts](/tools/scripts).
+
+## Consumer project guidance
+
+| Symptom | Likely cause | Next step |
+| --- | --- | --- |
+| `An explicit --target is required` | Consumer repository was not selected | Re-run `./Scripts/init-consumer-guidance.sh --target /path/to/consumer --dry-run` |
+| `Conflict; leaving existing consumer instructions untouched` | Consumer already owns an `AGENTS.md` | Keep it unchanged; compare `.agents/skills/codex-bootstrap/assets/consumer-AGENTS.md.template`, propose specific missing sections, and merge only with explicit authorization |
+| Foundation repository target is refused | Initializer was pointed at this skills repository | Select the actual consumer app/package root explicitly |
+| `install-global-instructions.sh is retired` | Legacy global behavior was invoked | Use the project-local initializer; global `~/.codex/AGENTS.md` is never modified |
+| Generated guidance still contains `<...>` | Required customization is incomplete | Fill project/workspace, scheme, configuration, platforms, deployment versions, simulator/config, and repository-native check commands from checked-in consumer configuration |
+
+Safe preview writes nothing. A successful non-dry run creates only
+`<consumer>/AGENTS.md`; it will not create a consumer directory or overwrite a
+file, directory, or symlink at that path.
 
 ## XcodeBuildMCP session
 
@@ -29,7 +44,8 @@ Installer **never** overwrites conflicting names. Details: [Scripts](/tools/scri
 | `discover_projs` finds nothing useful | Wrong workspace root / multi-root monorepo | Open the consumer app root; set project/workspace + scheme; or use named profiles (`session_use_defaults_profile` / `sessionDefaultsProfiles`) |
 | UI automation tools missing | Workflow not enabled | Add `ui-automation` (and related) to `enabledWorkflows`; restart MCP |
 | Agent invents tool names like `build-and-run` as MCP ids | MCP vs CLI naming confusion | MCP ids are underscored (`build_run_sim`); CLI is `xcodebuildmcp simulator build-and-run` — [map](/tools/xcodebuildmcp#tool-map-mcp-name--cli) |
-| Agent falls back to raw `xcodebuild` / `simctl` | MCP unavailable or misconfigured | Prefer MCP; if missing, use official CLI recipes or report the blocker — do not invent a full raw-CLI workflow silently |
+| MCP tool is unavailable | Workflow disabled, MCP unavailable, or host limitation | Report the exact failure; use XcodeBuildMCP CLI only when active policy explicitly permits it; otherwise evaluate an authorized repository-native fallback or report blocked |
+| Agent falls back to raw `xcodebuild` / `xcrun` / `simctl` | Capability missing but fallback was not authorized | Stop. Confirm the active repository/user policy and obtain any required approval before a repository-native command; otherwise report blocked |
 | CLI video/debug/logs broken | Daemon/stateful session | `xcodebuildmcp daemon status` / `daemon logs` — see upstream CLI daemon docs |
 
 Canonical session order: repo `MCP.md` and [XcodeBuildMCP](/tools/xcodebuildmcp).
@@ -42,6 +58,7 @@ Canonical session order: repo `MCP.md` and [XcodeBuildMCP](/tools/xcodebuildmcp)
 | Scheme not found | Wrong project/workspace selected | Re-check `session_show_defaults`; list schemes for the selected project |
 | Signing / device install fails | Device workflow + signing not set up | Enable device workflow only when needed; fix signing in Xcode; report exact MCP step that failed |
 | Tests “pass” but nothing ran | Empty suite or wrong target | Report scheme, test plan/target, and command output; never claim pass without execution |
+| Simulator tests race or saturate the host | Same-project tests overlap or parallel workers share state | Wait for active `xcodebuild`/`xctest`/project runners; use one exact simulator and `test_sim` with `-parallel-testing-enabled NO` by default |
 
 ## Maestro
 
@@ -59,7 +76,7 @@ Full workflow: `$maestro-apple-app-testing` and [Maestro](/tools/maestro).
 | Symptom | Fix |
 | --- | --- |
 | Agent ran `./Scripts/verify-skills.sh` or scanned the whole foundation repo during ordinary app work | Ordinary routing is **not** an audit — see [Skill routing](/workflow/skill-routing) |
-| Agent edited this repo’s `Sources/` while bootstrapping an app | Work in the **consumer** workspace — see [Consumer workspace](/workflow/consumer-workspace) |
+| Agent edited this repo’s `archive/Sources/` while bootstrapping an app | Work in the **consumer** workspace — see [Consumer workspace](/workflow/consumer-workspace) |
 | Agent treated `$apple-development-foundation` as always-on | Explicit invocation only; shortlist children, then read their `SKILL.md` |
 
 ## Docs site (this Blume project)
@@ -82,6 +99,7 @@ Optional for app work. Requires **Node.js ≥ 22.12**.
 ## Related
 
 - [Quickstart](/quickstart)
+- [Agent host support](/reference/host-support)
 - [Task recipes](/workflow/task-recipes)
 - [Verification matrix](/reference/verification-matrix)
 - [Scripts](/tools/scripts)

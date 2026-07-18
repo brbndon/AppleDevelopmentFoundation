@@ -11,7 +11,7 @@ Short paths for coding agents. Pick the scenario that matches the user request, 
 
 1. Confirm the **active workspace** (consumer app vs this foundation repo).
 2. Invoke skills with `$name` (or host equivalent).
-3. Prefer **XcodeBuildMCP** over raw `xcodebuild` / `simctl`.
+3. Follow the [XcodeBuildMCP capability ladder](/tools/xcodebuildmcp#capability-and-fallback-ladder); missing tools do not authorize fallback.
 4. Stop when the recipe’s verification gate passes or a documented stop condition is hit.
 
 ## Recipes
@@ -23,7 +23,7 @@ Short paths for coding agents. Pick the scenario that matches the user request, 
 | Skills | Optional `$apple-development-foundation` → **`$codex-bootstrap`** → chain in skill (planner, tabs, design system, components, platform, reviews, testing) |
 | Tools | XcodeBuildMCP |
 | Verify | `session_show_defaults` → **`build_run_sim`** (prefer) → `test_sim` if present → optional `screenshot` / `snapshot_ui` |
-| Do not | Expand this repo’s archived `Sources/`; invent business domain the user did not supply |
+| Do not | Expand this repo’s `archive/Sources/`; invent business domain the user did not supply |
 
 Details: [Bootstrap](/skills/bootstrap).
 
@@ -43,7 +43,7 @@ Details: [Bootstrap](/skills/bootstrap).
 | Skills | `$swiftui-tab-navigation` when the app needs **app-level** peer destinations; `$apple-design-system` for tokens/appearance; `$swiftui-component-author` for reusable components on that system; `$ios-macos-platform-adaptation` only when platforms diverge |
 | Tools | XcodeBuildMCP for build/preview targets |
 | Verify | MCP build; `$apple-accessibility-review` on shared UI; `$swift-testing-verification` when logic or public component APIs change |
-| Do not | Use tab skill for page-style `TabView` content or segmented controls; put branding-specific tokens into foundation skills; land components in this repo’s archived `Sources/` |
+| Do not | Use tab skill for page-style `TabView` content or segmented controls; put branding-specific tokens into foundation skills; land components in this repo’s `archive/Sources/` |
 
 Read each skill’s `SKILL.md` for checklists. Bootstrap chain context: [Bootstrap](/skills/bootstrap).
 
@@ -102,7 +102,7 @@ Details: [Testing](/skills/testing), [Maestro](/tools/maestro).
 | --- | --- |
 | Skills | **`$codex-skill-maintainer`** |
 | Tools | `./Scripts/verify-skills.sh`; `./Scripts/test-install-skills.sh` if installer behavior changed |
-| Verify | Manifest + README + optional `master-skill.json` updates; dry-run install |
+| Verify | Canonical manifest update + generated catalog check; dry-run install |
 | Do not | Put business branding/secrets in skills |
 
 Details: [Authoring skills](/skills/authoring).

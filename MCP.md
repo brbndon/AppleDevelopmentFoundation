@@ -2,7 +2,7 @@
 
 ## Primary MCP: XcodeBuildMCP
 
-Use XcodeBuildMCP tools instead of raw `xcodebuild`, `xcrun`, or `simctl` for iOS/macOS build, test, simulator, and UI inspection.
+Use XcodeBuildMCP MCP tools as the primary interface for iOS/macOS build, test, simulator, and UI inspection. A missing capability does not by itself authorize a shell fallback.
 
 **Naming:** MCP tool ids use underscores (e.g. `build_run_sim`). The CLI uses `xcodebuildmcp <workflow> <verb>` (e.g. `xcodebuildmcp simulator build-and-run`). Same implementations. Full map: Blume [XcodeBuildMCP](docs/tools/xcodebuildmcp.mdx) and https://xcodebuildmcp.com/docs/tools · https://xcodebuildmcp.com/docs/cli
 
@@ -21,7 +21,18 @@ Default MCP advertisement is the **`simulator`** workflow (plus session-manageme
 2. If defaults are missing or wrong, use `session_set_defaults` and/or config `sessionDefaults`. Use `discover_projs` only when you still need discovery — do not run it speculatively or in parallel with `session_show_defaults`.
 3. For simulator run intent, prefer **`build_run_sim`** (CLI: `simulator build-and-run`) instead of separate build → install → launch.
 4. Prefer an exact `simulatorId` when pinning a simulator for tests or Maestro.
-5. Report the active context used (project/workspace, scheme, simulator/device) and the exact failing tool on errors.
+5. Report the active context used (project/workspace, scheme, configuration, exact simulator/device) and the exact failing tool on errors.
+
+### Capability and fallback ladder
+
+Apply this order to every Apple build, run, test, simulator, or UI-inspection task:
+
+1. **XcodeBuildMCP MCP tools.** Use the host's live MCP tool list and the session workflow above.
+2. **XcodeBuildMCP CLI.** Use the matching `xcodebuildmcp` CLI workflow only when the active repository or user policy explicitly permits CLI fallback. Do not treat shell access or an installed binary as permission.
+3. **Repository-native raw Xcode tooling.** Use documented project commands backed by `xcodebuild`, `xcrun`, or `simctl` only when the active repository/user policy authorizes that path. If it requires approval, obtain approval first. Preserve the selected project/workspace, scheme, configuration, exact destination, serialized test scope, and other safety constraints.
+4. **Blocked.** If no authorized path exists, report the unavailable capability, the policy boundary, what was not run, and the next action needed. Do not silently bypass policy.
+
+Every result or blocker must report the project/workspace, scheme, configuration, exact simulator/device when applicable, tool or command used, outcome, and residual risk. This ladder does not relax approval requirements for destructive actions, deployment, publishing, credentials, or user data.
 
 ### Key tools by task (MCP names)
 
@@ -67,7 +78,7 @@ See the host’s live tool list and any global `xcodebuildmcp` skill for version
 
 After `$codex-bootstrap` completes initial structure:
 
-1. `session_show_defaults` — confirm project, scheme, and simulator/device
+1. `session_show_defaults` — confirm project/workspace, scheme, configuration, and exact simulator/device
 2. Build on simulator via `build_run_sim` (or macOS via `build_run_macos` if applicable)
 3. Run unit tests if present (`test_sim` / `test_macos`)
 4. Optional: capture a screenshot or view hierarchy to confirm the shell launches

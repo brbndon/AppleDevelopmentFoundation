@@ -9,6 +9,7 @@ Pick the row that matches the change. **Never claim a check passed without runni
 
 | Situation | What to run |
 | --- | --- |
+| Behavioral routing fixture change | `./Scripts/validate-skill-evaluations.py` |
 | Skill `SKILL.md` or `manifest.json` change | `./Scripts/verify-skills.sh` |
 | Installer behavior change | `./Scripts/verify-skills.sh` + `./Scripts/test-install-skills.sh` |
 | Consumer app feature / bug fix | XcodeBuildMCP build + tests; `$swift-testing-verification` |
@@ -18,7 +19,7 @@ Pick the row that matches the change. **Never claim a check passed without runni
 | Critical UI flows | `$maestro-apple-app-testing` + XcodeBuildMCP |
 | New app bootstrap complete | Bootstrap checklist + MCP build/test (+ optional screenshot) |
 | Docs site (`docs/`, Blume config) | `npm run build` and `npm run validate` |
-| Archived package (`Sources/`, etc.) | **Only if user asked:** `./Scripts/verify.sh` — see `ARCHIVE.md` |
+| Archived package (`archive/Sources/`, etc.) | **Only if user asked:** `cd archive && ./Scripts/verify.sh` — see `ARCHIVE.md` |
 
 ## Reporting standard
 
@@ -37,7 +38,7 @@ Stop and ask (or report blocked) when:
 | Condition | Why |
 | --- | --- |
 | No clear consumer workspace for app work | Skills must not default into this repo’s archived package |
-| XcodeBuildMCP required but unavailable | Fix MCP before inventing a full raw-CLI workflow |
+| XcodeBuildMCP MCP tools unavailable and neither CLI nor repository-native fallback is authorized | Report the exact capability failure and policy boundary; do not invent or silently run a fallback |
 | Maestro required but CLI missing | Report blocker before speculative flows |
 | User requested foundation audit but only ordinary routing ran | Audits are explicit — see [Skill routing](/workflow/skill-routing) |
 | Review-only request | Do not change code unless authorized |

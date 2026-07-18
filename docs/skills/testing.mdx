@@ -41,7 +41,7 @@ Hard rules distilled for agents (full detail on [Maestro](/tools/maestro)):
 ## Practical session pattern
 
 1. `session_show_defaults` (XcodeBuildMCP); set defaults if needed  
-2. Build/unit-test via MCP: prefer `build_run_sim` / `test_sim` (CLI: `simulator build-and-run` / `test`)  
+2. Build/unit-test via MCP: prefer `build_run_sim` / `test_sim`; use the matching XcodeBuildMCP CLI only when active policy explicitly permits it
 3. For UI: install/launch on the pinned **`simulatorId`**, then run Maestro flows  
 4. On failure: logs/hierarchy/`screenshot`/`snapshot_ui` → fix → re-run the smallest failing slice  
 5. Report scheme, simulatorId, commands, pass/fail, residual risk  

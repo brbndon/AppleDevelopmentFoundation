@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://apple-development-foundation.local/evaluations/skill-routing.schema.json",
+  "title": "Apple Development Foundation skill-routing fixtures",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "activation_claim",
+    "skills",
+    "framework_boundaries"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "activation_claim": {
+      "const": "Fixtures define prompt expectations; they do not guarantee automatic skill activation in any host."
+    },
+    "skills": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/skillEvaluation" }
+    },
+    "framework_boundaries": {
+      "type": "array",
+      "minItems": 7,
+      "items": { "$ref": "#/$defs/boundaryCase" }
+    }
+  },
+  "$defs": {
+    "skillEvaluation": {
+      "type": "object",
+      "required": ["skill_id", "should_use", "should_not_use"],
+      "additionalProperties": false,
+      "properties": {
+        "skill_id": { "$ref": "#/$defs/identifier" },
+        "should_use": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/promptCase" }
+        },
+        "should_not_use": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/promptCase" }
+        }
+      }
+    },
+    "boundaryCase": {
+      "type": "object",
+      "required": ["boundary_id", "id", "prompt", "expected"],
+      "additionalProperties": false,
+      "properties": {
+        "boundary_id": { "$ref": "#/$defs/identifier" },
+        "id": { "$ref": "#/$defs/identifier" },
+        "prompt": { "type": "string", "minLength": 1 },
+        "expected": { "$ref": "#/$defs/expectation" }
+      }
+    },
+    "promptCase": {
+      "type": "object",
+      "required": ["id", "prompt", "expected"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "prompt": { "type": "string", "minLength": 1 },
+        "expected": { "$ref": "#/$defs/expectation" }
+      }
+    },
+    "expectation": {
+      "type": "object",
+      "required": [
+        "skill_ids",
+        "workspace_classification",
+        "implementation_authorized",
+        "audit_expected",
+        "verification_category",
+        "stop_condition",
+        "handoff"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "skill_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "workspace_classification": {
+          "enum": [
+            "consumer-workspace",
+            "foundation-repository",
+            "foundation-archive",
+            "non-apple-workspace",
+            "unresolved"
+          ]
+        },
+        "implementation_authorized": { "type": "boolean" },
+        "audit_expected": { "type": "boolean" },
+        "verification_category": {
+          "enum": [
+            "none",
+            "planning",
+            "review",
+            "apple-code",
+            "apple-ui-e2e",
+            "skill-framework",
+            "foundation-audit",
+            "installer-behavior"
+          ]
+        },
+        "stop_condition": {
+          "enum": [
+            "none",
+            "plan-only",
+            "review-only",
+            "request-clarification",
+            "report-blocked",
+            "preserve-conflict",
+            "outside-scope"
+          ]
+        },
+        "handoff": {
+          "type": "object",
+          "required": ["report_exact_checks", "report_residual_risk"],
+          "additionalProperties": false,
+          "properties": {
+            "report_exact_checks": { "type": "boolean" },
+            "report_residual_risk": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    }
+  }
+}

@@ -1,7 +1,0 @@
-# Security and Privacy
-
-> **Archived.** Historical security and privacy reference only. See [ARCHIVE.md](../ARCHIVE.md). Do not expand this package unless explicitly asked.
-
-No telemetry, analytics, network clients, secrets, or user-specific paths belong in this foundation. `FileImportPolicy` accepts only local regular non-symbolic-link files, validates declared type and byte size before reading, and rejects invalid limits. `SafeFilename` removes separators and control characters. `AtomicFileWriter` refuses an existing destination unless `overwrite: true` and never follows a symbolic-link destination. Use security-scoped access only around necessary work; the async overload remains active across suspension points and balances access on success, errors, and cancellation. Apps must supply sandbox entitlements and document any file, Photos, camera, or microphone permission. Host apps remain responsible for document pickers, security-scoped URL acquisition, bookmark persistence, externally acquired URL lifetime, and cleanup policies.
-
-`FoundationLogger` accepts `StaticString` event literals rather than runtime strings. Never interpolate credentials, tokens, private user content, raw imports, complete sensitive paths, security-scoped URLs, or arbitrary error descriptions into its subsystem, category, or surrounding logging code. Generic `AppFoundationError` descriptions intentionally omit associated details. Handle failures explicitly; avoid force unwraps on import, storage, and security paths.

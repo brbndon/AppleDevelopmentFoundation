@@ -1,0 +1,42 @@
+---
+title: Skill evaluation
+description: Behavioral routing fixtures, framework boundaries, and prompt-conformance limits for repository-local skills.
+---
+
+# Skill Evaluation
+
+> **Repo product:** skills under `.agents/skills/` are the live product. Historical package material is isolated under `archive/` — see the repository root `ARCHIVE.md`.
+
+The version-controlled behavioral evidence lives in `Evaluations/skill-routing.json`, with its contract documented by `Evaluations/schema.json` and `Evaluations/README.md`. The fixture set covers all catalog skills with at least two positive and two negative prompts per skill. Each prompt records its expected skill shortlist, workspace, implementation authorization, audit expectation, verification category, stop condition, and handoff obligations.
+
+`./Scripts/validate-skill-evaluations.py` deterministically checks schema completeness, catalog ID validity, skill coverage, and required framework-boundary presence. `./Scripts/verify-skills.sh` includes that validator, and CI also runs it as an explicit step. These checks validate fixture evidence; they do not execute a model. Explicit invocation is supported by the documented `$skill-name` form, but automatic activation is **not tested or claimed**.
+
+The scope below describes where a skill performs its work. The manifest's `repository-or-user` value describes where Codex can discover or install the skill; it does not authorize changes to this repository's archived package. Except for explicit foundation audits and local skill maintenance, skills operate on the consumer workspace.
+
+| Skill | Should trigger (two examples) | Should not trigger (two examples) | Overlap risk and explicit invocation | Scope |
+| --- | --- | --- | --- | --- |
+| `apple-development-foundation` | “Route this iOS import task to foundation skills.”; “Compare this project’s skill inventory with the foundation catalog.” | “Implement the selected import flow.”; “Run an installer check for an ordinary app task.” | Routes before child workflows; use `$apple-development-foundation` for explicit routing or audits, then invoke selected children. | Consumer routing or foundation audit |
+| `apple-platform-planner` | “Plan a shared iOS/macOS document-import feature.”; “Design a macOS settings feature.” | “Implement the approved settings plan.”; “Plan a web dashboard.” | Overlaps module author for new targets; use `$apple-platform-planner` for architecture only. | Consumer workspace |
+| `swiftui-tab-navigation` | “Add native Plan and Settings tabs that use Liquid Glass on iOS 26.”; “Replace this custom SwiftUI tab bar with system navigation.” | “Build a page-style photo carousel.”; “Add one settings button.” | Overlaps component author and platform adaptation; use `$swiftui-tab-navigation` for the app-level peer-destination shell. | Consumer workspace |
+| `swiftui-component-author` | “Create a reusable SwiftUI error banner.”; “Refactor this reusable picker component.” | “Build our checkout screen.”; “Review this actor.” | Overlaps design system for tokens; use `$swiftui-component-author` for component implementation. | Consumer workspace |
+| `apple-design-system` | “Add semantic spacing tokens.”; “Change the shared neutral button style.” | “Apply Acme brand colors.”; “Audit VoiceOver in all views.” | Overlaps component author/accessibility; use `$apple-design-system` for shared token/component system work. | Consumer workspace |
+| `ios-macos-platform-adaptation` | “Adapt this shared settings UI for macOS commands.”; “Handle iOS versus macOS document-panel behavior.” | “Use the same view on both platforms.”; “Plan a new onboarding flow.” | Overlaps platform planning; use `$ios-macos-platform-adaptation` after concrete divergence exists. | Consumer workspace |
+| `swift-package-module-author` | “Add an independently importable SwiftPM module for two apps in this workspace.”; “Create a package target for shared file validation.” | “Add an app-local helper.”; “Extract this existing app cache.” | Overlaps extractor/planner; use `$swift-package-module-author` only for a new target in the active workspace. | Consumer workspace |
+| `reusable-code-extractor` | “Extract this proven app cache into a shared module in this workspace.”; “Generalize this tested app component for two products.” | “Invent a generic cache API.”; “Land this code in AppleDevelopmentFoundation’s archived package.” | Overlaps module author; use `$reusable-code-extractor` when implementation evidence exists and a consumer shared target is identified. | Consumer workspace |
+| `swift-concurrency-review` | “Audit these actors for Sendable errors.”; “Review cancellation in this image loader.” | “Change button colors.”; “Design synchronous routing APIs.” | Overlaps testing verification; use `$swift-concurrency-review` for isolation/task review. | Consumer workspace |
+| `apple-accessibility-review` | “Audit this reusable SwiftUI control for VoiceOver.”; “Check macOS keyboard access in this component.” | “Review a file parser.”; “Choose spacing token names.” | Overlaps component/design work; use `$apple-accessibility-review` for accessibility findings. | Consumer workspace |
+| `apple-security-privacy-review` | “Review this import flow for path traversal.”; “Audit logging privacy.” | “Polish this empty state.”; “Rename a generic protocol.” | Overlaps concurrency/file implementation; use `$apple-security-privacy-review` for sensitive-data boundaries. | Consumer workspace |
+| `swift-testing-verification` | “Run the right checks after this public SwiftUI API change.”; “Verify this SwiftData fix.” | “Plan test coverage before coding.”; “Write a feature plan.” | Overlaps all implementation skills; use `$swift-testing-verification` after a change. | Consumer workspace |
+| `maestro-apple-app-testing` | “Author a Maestro regression flow for onboarding.”; “Debug this flaky iOS UI test.” | “Implement the onboarding screen.”; “Run standalone unit tests.” | Overlaps testing verification; use `$maestro-apple-app-testing` for end-to-end UI workflows. | Consumer workspace |
+| `codex-skill-maintainer` | “Review these local SKILL.md files.”; “Split an ambiguous repository skill.” | “Implement app validation.”; “Install skills into my global Codex directory.” | Overlaps all skills only at metadata level; use `$codex-skill-maintainer` for `.agents/skills` work. | Foundation repository |
+| `codex-bootstrap` | “Bootstrap a new consumer iOS SwiftUI app.”; “Set up a shared iOS/macOS app skeleton.” | “Build one settings screen.”; “Expand this repo’s archived package.” | Overlaps planning and component author; use `$codex-bootstrap` for consumer-project setup and chaining. | Consumer workspace |
+
+## Framework boundaries
+
+The fixture set also requires cases proving that ordinary routing does not imply a foundation audit, consumer work does not target archived foundation code, review-only and planning-only prompts do not authorize edits, unavailable XcodeBuildMCP follows the capability policy, installer conflicts are preserved, and verification handoff reports exact checks plus residual risk.
+
+The current evaluation covers all 15 manifest skills and 7 required framework boundaries. The human-readable table above is a routing summary; the JSON fixtures are the validation source of truth. The principal remaining ambiguity is intentional composition: the master may shortlist tab navigation, component author, accessibility review, and verification in sequence.
+
+## What still requires model or manual evaluation
+
+A person or optional model runner must execute prompts and judge observed responses against fixture expectations. Such a run must record host, model, model version, and evaluation date, and report prompt conformance rather than guaranteed activation. Manual review also remains necessary for shortlist quality, nuanced stop-condition compliance, and the usefulness of verification and residual-risk handoff.
