@@ -1,0 +1,85 @@
+---
+title: Troubleshooting
+description: Fix common skill install, XcodeBuildMCP, simulator, Maestro, and docs-site failures without guessing.
+---
+
+# Troubleshooting
+
+Use this page when a session is blocked. Match the symptom, apply the next step, then re-run the smallest verification that proves recovery.
+
+## Skills install and discovery
+
+| Symptom | Likely cause | Next step |
+| --- | --- | --- |
+| `Conflict; leaving untouched: …` | Target name already exists and is not installer-owned | Inspect the path; rename/remove only if you own it; re-run `./Scripts/install-skills.sh --dry-run` then install |
+| `Existing identical symlink is not installer-owned` | Correct destination, but not recorded as installer-owned | Leave it; skills still resolve. Optional: uninstall only after you understand ownership |
+| `Already installed (installer-owned)` | Prior successful install | No action unless paths moved |
+| Skills not visible to the host | Host does not read user-scope skills, or wrong `CODEX_HOME` | Confirm target `${CODEX_HOME:-$HOME/.codex}/skills`. Or point the session at `/path/to/AppleDevelopmentFoundation/.agents/skills` without global install |
+| `--uninstall` removed nothing useful | No matching installer state, or link destination changed | Read state under the skills target (`.apple-development-foundation-links`); never force-delete unrelated skills |
+| `verify-skills.sh` fails | Manifest / `SKILL.md` contract drift | Fix under `.agents/skills/` with `$codex-skill-maintainer`; do not skip verification |
+
+Installer **never** overwrites conflicting names. Details: [Scripts](/tools/scripts).
+
+## XcodeBuildMCP session
+
+| Symptom | Likely cause | Next step |
+| --- | --- | --- |
+| Build/run tools missing for macOS or device | Only default `simulator` workflow enabled | Set `enabledWorkflows` in `.xcodebuildmcp/config.yaml`, then **reload/restart** the MCP session — see [XcodeBuildMCP](/tools/xcodebuildmcp) |
+| Defaults wrong (project/scheme/simulator) | Stale or empty session defaults | Call `session_show_defaults` first; set defaults or use `discover_projs` **only** when defaults are missing/wrong — never parallel with show-defaults |
+| `discover_projs` finds nothing useful | Wrong workspace root / multi-root monorepo | Open the consumer app root; set explicit project/workspace + scheme in session defaults or config `sessionDefaults` |
+| UI automation tools missing | Workflow not enabled | Add `ui-automation` (and related) to `enabledWorkflows`; restart MCP |
+| Agent falls back to raw `xcodebuild` / `simctl` | MCP unavailable or misconfigured | Report the blocker; fix MCP config before inventing CLI workflows when the host should use MCP |
+
+Canonical session order: repo `MCP.md` and [XcodeBuildMCP](/tools/xcodebuildmcp).
+
+## Simulator and build
+
+| Symptom | Likely cause | Next step |
+| --- | --- | --- |
+| Flaky or wrong OS/device | Unstable simulator selection (`OS=latest` or name-only churn) | Resolve **one exact simulator ID** from defaults/list tools; reuse it for build, install, Maestro |
+| Scheme not found | Wrong project/workspace selected | Re-check `session_show_defaults`; list schemes for the selected project |
+| Signing / device install fails | Device workflow + signing not set up | Enable device workflow only when needed; fix signing in Xcode; report exact MCP step that failed |
+| Tests “pass” but nothing ran | Empty suite or wrong target | Report scheme, test plan/target, and command output; never claim pass without execution |
+
+## Maestro
+
+| Symptom | Likely cause | Next step |
+| --- | --- | --- |
+| `maestro` not found | CLI not installed or not on `PATH` | Run `command -v maestro`, `maestro --version`, `maestro list-devices`; **stop and report** before writing speculative flows |
+| Flow can’t find a control | Bad selector; SwiftUI system chrome | Inspect hierarchy (Maestro MCP / XcodeBuildMCP); prefer stable accessibility IDs; for tab chrome, confirmed label may beat `.tabItem` identifier |
+| Intermittent failures | Race, animation, onboarding, permissions | Classify: app vs selector/flow vs fixture vs simulator/env; reproduce once; replace hard sleeps with waits/assertions |
+| MCP and CLI disagree on device | Different simulator targets | Point both at the same simulator ID and app state |
+
+Full workflow: `$maestro-apple-app-testing` and [Maestro](/tools/maestro).
+
+## Skill routing mistakes
+
+| Symptom | Fix |
+| --- | --- |
+| Agent ran `./Scripts/verify-skills.sh` or scanned the whole foundation repo during ordinary app work | Ordinary routing is **not** an audit — see [Skill routing](/workflow/skill-routing) |
+| Agent edited this repo’s `Sources/` while bootstrapping an app | Work in the **consumer** workspace — see [Consumer workspace](/workflow/consumer-workspace) |
+| Agent treated `$apple-development-foundation` as always-on | Explicit invocation only; shortlist children, then read their `SKILL.md` |
+
+## Docs site (this Blume project)
+
+Optional for app work. Requires **Node.js ≥ 22.12**.
+
+| Symptom | Next step |
+| --- | --- |
+| `npm run build` / `validate` fails on links | Fix broken relative paths under `docs/`; re-run `npm run validate` |
+| Local preview 404s under subpaths | Site production base is `/AppleDevelopmentFoundation/`; local `npm run dev` uses Blume’s dev server paths |
+| Duplicate H1 in HTML | Body `#` is filtered via `SkipBodyH1`; chrome H1 comes from frontmatter `title` — prefer `##` for sections |
+
+## Recovery checklist
+
+1. Identify whether the blocker is **skills**, **MCP**, **consumer project**, or **test tooling**.
+2. Apply one row from the tables above.
+3. Re-run the smallest proof: install dry-run, `session_show_defaults`, one build/test, or one Maestro flow.
+4. Report: active workspace, scheme/simulator, exact command or tool, residual risk.
+
+## Related
+
+- [Quickstart](/quickstart)
+- [Task recipes](/workflow/task-recipes)
+- [Verification matrix](/reference/verification-matrix)
+- [Scripts](/tools/scripts)

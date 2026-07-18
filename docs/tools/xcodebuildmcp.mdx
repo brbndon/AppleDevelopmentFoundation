@@ -7,39 +7,96 @@ description: Preferred MCP for Apple build, test, simulator, device, and UI insp
 
 Prefer **XcodeBuildMCP** tools instead of raw `xcodebuild`, `xcrun`, or `simctl` for iOS/macOS build, test, simulator, and UI inspection.
 
-Canonical reference in-repo: `MCP.md`. Upstream: [xcodebuildmcp.com](https://xcodebuildmcp.com).
+| | |
+| --- | --- |
+| **Use when** | Building, testing, launching, inspecting UI, or managing simulators/devices for Apple apps |
+| **Do not use as** | A substitute for reading skill workflows; product implementation still goes through foundation skills |
+| **Canonical in-repo** | `MCP.md` |
+| **Upstream** | [xcodebuildmcp.com](https://xcodebuildmcp.com) |
+
+## Fast path (every session)
+
+1. Call **`session_show_defaults`** before the first build/run/test action.
+2. Use **`discover_projs`** only when defaults show **missing or incorrect** project/workspace context — not speculatively, and **not in parallel** with show-defaults.
+3. For simulator **run** intent, prefer the **combined build-and-run** tool over separate build then run.
+4. Report active context (project/workspace, scheme, simulator/device) and the **exact failing step** on errors.
 
 ## Install and configure
 
-1. Add XcodeBuildMCP to the agent host’s MCP server list.
-2. Enable workflows beyond the default simulator set when needed: [configuration docs](https://xcodebuildmcp.com/docs/configuration).
-3. After changing `.xcodebuildmcp/config.yaml`, reload or restart the MCP session.
+1. Register XcodeBuildMCP in the agent host’s MCP server list (host-specific).
+2. Create or edit project-local config at the workspace root:
 
-Only simulator workflow tools are enabled by default. Device, macOS, debugging, and UI automation require explicit workflow configuration.
+```yaml
+# <workspace-root>/.xcodebuildmcp/config.yaml
+schemaVersion: 1
+enabledWorkflows: ["simulator", "ui-automation", "debugging"]
+```
 
-## Every session
+`schemaVersion: 1` is required. Interactive generator: `xcodebuildmcp setup`.
 
-1. Call **`session_show_defaults`** before the first build/run/test action.
-2. Use **`discover_projs`** only when defaults show missing or incorrect project/workspace context — do not run discovery speculatively or in parallel with show-defaults.
-3. For simulator run intent, prefer the **combined build-and-run** tool over separate build then run.
-4. Report active context (project/workspace, scheme, simulator/device) and the exact failing step on errors.
+### Workflow selection (MCP context)
 
-## Tool map (representative)
+By default only the **`simulator`** workflow is advertised to the agent. Enable more when the task needs them (names from upstream workflows catalog):
 
-| Task | Tools |
+| Need | Enable (examples) |
 | --- | --- |
-| Project discovery | `discover_projs`, scheme listing, build-settings inspection |
-| Simulator build/run/test | build-and-run (preferred for run), build, test, install, launch |
-| Simulator state | boot, erase, location, appearance |
-| macOS | build, run, test (macOS workflow enabled) |
-| Physical device | build, test, install, launch (device workflow + signing) |
+| iOS simulator build/run/test | `simulator` (default) |
+| Simulator boot/erase/appearance | often with `simulator-management` |
+| UI gestures, screenshots, hierarchy automation | `ui-automation` |
+| Physical device | `device` (+ signing in Xcode) |
+| macOS app build/run/test | `macos` |
+| SwiftPM packages | `swift-package` |
+| Debug attach / breakpoints | `debugging` |
+| Scaffold new projects | `project-scaffolding` |
+| Project/scheme discovery | `project-discovery` (tools may still be used via session flow) |
+
+After changing config: **reload or restart** the MCP session. Full schema and layering (session tools > config file > env): [Configuration](https://xcodebuildmcp.com/docs/configuration) · [Workflows](https://xcodebuildmcp.com/docs/workflows).
+
+Optional `sessionDefaults` in config (project path, scheme, simulator name) reduce discovery churn — see upstream session-defaults docs. Runtime overrides via session tools still win.
+
+## Tool map by intent (representative)
+
+Exact MCP tool identifiers can vary by XcodeBuildMCP version and enabled workflows. Use this map for **intent**; prefer the host’s tool list and any global `xcodebuildmcp` skill for precise names.
+
+| Intent | Representative tools / groups |
+| --- | --- |
+| Show / set session context | `session_show_defaults`, session set-defaults tools |
+| Find projects/schemes | `discover_projs`, scheme listing, build-settings inspection |
+| Simulator build / run / test | build-and-run (preferred for run), build, test, install, launch |
+| Simulator lifecycle | boot, erase, location, appearance |
+| macOS | build, run, test (requires `macos` workflow) |
+| Physical device | build, test, install, launch (requires `device` + signing) |
 | Logs | stream and capture from simulators and devices |
 | UI inspection | screenshots, view hierarchy with coordinates, taps/swipes/gestures |
 | SwiftPM | build, run, test packages |
-| Scaffolding | generate new iOS/macOS project templates |
+| Scaffolding | generate iOS/macOS project templates |
 
-Host skills such as the global `xcodebuildmcp` skill may add capability notes; still follow this session discipline.
+## Failure modes
+
+| Symptom | Next step |
+| --- | --- |
+| No macOS/device/UI tools in the tool list | Enable the matching `enabledWorkflows` entry; restart MCP |
+| Wrong scheme or simulator | Re-read `session_show_defaults`; fix defaults before rebuilding |
+| Empty or wrong project path | Set workspace root; `discover_projs` only if defaults are wrong |
+| Signing / device install errors | Fix signing in Xcode; enable `device` only when needed; report exact tool failure |
+| Agent used raw `xcodebuild` | Prefer MCP; if MCP is unavailable, report the blocker explicitly |
+| Flaky simulator selection | Pin one simulator **ID**; avoid unstable `OS=latest`-style selection |
+
+More rows: [Troubleshooting](/reference/troubleshooting).
 
 ## Verify after bootstrap or feature work
 
-> Call `session_show_defaults`, then build and test on the iOS simulator with XcodeBuildMCP. Report scheme, simulator, and any failures with the next actionable tool call.
+```text
+Goal: Prove the consumer app builds and tests on the intended target.
+Constraints: XcodeBuildMCP only (no raw xcodebuild if MCP is available). Report residual risk.
+Inputs: Active consumer project, scheme, simulator or macOS target.
+Done when: session_show_defaults reported; build (and tests if present) executed; outcomes stated.
+Verification: Prefer combined build-and-run for launch; never claim pass without running the tool.
+```
+
+## Related
+
+- Repo `MCP.md`
+- [Maestro](/tools/maestro) — pair for UI regression
+- [Verification matrix](/reference/verification-matrix)
+- [Task recipes](/workflow/task-recipes)

@@ -8,43 +8,59 @@ sidebar:
 
 # Apple Development Foundation
 
-This repository’s **product** is a set of reusable **Codex skills** and command references for Apple development (iOS 17+, macOS 14+). The Swift package under `Sources/` and the old Vite site under `Website/` are **archived** exploratory work — do not expand them unless the user explicitly asks.
+**For coding agents and Apple developers.** This site is the playbook for reusable **Codex skills**, **XcodeBuildMCP**, **Maestro**, and verification on iOS 17+ and macOS 14+. Use it to install skills, route work, bootstrap consumer apps, and verify changes — not to expand this repository’s archived Swift package.
 
-Use this Blume site as the **agent-facing playbook**: how to install skills, route work, call MCPs, bootstrap consumer apps, and verify changes.
-
-## Start here
-
-:::tip For coding agents
-1. Read [Quickstart](/quickstart).
-2. Follow the [session workflow](/workflow).
-3. Route with `$apple-development-foundation` when the task is broad or a new chat needs a skill shortlist.
-4. Prefer **XcodeBuildMCP** over raw `xcodebuild` / `simctl` — see [XcodeBuildMCP](/tools/xcodebuildmcp).
+:::tip Agent fast path
+1. [Quickstart](/quickstart) — install skills + wire MCP  
+2. [Task recipes](/workflow/task-recipes) — pick a scenario  
+3. Prefer **XcodeBuildMCP** over raw `xcodebuild` / `simctl` — [XcodeBuildMCP](/tools/xcodebuildmcp)  
+4. Stuck? [Troubleshooting](/reference/troubleshooting)
 :::
+
+## I want to…
+
+| Goal | Start here |
+| --- | --- |
+| Install skills and open a first verified session | [Quickstart](/quickstart) |
+| Bootstrap a new iOS/macOS SwiftUI app | [Bootstrap](/skills/bootstrap) · `$codex-bootstrap` |
+| Follow the full agent session loop | [Session workflow](/workflow) |
+| Choose the right skill for a task | [Skill routing](/workflow/skill-routing) · `$apple-development-foundation` |
+| Run a common scenario end-to-end | [Task recipes](/workflow/task-recipes) |
+| Review concurrency, a11y, or security | [Reviews and quality](/skills/reviews-and-quality) |
+| Unit-test or UI-regression an app | [Testing](/skills/testing) · [Maestro](/tools/maestro) |
+| Author or update skills in this repo | [Authoring skills](/skills/authoring) |
+| Unblock install, MCP, simulator, or Maestro failures | [Troubleshooting](/reference/troubleshooting) |
+| Paste a structured session prompt | [Copy-paste prompts](/reference/prompts) |
+
+## Core rules (do not skip)
+
+- Skills apply to the **consumer workspace** (the app the user is building), not this repo’s archived modules — [Consumer workspace](/workflow/consumer-workspace).
+- Ordinary skill routing is **not** an audit, installer run, or full-repo scan — [Skill routing](/workflow/skill-routing).
+- Keep skills neutral: no business models, branding, secrets, user-specific paths, or hidden network behavior.
+- Prefer Swift 6, SwiftUI, structured concurrency, focused views; no view model without a state-ownership or testability reason.
+- Shared SwiftUI must support Dynamic Type, VoiceOver, keyboard, contrast, Reduce Motion, Differentiate Without Color, and labels for icon-only controls.
+- Never log credentials, tokens, private content, raw imports, complete sensitive paths, or security-scoped URLs.
+
+Always-on rules for work **in this repository**: root `AGENTS.md`.
 
 ## What lives where
 
 | Path | Status | Purpose |
 | --- | --- | --- |
-| `.agents/skills/` | **Live** | Source-controlled Codex skills |
+| `.agents/skills/` | **Live** | Source-controlled Codex skills (the product) |
 | `MCP.md` | **Live** | XcodeBuildMCP and command reference |
-| `AGENTS.md` | **Live** | Always-on rules for this repo |
+| `AGENTS.md` | **Live** | Always-on agent rules for this repo |
 | `docs/` (this site) | **Live** | Agent playbook (Blume) |
-| `Sources/`, `Tests/`, `Package.swift` | Archived | Exploratory Swift package |
+| `Sources/`, `Tests/`, `Package.swift` | Archived | Exploratory Swift package — do not expand unless asked |
 | `Website/` | Archived | Old marketing Vite demo |
-| Most of `Documentation/` | Archived | Historical architecture notes |
-
-## Core rules (do not skip)
-
-- Skills apply to the **consumer workspace** (the app or package the user is building), not this repo’s archived modules.
-- Keep skills neutral: no business models, branding, secrets, user-specific paths, or hidden network behavior.
-- Use Swift 6, SwiftUI, structured concurrency, and focused views. Do not add a view model without a state-ownership or testability reason.
-- All SwiftUI UI must support Dynamic Type, VoiceOver, keyboard, contrast, Reduce Motion, Differentiate Without Color, and labels for icon-only controls.
-- Never log credentials, tokens, private content, raw imports, complete sensitive paths, or security-scoped URLs.
+| Most of `Documentation/` | Archived | Historical notes; skill authoring guides still useful |
 
 ## Site map
 
-- [Quickstart](/quickstart) — install skills and open a first session
-- [Workflow](/workflow) — end-to-end agent loop
-- [Skills](/skills) — inventory and major flows
-- [Tools](/tools) — XcodeBuildMCP, Maestro, scripts
-- [Reference](/reference/prompts) — copy-paste prompts and verification matrix
+| Section | Contents |
+| --- | --- |
+| [Quickstart](/quickstart) | Install, MCP, first session |
+| [Workflow](/workflow) | Loop, routing, consumer workspace, recipes |
+| [Skills](/skills) | Inventory and major flows |
+| [Tools](/tools) | XcodeBuildMCP, Maestro, scripts |
+| [Reference](/reference/prompts) | Prompts, verification matrix, troubleshooting, external skills |

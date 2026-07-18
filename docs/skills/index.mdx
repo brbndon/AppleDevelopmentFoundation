@@ -5,7 +5,11 @@ description: Local Codex skills for Apple development — when to use each and w
 
 # Skills inventory
 
-Source of truth: `.agents/skills/README.md` and `manifest.json`. Re-sync this page when those change.
+**Source of truth:** `.agents/skills/manifest.json` (install/verify) and `.agents/skills/README.md` (use / do-not-use). Router catalog: `apple-development-foundation/master-skill.json`.
+
+:::note Sync status
+This table was last reviewed against `manifest.json` on **2026-07-17** (15 skills). When the manifest or skill purposes change, update this page in the same change set — do not leave agents on a stale inventory.
+:::
 
 ## Inventory
 
@@ -27,12 +31,17 @@ Source of truth: `.agents/skills/README.md` and `manifest.json`. Re-sync this pa
 | `maestro-apple-app-testing` | End-to-end Maestro UI testing | Non-testing product implementation |
 | `codex-skill-maintainer` | Creating/updating skills in this repo | Ordinary product code changes |
 
-## Guides in this section
+Deep procedure: `.agents/skills/<name>/SKILL.md` — prefer reading the skill over forking long instructions into this site.
 
-- [Bootstrap](/skills/bootstrap) — new consumer apps
-- [Reviews and quality](/skills/reviews-and-quality) — concurrency, a11y, security
-- [Testing](/skills/testing) — unit/UI verification stack
-- [Authoring skills](/skills/authoring) — maintaining this repo’s skills
+## Start by task
+
+| Task | Guide |
+| --- | --- |
+| New app | [Bootstrap](/skills/bootstrap) |
+| Reviews | [Reviews and quality](/skills/reviews-and-quality) |
+| Tests / UI | [Testing](/skills/testing) |
+| Maintain skills | [Authoring skills](/skills/authoring) |
+| Scenario matrix | [Task recipes](/workflow/task-recipes) |
 
 ## Install and verify
 
@@ -41,4 +50,8 @@ Source of truth: `.agents/skills/README.md` and `manifest.json`. Re-sync this pa
 ./Scripts/verify-skills.sh
 ```
 
-Details: [Scripts](/tools/scripts).
+Details: [Scripts](/tools/scripts) · [Troubleshooting](/reference/troubleshooting).
+
+## External skills
+
+Not in this inventory: `$app-store-screenshots` and host-provided tools skills. See [External skills](/reference/external-skills).

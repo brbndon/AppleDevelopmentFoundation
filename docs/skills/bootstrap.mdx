@@ -7,11 +7,17 @@ description: Scaffold a new iOS or macOS SwiftUI app in the consumer workspace w
 
 Invoke **`$codex-bootstrap`** when starting a new iOS/macOS SwiftUI project or major feature set in the **consumer** workspace.
 
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/codex-bootstrap/SKILL.md` |
+| **Checklist** | `.agents/skills/codex-bootstrap/references/bootstrap-checklist.md` |
+
 ## When not to use
 
 - One-off screens or copy tweaks → `$swiftui-component-author` (or smaller skills)
 - Editing this repo’s archived `Sources/` → only if the user explicitly asks
 - Planning-only requests → `$apple-platform-planner` without writing files
+- Unclear consumer path → stop and ask which app/repo to bootstrap
 
 ## Skill chain (in order; skip what does not apply)
 
@@ -34,6 +40,7 @@ Extraction of proven app code → `$reusable-code-extractor` into the **consumer
 - Platform-appropriate layout (Xcode project or SPM + app target)
 - Stub feature areas — no invented business domain unless the user supplied it
 - Design system lives in the **consumer** repo if needed
+- Do not copy or rebuild modules from this repo’s archived `Sources/`
 
 ## Verification (XcodeBuildMCP)
 
@@ -43,8 +50,6 @@ Extraction of proven app code → `$reusable-code-extractor` into the **consumer
 4. Run tests if present
 5. Optional screenshot or view hierarchy
 
-Full checklist in the skill: `.agents/skills/codex-bootstrap/references/bootstrap-checklist.md`.
-
 ## Copy-paste prompt
 
-> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. If the app has multiple peer destinations, use `$swiftui-tab-navigation`. Use the consumer’s design system or create a minimal neutral one. Verify with XcodeBuildMCP. Do not modify AppleDevelopmentFoundation’s archived package.
+Structured bootstrap prompt: [Copy-paste prompts](/reference/prompts). Recipe: [Task recipes](/workflow/task-recipes).

@@ -1,0 +1,137 @@
+---
+title: Task recipes
+description: Scenario → skills → tools → verification for common Apple-platform agent tasks.
+---
+
+# Task recipes
+
+Short paths for coding agents. Pick the scenario that matches the user request, follow the skill chain, then verify. Deep procedure lives in each skill’s `SKILL.md` — do not invent behavior from this page alone.
+
+## How to use
+
+1. Confirm the **active workspace** (consumer app vs this foundation repo).
+2. Invoke skills with `$name` (or host equivalent).
+3. Prefer **XcodeBuildMCP** over raw `xcodebuild` / `simctl`.
+4. Stop when the recipe’s verification gate passes or a documented stop condition is hit.
+
+## Recipes
+
+### New iOS/macOS SwiftUI app (bootstrap)
+
+| Step | Action |
+| --- | --- |
+| Skills | Optional `$apple-development-foundation` → **`$codex-bootstrap`** → chain in skill (planner, tabs, design system, components, platform, reviews, testing) |
+| Tools | XcodeBuildMCP |
+| Verify | `session_show_defaults` → build (prefer build-and-run) → tests if present → optional screenshot/hierarchy |
+| Do not | Expand this repo’s archived `Sources/`; invent business domain the user did not supply |
+
+Details: [Bootstrap](/skills/bootstrap).
+
+### Ship a feature in an existing app
+
+| Step | Action |
+| --- | --- |
+| Skills | `$apple-platform-planner` only if multi-feature/multi-platform; then authoring skills as needed (`$swiftui-component-author`, `$apple-design-system`, `$ios-macos-platform-adaptation`) |
+| Tools | XcodeBuildMCP for build/test |
+| Verify | `$swift-testing-verification` + MCP build/test; reviews if shared UI / async / sensitive paths |
+| Do not | Plan-for-planning on one-off screens; skip a11y on shared components |
+
+### Fix a bug
+
+| Step | Action |
+| --- | --- |
+| Skills | Targeted skill if the bug domain matches (concurrency, security, UI component); else implement directly with defaults from `AGENTS.md` |
+| Tools | XcodeBuildMCP; `$maestro-apple-app-testing` if the bug is UI/flow |
+| Verify | Smallest failing unit/UI check first; re-run after fix; report residual risk |
+| Do not | Broad refactors; claim fixed without a re-run |
+
+### Review quality before ship
+
+| Step | Action |
+| --- | --- |
+| Skills | `$swift-concurrency-review` (async/actors) → `$apple-security-privacy-review` (files/logging/permissions) → `$apple-accessibility-review` (shared SwiftUI) |
+| Tools | Compiler/diagnostics via build when needed |
+| Verify | Findings + fixes authorized by user; then [verification matrix](/reference/verification-matrix) |
+| Do not | Run a11y review on non-UI services; run concurrency review for pure styling |
+
+Details: [Reviews and quality](/skills/reviews-and-quality).
+
+### Unit / focused verification
+
+| Step | Action |
+| --- | --- |
+| Skills | **`$swift-testing-verification`** after meaningful code exists |
+| Tools | XcodeBuildMCP test/build on the right simulator or macOS target |
+| Verify | Smallest suite that proves the change; never claim pass without execution |
+| Do not | Use for planning-only work |
+
+### UI regression / flaky flow
+
+| Step | Action |
+| --- | --- |
+| Skills | **`$maestro-apple-app-testing`** |
+| Tools | XcodeBuildMCP (build/install/sim) + Maestro MCP (inspect) + `maestro test` (regression) |
+| Verify | One exact simulator ID; smallest flow → tagged suite → full suite when practical |
+| Do not | `OS=latest`; speculative flows when Maestro CLI is missing |
+
+Details: [Testing](/skills/testing), [Maestro](/tools/maestro).
+
+### Add a shared SPM module or extract reusable code
+
+| Step | Action |
+| --- | --- |
+| Skills | `$swift-package-module-author` (new module in **active** workspace) or `$reusable-code-extractor` (proven app code → consumer shared module) |
+| Tools | XcodeBuildMCP / package build as appropriate |
+| Verify | Module builds and is importable from the consumer app |
+| Do not | Land extracted code in this foundation repo’s archived package |
+
+### Author or update a foundation skill
+
+| Step | Action |
+| --- | --- |
+| Skills | **`$codex-skill-maintainer`** |
+| Tools | `./Scripts/verify-skills.sh`; `./Scripts/test-install-skills.sh` if installer behavior changed |
+| Verify | Manifest + README + optional `master-skill.json` updates; dry-run install |
+| Do not | Put business branding/secrets in skills |
+
+Details: [Authoring skills](/skills/authoring).
+
+### Explicit foundation audit (only when requested)
+
+| Step | Action |
+| --- | --- |
+| Skills | **`$apple-development-foundation`** in audit mode with `master-skill.json` classifications |
+| Tools | Foundation verify scripts **only** if this repo or its installer is in scope |
+| Verify | Report inventory comparison + exact verification outcomes requested |
+| Do not | Treat ordinary routing as an audit, install, or full-repo scan |
+
+Details: [Skill routing](/workflow/skill-routing).
+
+### App Store marketing screenshots
+
+| Step | Action |
+| --- | --- |
+| Skills | **`$app-store-screenshots`** (external; not in `manifest.json`) |
+| Tools | Upstream skill tooling |
+| Verify | Per upstream skill |
+| Do not | Vendor the skill into `.agents/skills/` unless maintainers decide to |
+
+Details: [External skills](/reference/external-skills).
+
+## Session skeleton (every recipe)
+
+```text
+1. Orient: consumer vs foundation; read AGENTS.md if in this repo
+2. Route: $apple-development-foundation OR direct $skill
+3. Implement only in the active workspace required by the task
+4. session_show_defaults before first build/run/test
+5. Review skills when shared UI / async / sensitive data changed
+6. Verify + report scheme, simulator/device, residual risk
+```
+
+## Related
+
+- [Session workflow](/workflow)
+- [Copy-paste prompts](/reference/prompts)
+- [Troubleshooting](/reference/troubleshooting)
+- [Skills inventory](/skills)

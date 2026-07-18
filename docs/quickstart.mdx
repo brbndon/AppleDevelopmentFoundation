@@ -7,74 +7,126 @@ sidebar:
 
 # Quickstart
 
-Get from a clone of this repository to a working agent session in a few minutes.
+Get from a clone of this repository to a working agent session in a few minutes. Skills target the **consumer app** you build next — not this repo’s archived package.
 
 ## Prerequisites
 
 | Tool | Why |
 | --- | --- |
 | Xcode (recent stable) | Build/test iOS and macOS targets |
-| Node.js 22.12+ | Optional: this Blume docs site only |
 | Codex, Cursor, Claude Code, or similar | Host that can load skills and MCP servers |
 | [XcodeBuildMCP](https://xcodebuildmcp.com) | Preferred build/test/simulator MCP |
+| Node.js 22.12+ | **Optional** — this Blume docs site only |
+| [Maestro](https://maestro.mobile.dev) | **Optional** until you need UI flows |
 
-See [Tools](/tools) for the full tool stack.
+See [Tools](/tools) for the full stack.
 
 ## 1. Install skills
 
 From the repository root:
 
 ```bash
+./Scripts/install-skills.sh --dry-run   # preview
 ./Scripts/install-skills.sh
 ./Scripts/verify-skills.sh
 ```
 
-- `install-skills.sh` symlinks skills into the user scope (for example `~/.codex/skills`) when the host supports that layout.
-- `verify-skills.sh` checks the manifest and skill contracts.
-- Preview without writing: `./Scripts/install-skills.sh --dry-run`.
+| Fact | Detail |
+| --- | --- |
+| Default target | `${CODEX_HOME:-$HOME/.codex}/skills` |
+| What install does | Symlinks installable skills from `.agents/skills/` into user scope |
+| State file | `.apple-development-foundation-links` under the target (installer-owned only) |
 
-:::note
-Agents can also load skills **from this repository path** without a global install if the host supports local skill discovery. Point the session at `/path/to/AppleDevelopmentFoundation/.agents/skills`.
+:::note Load without global install
+If the host supports local skill discovery, point the session at:
+
+`/path/to/AppleDevelopmentFoundation/.agents/skills`
+
+Global install is optional.
 :::
+
+### Install failure modes
+
+| Message / situation | What to do |
+| --- | --- |
+| `Conflict; leaving untouched: …` | Something already occupies that skill name. Inspect the path; **do not** force-overwrite. Rename/remove only if you own it, then re-run install |
+| `Existing identical symlink is not installer-owned` | Destination is correct; leave it. Skills still resolve |
+| `Already installed (installer-owned)` | Success from a prior run |
+| Missing `manifest.json` / required tools (`python3`, `awk`, `readlink`) | Fix the clone and PATH; re-run |
+
+`--uninstall` removes **only** installer-owned symlinks that still match recorded destinations (including broken links after a moved repo). Full table: [Troubleshooting](/reference/troubleshooting) · [Scripts](/tools/scripts).
 
 ## 2. Configure XcodeBuildMCP
 
-Add XcodeBuildMCP to the agent host’s MCP server list. Enable workflows beyond the default simulator tools when you need device, macOS, debugging, or UI automation — see the [XcodeBuildMCP config docs](https://xcodebuildmcp.com/docs/configuration).
+1. Add XcodeBuildMCP to the agent host’s MCP server list (host-specific config file).
+2. In the **consumer** (or monorepo) workspace root, create project-local config when you need more than the default simulator tools:
 
-Full session conventions: [XcodeBuildMCP](/tools/xcodebuildmcp) and repo root `MCP.md`.
+```yaml
+# <workspace-root>/.xcodebuildmcp/config.yaml
+schemaVersion: 1
+enabledWorkflows: ["simulator", "ui-automation", "debugging"]
+# Optional sessionDefaults: projectPath, scheme, simulatorName — see upstream docs
+```
 
-## 3. Open a session with the right prompt
+| Fact | Detail |
+| --- | --- |
+| Default workflows | Only **`simulator`** is enabled unless you configure more |
+| Need macOS / device / UI automation | Add workflows such as `macos`, `device`, `ui-automation` — see [configuration](https://xcodebuildmcp.com/docs/configuration) and [workflows](https://xcodebuildmcp.com/docs/workflows) |
+| After config change | **Reload or restart** the MCP session |
 
-Paste something like:
+Interactive setup: `xcodebuildmcp setup` (upstream CLI). Session discipline: [XcodeBuildMCP](/tools/xcodebuildmcp) and repo `MCP.md`.
 
-> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills`. Start with `$apple-development-foundation` for routing, or `$codex-bootstrap` when scaffolding a new iOS/macOS SwiftUI app in the **consumer** workspace. Prefer XcodeBuildMCP for build, test, and simulator work.
+Host MCP registration is product-specific (Codex, Cursor, Claude Code). Use the host’s MCP docs; this site does not invent a single universal JSON path.
 
-More prompts: [Copy-paste prompts](/reference/prompts).
+## 3. Open a session with a structured prompt
+
+Minimal paste:
+
+```text
+Goal: Use Apple Development Foundation skills for this Apple-platform task.
+Constraints: Work only in the consumer workspace. Prefer XcodeBuildMCP. Do not expand AppleDevelopmentFoundation archived Sources/.
+Inputs: Skills at /path/to/AppleDevelopmentFoundation/.agents/skills
+Done when: Task implemented, reviews applied if shared/sensitive UI, verification reported.
+Verification: session_show_defaults, then MCP build/test; report scheme, simulator, residual risk.
+```
+
+More scenarios: [Copy-paste prompts](/reference/prompts).
 
 ## 4. First task checklist
 
-1. Confirm the **active workspace** is the consumer app/package (not this foundation repo unless the user asked for skill maintenance).
-2. Invoke `$apple-development-foundation` for a skill shortlist, or name the skill directly (`$codex-bootstrap`, `$swiftui-component-author`, …).
-3. Call `session_show_defaults` before the first build/run/test.
-4. Implement only what the task needs; apply review skills before shipping shared UI or sensitive code.
+1. Confirm **active workspace** = consumer app/package (not this foundation repo unless skill maintenance was requested).
+2. Route: `$apple-development-foundation` for a shortlist, or invoke the skill directly (`$codex-bootstrap`, `$swiftui-component-author`, …).
+3. Call **`session_show_defaults`** before the first build/run/test.
+4. Implement only what the task needs; run review skills before shipping shared UI or sensitive code.
 5. Verify with XcodeBuildMCP (and Maestro when UI regression matters).
+6. Report project/scheme/simulator, what ran, and residual risk.
 
-## 5. Preview these docs locally
+Scenario paths: [Task recipes](/workflow/task-recipes).
+
+## 5. How you know it worked
+
+| Check | Pass looks like |
+| --- | --- |
+| Skills | Host can resolve `$codex-bootstrap` / foundation skills, or path load works |
+| Verify script | `./Scripts/verify-skills.sh` exits 0 after install or skill edits |
+| MCP | `session_show_defaults` returns usable project/scheme/simulator (or clear missing fields you then fix) |
+| App work | Build/test via MCP succeeds for the consumer target |
+
+## 6. Preview these docs (optional)
 
 ```bash
 npm install
 npm run dev
+# production check:
+npm run build && npm run validate
 ```
 
-Build and link-check:
-
-```bash
-npm run build
-npm run validate
-```
+Requires Node.js ≥ 22.12. App/skill work does **not** require the docs site.
 
 ## Next
 
 - [Session workflow](/workflow)
+- [Task recipes](/workflow/task-recipes)
 - [Skill routing](/workflow/skill-routing)
 - [Bootstrap a new app](/skills/bootstrap)
+- [Troubleshooting](/reference/troubleshooting)

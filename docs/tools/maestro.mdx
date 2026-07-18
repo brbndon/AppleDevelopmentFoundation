@@ -7,27 +7,74 @@ description: End-to-end UI testing for Apple apps with Maestro, paired with Xcod
 
 Use **`$maestro-apple-app-testing`** as the main workflow for thorough Apple UI testing: simulator flows, inspection, screenshots, flaky-flow diagnosis, and regression coverage.
 
+| | |
+| --- | --- |
+| **Use when** | Building, debugging, authoring, or thoroughly testing an Apple app with Maestro |
+| **Do not use for** | Non-testing product implementation; pure unit/concurrency logic |
+| **Skill source** | `.agents/skills/maestro-apple-app-testing/SKILL.md` |
+
 ## Division of labor
 
 | Concern | Tooling |
 | --- | --- |
 | Build, install, boot simulator, capture hierarchy | **XcodeBuildMCP** |
-| Author and run flow YAML, assert UI, screenshots | **Maestro** (CLI and/or MCP) |
-| Choose what to cover and how to stabilize | **`$maestro-apple-app-testing`** skill |
+| Live hierarchy, screenshots, interaction while debugging | **Maestro MCP** (`maestro mcp` when configured) |
+| Repeatable YAML execution / CI-like coverage | **Maestro CLI** (`maestro test`) |
+| What to cover, stabilize, and report | **`$maestro-apple-app-testing`** |
 
-## Session outline
+Keep MCP and CLI pointed at the **same** simulator/device and app state.
 
-1. Establish XcodeBuildMCP defaults (`session_show_defaults`).
-2. Build and install the app on a known simulator.
-3. Author or update Maestro flows under the consumer project’s agreed path.
-4. Run flows; on flake, narrow to one step, capture hierarchy/screenshot, fix selectors or waits.
-5. Keep flows deterministic: stable accessibility identifiers, explicit waits, avoid hard-coded sleeps when possible.
+## Prerequisites (report blockers early)
+
+Before authoring speculative flows:
+
+```bash
+command -v maestro
+maestro --version
+maestro list-devices
+```
+
+If Maestro or its MCP server is unavailable, **stop and report** the exact blocker.
+
+## Fast path
+
+1. `session_show_defaults` (XcodeBuildMCP) — report project, scheme, configuration, simulator.
+2. Resolve and reuse **one exact simulator ID**. Do **not** use `OS=latest`.
+3. Build and install/launch the app with XcodeBuildMCP.
+4. Inspect the screen (Maestro MCP and/or hierarchy tools) before editing selectors.
+5. Author or update flows under the consumer project’s agreed path (often `.maestro/`).
+6. Run the smallest relevant flow; then tagged suite / full suite when practical.
+7. On failure: preserve debug output, screenshots, hierarchy, video when useful; classify; reproduce once; fix; re-run.
+
+## Authoring rules (distilled from the skill)
+
+- Prefer stable `testID` / accessibility selectors and explicit assertions.
+- Use automatic waiting / state assertions; **do not** use arbitrary sleeps when a wait can express the condition.
+- Handle permissions and onboarding with conditionals or dedicated subflows.
+- Inspect system-generated controls (for example SwiftUI **tab** buttons) before selecting: an identifier inside `.tabItem` may **not** propagate to the generated button — use the confirmed accessibility **label** when no identifier is exposed.
+- Cover highest-risk flows first: happy path, validation/errors, loading/empty, relaunch/persistence, navigation/back, permissions, keyboard/input, accessibility-visible labels.
+- Never modify production data or use real credentials; use fixtures, test accounts, and env vars from the workspace.
+- Never claim a test passed without running it.
+
+## Flaky-flow diagnosis
+
+1. Capture hierarchy + screenshot at the failing step.
+2. Classify failure: **app behavior** vs **selector/flow** vs **fixture** vs **simulator/device** vs **build** vs **environment**.
+3. Reproduce once before changing the flow.
+4. Fix the classified cause (selector, wait, app bug, env) — not random timeouts.
+5. Re-run the smallest failing slice, then the broader suite.
 
 ## Do not use Maestro for
 
-- Pure unit or concurrency logic (use Swift Testing / XCTest via XcodeBuildMCP)
-- Non-testing product implementation (switch to authoring skills)
+| Instead of Maestro | Use |
+| --- | --- |
+| Pure unit or concurrency logic | Swift Testing / XCTest via XcodeBuildMCP + `$swift-testing-verification` |
+| Product implementation | Authoring skills (`$swiftui-component-author`, …) |
+| Foundation skill maintenance | `$codex-skill-maintainer` + scripts |
 
-## Skill path
+## Related
 
-`.agents/skills/maestro-apple-app-testing/SKILL.md` — follow that file for host-specific MCP and CLI commands.
+- [Testing](/skills/testing)
+- [XcodeBuildMCP](/tools/xcodebuildmcp)
+- [Troubleshooting](/reference/troubleshooting)
+- [Verification matrix](/reference/verification-matrix)

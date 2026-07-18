@@ -5,13 +5,15 @@ description: What to run after skill work, consumer app work, or archived packag
 
 # Verification matrix
 
+Pick the row that matches the change. **Never claim a check passed without running it.** Distinguish pre-existing failures from regressions you introduced.
+
 | Situation | What to run |
 | --- | --- |
 | Skill `SKILL.md` or `manifest.json` change | `./Scripts/verify-skills.sh` |
 | Installer behavior change | `./Scripts/verify-skills.sh` + `./Scripts/test-install-skills.sh` |
-| Consumer app feature / bugfix | XcodeBuildMCP build + tests; `$swift-testing-verification` |
+| Consumer app feature / bug fix | XcodeBuildMCP build + tests; `$swift-testing-verification` |
 | Shared SwiftUI components | `$apple-accessibility-review` (+ design/component skills as needed) |
-| Async / actors | `$swift-concurrency-review` |
+| Async / actors / Sendable | `$swift-concurrency-review` (+ strict concurrency build when practical) |
 | Files, logging, permissions, imports | `$apple-security-privacy-review` |
 | Critical UI flows | `$maestro-apple-app-testing` + XcodeBuildMCP |
 | New app bootstrap complete | Bootstrap checklist + MCP build/test (+ optional screenshot) |
@@ -22,7 +24,27 @@ description: What to run after skill work, consumer app work, or archived packag
 
 Always report:
 
-1. Active project / workspace / scheme
-2. Simulator or device
-3. What commands or MCP tools ran
-4. Pass/fail and the next actionable step on failure
+1. Active project / workspace / scheme  
+2. Simulator ID or device (not an unstable `OS=latest` shorthand)  
+3. What commands or MCP tools ran  
+4. Pass/fail and the next actionable step on failure  
+5. **Residual risk** — untested paths, manual-only checks, environment gaps  
+
+## Stop conditions
+
+Stop and ask (or report blocked) when:
+
+| Condition | Why |
+| --- | --- |
+| No clear consumer workspace for app work | Skills must not default into this repo’s archived package |
+| XcodeBuildMCP required but unavailable | Fix MCP before inventing a full raw-CLI workflow |
+| Maestro required but CLI missing | Report blocker before speculative flows |
+| User requested foundation audit but only ordinary routing ran | Audits are explicit — see [Skill routing](/workflow/skill-routing) |
+| Review-only request | Do not change code unless authorized |
+
+## Related
+
+- [Task recipes](/workflow/task-recipes)
+- [Troubleshooting](/reference/troubleshooting)
+- [Testing](/skills/testing)
+- [XcodeBuildMCP](/tools/xcodebuildmcp)

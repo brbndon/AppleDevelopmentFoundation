@@ -1,30 +1,145 @@
 ---
 title: Copy-paste prompts
-description: Ready-to-paste prompts for routing skills, bootstrap, and verification sessions.
+description: Structured, scenario-based prompts for routing skills, bootstrap, verification, and audits.
 ---
 
 # Copy-paste prompts
 
+Each prompt is an **agent contract**: goal, constraints, inputs, done definition, verification. Replace `/path/to/…` and task specifics. Prefer `$skill-name` invocation your host understands.
+
 ## Point a session at these skills
 
-> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `$apple-development-foundation` for routing when the task is broad, then apply `$codex-bootstrap`, `$swiftui-tab-navigation`, `$apple-design-system`, `$swiftui-component-author`, and review skills as needed. Prefer XcodeBuildMCP for build, test, and simulator work.
+```text
+Goal: Use Apple Development Foundation skills for Apple-platform work in this session.
+Constraints:
+- Work only in the consumer workspace unless the user asked for foundation skill maintenance.
+- Prefer XcodeBuildMCP over raw xcodebuild/simctl.
+- Do not expand AppleDevelopmentFoundation archived Sources/, Website/, or package modules.
+- Ordinary routing is not an audit, install, or full-repo scan.
+Inputs:
+- Skills path: /path/to/AppleDevelopmentFoundation/.agents/skills
+- Task: <user task>
+Done when: Correct skills shortlisted and applied; implementation matches the task; verification reported.
+Verification: session_show_defaults before first build/run/test; MCP build/test as applicable; residual risk listed.
+```
+
+Start with `$apple-development-foundation` when the task is broad or the chat is new; otherwise invoke the matching skill directly.
 
 ## Bootstrap a new SwiftUI app
 
-> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. If the app has multiple peer destinations, use `$swiftui-tab-navigation` for native primary navigation. Use the consumer’s design system or create a minimal neutral one. Verify with XcodeBuildMCP. Do not modify AppleDevelopmentFoundation’s archived package.
+```text
+Goal: Bootstrap a new iOS (or macOS) SwiftUI app in the consumer workspace.
+Constraints:
+- Use $codex-bootstrap and sibling skills from /path/to/AppleDevelopmentFoundation/.agents/skills.
+- If multiple peer destinations: $swiftui-tab-navigation for native primary navigation.
+- Design system: reuse consumer tokens or create a minimal neutral system in the consumer repo.
+- No invented business domain; no edits to AppleDevelopmentFoundation archived package.
+Inputs:
+- Platforms / min OS: <…>
+- Navigation shape: <tabs | sidebar | none yet>
+- Consumer path: <…>
+Done when: App skeleton builds; skill chain applied or explicitly skipped with reason; handoff lists next skills.
+Verification: session_show_defaults → MCP build (prefer build-and-run) → tests if present → optional screenshot/hierarchy.
+```
+
+## Ship a feature
+
+```text
+Goal: Implement <feature> in the consumer app.
+Constraints:
+- Plan with $apple-platform-planner only if multi-feature or multi-platform; otherwise implement.
+- Use design/component/platform skills only when the change needs them.
+- Shared UI: $apple-accessibility-review before calling done. Async: $swift-concurrency-review. Files/logging/permissions: $apple-security-privacy-review.
+Inputs: Consumer project path, acceptance criteria, any existing patterns to match.
+Done when: Feature matches criteria; reviews applied where relevant; no unrelated refactors.
+Verification: $swift-testing-verification + XcodeBuildMCP build/test; Maestro for critical UI paths if needed.
+```
+
+## Fix a bug
+
+```text
+Goal: Fix <bug description> with the smallest correct change.
+Constraints:
+- Prefer the smallest failing test or Maestro flow first.
+- No broad cleanup unrelated to the bug.
+- If UI flake: $maestro-apple-app-testing diagnosis loop (hierarchy → classify → reproduce once → fix).
+Inputs: Repro steps, logs/screenshots if any, consumer project path.
+Done when: Repro fails before fix and passes after; residual risk stated.
+Verification: Re-run the same unit/UI check via XcodeBuildMCP / Maestro; report scheme and simulator ID.
+```
+
+## Review before ship
+
+```text
+Goal: Quality-review recent changes before ship.
+Constraints:
+- $swift-concurrency-review only for async/actors/Sendable/cancellation.
+- $apple-security-privacy-review for storage, files, logging, permissions, imports, sensitive data.
+- $apple-accessibility-review for reusable SwiftUI (not non-UI services).
+- Do not claim automated a11y proof for semantics the environment cannot test.
+Inputs: Changed files / PR scope.
+Done when: Severity-ranked findings (and fixes if authorized); manual checks listed.
+Verification: Strict concurrency build when relevant; then verification matrix for the change type.
+```
 
 ## Verify after bootstrap or feature work
 
-> Call `session_show_defaults`, then build and test on the iOS simulator with XcodeBuildMCP. Report scheme, simulator, and any failures with the next actionable tool call.
+```text
+Goal: Prove the consumer target builds and tests on the intended device class.
+Constraints: XcodeBuildMCP only if available; report if MCP is missing instead of silent CLI fallback.
+Inputs: Project/workspace, scheme, simulator or macOS target.
+Done when: Defaults shown; build and tests executed; outcomes and next tool call on failure reported.
+Verification:
+1. session_show_defaults
+2. discover_projs only if defaults wrong/missing
+3. Build (prefer build-and-run for launch)
+4. Run tests if present
+Never claim pass without running the tool.
+```
 
 ## Maestro UI regression
 
-> Use `$maestro-apple-app-testing` with XcodeBuildMCP for simulator build/install. Author or update Maestro flows for the critical paths, run them, and diagnose flakes with hierarchy and screenshots.
+```text
+Goal: Author or stabilize Maestro coverage for <critical paths>.
+Constraints:
+- Use $maestro-apple-app-testing with XcodeBuildMCP for build/install/sim control.
+- One exact simulator ID; do not use OS=latest.
+- If maestro CLI missing: report blocker before writing speculative flows.
+- MCP for inspect/debug; maestro test for regression YAML.
+Inputs: App identifier, existing .maestro/ conventions, flows to cover.
+Done when: Flows run; flakes classified; pass/fail counts and artifacts reported.
+Verification: Smallest flow after each change → tagged suite → full suite when practical.
+```
 
 ## Foundation skill maintenance
 
-> Use `$codex-skill-maintainer` to update skills under `.agents/skills/`. Follow `Documentation/SkillAuthoringGuide.md`, update `manifest.json` and the skills README, then run `./Scripts/verify-skills.sh` (and `./Scripts/test-install-skills.sh` if installer behavior changed).
+```text
+Goal: Update foundation skills under .agents/skills/ as requested.
+Constraints:
+- Use $codex-skill-maintainer.
+- Follow Documentation/SkillAuthoringGuide.md.
+- Keep skills neutral (no branding, secrets, user-specific paths, hidden network).
+- Update manifest.json, .agents/skills/README.md, and master-skill.json when the router should know.
+Inputs: Skill change request.
+Done when: Contracts pass and docs inventory note updated if tables changed.
+Verification: ./Scripts/verify-skills.sh; ./Scripts/test-install-skills.sh if installer behavior changed; install --dry-run.
+```
 
-## Explicit foundation audit
+## Explicit foundation audit (only when requested)
 
-> Run an explicit Apple Development Foundation skill inventory audit with `$apple-development-foundation` using `master-skill.json` classifications. Do not treat ordinary routing as an audit. Report verification only if this foundation repo or its installer is in scope.
+```text
+Goal: Run an explicit Apple Development Foundation skill inventory audit.
+Constraints:
+- Invoke $apple-development-foundation in audit mode using master-skill.json classifications.
+- Do not treat ordinary routing as an audit.
+- Run foundation verification scripts only if this repo or its installer is in scope.
+Inputs: Audit scope (inventory comparison, installer, both).
+Done when: Classifications and comparison reported; verification outcomes only if in scope.
+Verification: Per master-skill.json verification commands when applicable.
+```
+
+## Related
+
+- [Task recipes](/workflow/task-recipes)
+- [Verification matrix](/reference/verification-matrix)
+- [Quickstart](/quickstart)

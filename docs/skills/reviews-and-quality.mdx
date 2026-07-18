@@ -5,42 +5,63 @@ description: When to run concurrency, accessibility, and security/privacy review
 
 # Reviews and quality
 
-Run review skills **after** the relevant code exists, and **before** calling shared or sensitive work complete.
-
-## Concurrency — `$swift-concurrency-review`
-
-**Use when:** async/await, actors, tasks, observation across isolation, `Sendable` diagnostics, cancellation.
-
-**Check for:** structured concurrency over ad-hoc threads; correct isolation; cancellation propagation; no blocking the main actor with long work; clear ownership of mutable state.
-
-## Accessibility — `$apple-accessibility-review`
-
-**Use when:** reviewing reusable SwiftUI UI.
-
-**Baseline expectations** (also always-on in `AGENTS.md`):
-
-- Dynamic Type
-- VoiceOver (labels, traits, order)
-- Keyboard access where applicable
-- Contrast
-- Reduce Motion
-- Differentiate Without Color
-- Descriptive label for icon-only controls
-
-## Security and privacy — `$apple-security-privacy-review`
-
-**Use when:** storage, file access, logging, permissions, imports, sensitive data.
-
-**Never log:** credentials, tokens, private content, raw imports, complete sensitive paths, security-scoped URLs.
-
-**Validate** imports before reading; respect sandbox and entitlements; prefer system pickers and scoped access patterns.
+Run review skills **after** the relevant code exists, and **before** calling shared or sensitive work complete. Prefer reading each skill’s `SKILL.md` for full checklists.
 
 ## Suggested order after feature work
 
-1. Concurrency review (if async/actors)
-2. Security/privacy review (if files/logging/permissions)
-3. Accessibility review (if shared UI)
-4. `$swift-testing-verification` + XcodeBuildMCP
-5. `$maestro-apple-app-testing` for critical UI flows
+1. `$swift-concurrency-review` — if async/actors/tasks/observation isolation  
+2. `$apple-security-privacy-review` — if files/logging/permissions/imports/sensitive data  
+3. `$apple-accessibility-review` — if reusable SwiftUI  
+4. `$swift-testing-verification` + XcodeBuildMCP  
+5. `$maestro-apple-app-testing` — for critical UI flows  
 
-See also [Verification matrix](/reference/verification-matrix).
+## Concurrency — `$swift-concurrency-review`
+
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/swift-concurrency-review/SKILL.md` |
+| **Use when** | async/await, actors, tasks, observation across isolation, `Sendable` diagnostics, cancellation |
+| **Do not use for** | Unrelated UI styling; pure synchronous API design |
+
+**Focus:** Map actor isolation and state ownership; prefer structured concurrency; propagate cancellation; avoid detached tasks without a written reason; keep UI on the main actor; resolve Sendable at boundaries.
+
+**Outputs:** Findings/fix set, deterministic tests where practical, strict-concurrency build result when available. A **review-only** request does not change code.
+
+## Accessibility — `$apple-accessibility-review`
+
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/apple-accessibility-review/SKILL.md` |
+| **Use when** | Reviewing reusable SwiftUI UI |
+| **Do not use for** | Non-UI services; general design-token-only work; pixel-only critique |
+
+**Baseline** (also always-on in `AGENTS.md`):
+
+- Dynamic Type  
+- VoiceOver (labels, traits, order)  
+- Keyboard / focus order where applicable  
+- Contrast / Increased Contrast  
+- Reduce Motion  
+- Differentiate Without Color  
+- Descriptive label for icon-only controls  
+- Touch targets; platform differences when multi-platform  
+
+**Stop condition:** Do not claim automated validation for semantics the environment cannot test; list manual checks.
+
+## Security and privacy — `$apple-security-privacy-review`
+
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/apple-security-privacy-review/SKILL.md` |
+| **Use when** | Storage, file access, logging, permissions, imports, sensitive data |
+| **Do not use for** | Purely visual polish; unrelated API style review |
+
+**Never log:** credentials, tokens, private content, raw imports, complete sensitive paths, security-scoped URLs.
+
+**Focus:** Data minimization; validate imports before reading; scoped-resource lifetime; sandbox/entitlements; credential handling; unsafe paths; distinguish user-facing recovery from developer diagnostics.
+
+## Related
+
+- [Verification matrix](/reference/verification-matrix)
+- [Task recipes](/workflow/task-recipes)
+- [Testing](/skills/testing)

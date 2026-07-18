@@ -5,38 +5,57 @@ description: Combine swift-testing-verification, XcodeBuildMCP, and Maestro for 
 
 # Testing
 
+Choose the **smallest** verification that proves the change. Never claim a check passed without running it.
+
 ## Unit and focused verification — `$swift-testing-verification`
 
-**Use after** a meaningful Apple-platform code change to select and run verification.
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/swift-testing-verification/SKILL.md` |
+| **Use after** | A meaningful Apple-platform code change |
+| **Do not use** | Planning-only work; before implementation exists |
 
-**Do not use** for planning-only work or before implementation exists.
-
-Prefer the smallest set of tests that prove the change. Use XcodeBuildMCP to run them on the right simulator or macOS target.
+Prefer the smallest tests that prove the change; widen to package/API surfaces when public contracts move. Run via **XcodeBuildMCP** on the right simulator or macOS target. Report exact commands/outcomes and separate pre-existing failures from new ones.
 
 ## End-to-end UI — `$maestro-apple-app-testing`
 
-**Use when** building, debugging, authoring, or thoroughly testing an Apple app with Maestro: simulator flows, UI inspection, screenshots, flaky-flow diagnosis, regression coverage.
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/maestro-apple-app-testing/SKILL.md` |
+| **Use when** | Simulator flows, UI inspection, screenshots, flaky-flow diagnosis, regression coverage |
+| **Do not use for** | Non-testing product implementation; standalone unit tests |
 
 **Pair with:**
 
-- **XcodeBuildMCP** for build, install, boot, and simulator control
-- **Maestro MCP / CLI** for flow execution and UI automation
+- **XcodeBuildMCP** — build, install, boot, hierarchy  
+- **Maestro MCP** — live inspect/debug  
+- **Maestro CLI** — `maestro test` regression  
 
-Details: [Maestro](/tools/maestro).
+Hard rules distilled for agents (full detail on [Maestro](/tools/maestro)):
+
+- Check `command -v maestro`, version, `list-devices` before speculative flows  
+- One exact simulator ID; **no `OS=latest`**  
+- Classify flakes (app vs selector vs fixture vs env); reproduce once  
+- Stable accessibility selectors; careful with system tab chrome identifiers  
 
 ## Practical session pattern
 
-1. `session_show_defaults` (XcodeBuildMCP)
-2. Build and unit-test via MCP
-3. For UI: install/launch on simulator, then run Maestro flows
-4. On failure: capture logs/hierarchy/screenshot; fix; re-run the smallest failing slice
-5. Report scheme, device, commands, and residual risk
+1. `session_show_defaults` (XcodeBuildMCP)  
+2. Build and unit-test via MCP  
+3. For UI: install/launch on the pinned simulator, then run Maestro flows  
+4. On failure: logs/hierarchy/screenshot → fix → re-run the smallest failing slice  
+5. Report scheme, device ID, commands, pass/fail, residual risk  
 
 ## Skill maintenance tests (this repo)
-
-When changing skills or the installer:
 
 ```bash
 ./Scripts/verify-skills.sh
 ./Scripts/test-install-skills.sh   # if installer behavior changed
 ```
+
+## Related
+
+- [Verification matrix](/reference/verification-matrix)
+- [XcodeBuildMCP](/tools/xcodebuildmcp)
+- [Maestro](/tools/maestro)
+- [Task recipes](/workflow/task-recipes)

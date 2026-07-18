@@ -5,7 +5,7 @@ description: Install, verify, and test foundation skills from Scripts/.
 
 # Scripts
 
-Run from the repository root.
+Run from the **Apple Development Foundation** repository root. These scripts maintain the live product (skills), not the archived Swift package.
 
 ## Skill scripts (live product)
 
@@ -24,23 +24,55 @@ Run from the repository root.
 | Skill content or `manifest.json` | `./Scripts/verify-skills.sh` |
 | Installer behavior | also `./Scripts/test-install-skills.sh` |
 | Local agent wants skills in user scope | `./Scripts/install-skills.sh` |
+| Preview install without writing | `./Scripts/install-skills.sh --dry-run` |
+
+### Installer behavior (evidence from the script)
+
+| Item | Detail |
+| --- | --- |
+| Source | `<repo>/.agents/skills` |
+| Target | `${CODEX_HOME:-$HOME/.codex}/skills` |
+| Inventory | Only `installable` entries from `manifest.json` |
+| State file | `$target/.apple-development-foundation-links` (name → expected destination) |
+| Conflicts | **Never** overwrites an existing name that is not a safe re-install case |
+
+| Message | Meaning |
+| --- | --- |
+| `Conflict; leaving untouched: …` | Path exists and is not treated as the installer-owned link — left alone |
+| `Existing identical symlink is not installer-owned; leaving untouched` | Correct destination already; not claimed into state as newly owned |
+| `Already installed (installer-owned)` | Prior install still valid |
+| `Skip … (not the recorded installer-owned link)` | During `--uninstall`, path was not safe to remove |
+
+Required tools: `awk`, `python3`, `readlink`. Missing `manifest.json` fails the install.
 
 ## Docs site (this Blume project)
+
+Optional for skill/app work.
 
 ```bash
 npm install
 npm run dev        # blume dev
 npm run build      # blume build
-npm run validate   # blume validate
+npm run validate   # blume validate (links)
 npm run doctor     # blume doctor
 ```
 
+Requires Node.js ≥ 22.12. Production site base path: `/AppleDevelopmentFoundation/`.
+
 ## Archived package scripts (explicit request only)
 
-Do **not** use these for ordinary skill work:
+Do **not** use these for ordinary skill or consumer-app work:
 
-- `./Scripts/verify.sh` — package verification
-- `./Scripts/create-module.sh` — package modules
-- `./Scripts/build.sh`, `./Scripts/test.sh` — archived package tooling
+| Script | Role |
+| --- | --- |
+| `./Scripts/verify.sh` | Archived package verification |
+| `./Scripts/create-module.sh` | Package modules |
+| `./Scripts/build.sh`, `./Scripts/test.sh` | Archived package tooling |
 
 See `ARCHIVE.md`.
+
+## Related
+
+- [Troubleshooting](/reference/troubleshooting)
+- [Authoring skills](/skills/authoring)
+- [Verification matrix](/reference/verification-matrix)

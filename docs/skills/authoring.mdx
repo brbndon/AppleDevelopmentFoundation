@@ -7,22 +7,27 @@ description: Maintain Codex skills in this repository with codex-skill-maintaine
 
 Use **`$codex-skill-maintainer`** when creating, reviewing, splitting, updating, or validating skills under `.agents/skills/`.
 
+| | |
+| --- | --- |
+| **Path** | `.agents/skills/codex-skill-maintainer/SKILL.md` |
+| **Do not use for** | Ordinary product code in a consumer app; global install-only chores without skill content changes |
+
 ## Authoring rules (summary)
 
 Full guide: `Documentation/SkillAuthoringGuide.md`.
 
-- One skill = one repeatable responsibility
-- Frontmatter: precise `name` and `description` (triggers **and** exclusions)
-- Keep operational instructions short; put durable references in `references/`
-- No business models, branding, secrets, user-specific paths, or hidden network behavior
-- Skills target the **consumer** workspace unless the skill is explicitly repository-scoped (`codex-skill-maintainer`)
+- One skill = one repeatable responsibility  
+- Frontmatter: precise `name` and `description` (triggers **and** exclusions)  
+- Keep operational instructions short; put durable references in `references/`  
+- No business models, branding, secrets, user-specific paths, or hidden network behavior  
+- Skills target the **consumer** workspace unless the skill is explicitly repository-scoped (`codex-skill-maintainer`)  
 
 ## Checklist when adding a skill
 
-1. Scaffold under `.agents/skills/<name>/SKILL.md` (template: `Templates/NewSkill/SKILL.md.template`)
-2. Add to `manifest.json`
-3. Update `.agents/skills/README.md` use / do-not-use table
-4. If the master router should know about it, update `apple-development-foundation/master-skill.json`
+1. Scaffold under `.agents/skills/<name>/SKILL.md` (template: `Templates/NewSkill/SKILL.md.template` if present)  
+2. Add to `manifest.json`  
+3. Update `.agents/skills/README.md` use / do-not-use table  
+4. If the master router should know about it, update `apple-development-foundation/master-skill.json`  
 5. Run:
 
 ```bash
@@ -31,7 +36,20 @@ Full guide: `Documentation/SkillAuthoringGuide.md`.
 ./Scripts/install-skills.sh --dry-run
 ```
 
-6. Optionally refresh this Blume inventory page so agents do not read stale tables
+6. Refresh the Blume [Skills inventory](/skills) table and its **last reviewed** note so agents do not read stale inventories  
+
+## Installer safety
+
+`install-skills.sh` never overwrites conflicting names or identical external links.
+
+| Flag / case | Behavior |
+| --- | --- |
+| Default install | Symlink installable skills into `${CODEX_HOME:-$HOME/.codex}/skills` |
+| `--dry-run` | Print actions without writing |
+| `--uninstall` | Remove only symlinks whose destination still matches installer state (including broken links after a moved repo) |
+| `Conflict; leaving untouched` | Existing path not claimed — resolve manually |
+
+Details: [Scripts](/tools/scripts) · [Troubleshooting](/reference/troubleshooting).
 
 ## Editing this Blume docs site
 
@@ -48,6 +66,8 @@ Body `#` headings are **not** rendered in HTML — `components.ts` maps `h1` to 
 | `docs/` (this site) | Agent playbook and onboarding |
 | `Documentation/*` | Mostly archived human architecture notes; skill guides remain useful |
 
-## Installer safety
+## Related
 
-`install-skills.sh` never overwrites conflicting names or identical external links. `--uninstall` only removes a symlink whose destination still matches installer state (including a broken symlink left by a moved repository).
+- [Task recipes](/workflow/task-recipes) (author skill recipe)
+- [Verification matrix](/reference/verification-matrix)
+- [Copy-paste prompts](/reference/prompts)
