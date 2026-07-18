@@ -44,11 +44,11 @@ Extraction of proven app code → `$reusable-code-extractor` into the **consumer
 
 ## Verification (XcodeBuildMCP)
 
-1. `session_show_defaults`
-2. `discover_projs` only if defaults are wrong/missing
-3. Build on simulator (iOS) or native macOS target; prefer build-and-run for launch
-4. Run tests if present
-5. Optional screenshot or view hierarchy
+1. `session_show_defaults` (then `session_set_defaults` if needed)
+2. `discover_projs` only if defaults are still wrong/missing
+3. Simulator: prefer **`build_run_sim`** (CLI: `simulator build-and-run`). macOS: **`build_run_macos`**
+4. Tests if present: `test_sim` / `test_macos`
+5. Optional `screenshot` / `snapshot_ui`
 
 ## Copy-paste prompt
 

@@ -22,7 +22,7 @@ Short paths for coding agents. Pick the scenario that matches the user request, 
 | --- | --- |
 | Skills | Optional `$apple-development-foundation` → **`$codex-bootstrap`** → chain in skill (planner, tabs, design system, components, platform, reviews, testing) |
 | Tools | XcodeBuildMCP |
-| Verify | `session_show_defaults` → build (prefer build-and-run) → tests if present → optional screenshot/hierarchy |
+| Verify | `session_show_defaults` → **`build_run_sim`** (prefer) → `test_sim` if present → optional `screenshot` / `snapshot_ui` |
 | Do not | Expand this repo’s archived `Sources/`; invent business domain the user did not supply |
 
 Details: [Bootstrap](/skills/bootstrap).
@@ -35,6 +35,17 @@ Details: [Bootstrap](/skills/bootstrap).
 | Tools | XcodeBuildMCP for build/test |
 | Verify | `$swift-testing-verification` + MCP build/test; reviews if shared UI / async / sensitive paths |
 | Do not | Plan-for-planning on one-off screens; skip a11y on shared components |
+
+### Author reusable UI (tabs, tokens, components)
+
+| Step | Action |
+| --- | --- |
+| Skills | `$swiftui-tab-navigation` when the app needs **app-level** peer destinations; `$apple-design-system` for tokens/appearance; `$swiftui-component-author` for reusable components on that system; `$ios-macos-platform-adaptation` only when platforms diverge |
+| Tools | XcodeBuildMCP for build/preview targets |
+| Verify | MCP build; `$apple-accessibility-review` on shared UI; `$swift-testing-verification` when logic or public component APIs change |
+| Do not | Use tab skill for page-style `TabView` content or segmented controls; put branding-specific tokens into foundation skills; land components in this repo’s archived `Sources/` |
+
+Read each skill’s `SKILL.md` for checklists. Bootstrap chain context: [Bootstrap](/skills/bootstrap).
 
 ### Fix a bug
 

@@ -28,9 +28,9 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
    - Chain authoring skills (tabs → design system → components → platform adaptation) as the bootstrap skill describes.
 
 5. **Establish MCP session context**
-   - Before first build/run/test: `session_show_defaults`.
-   - Discover projects only when defaults are missing or wrong — not in parallel with show-defaults.
-   - Prefer combined build-and-run for simulator launch.
+   - Before first build/run/test: `session_show_defaults` (then `session_set_defaults` if needed).
+   - `discover_projs` only when defaults are missing or wrong — not in parallel with show-defaults.
+   - Prefer **`build_run_sim`** for simulator launch (CLI: `simulator build-and-run`).
 
 6. **Review before ship**
    - Shared UI: `$apple-accessibility-review`
@@ -58,7 +58,9 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
 
 ## Related
 
-- [Task recipes](/workflow/task-recipes) — scenario → skills → verify
+- [Task recipes](/workflow/task-recipes) — scenario → skills → verify (start here for a concrete task)
+- [Skill routing](/workflow/skill-routing)
+- [Consumer workspace](/workflow/consumer-workspace)
 - [Verification matrix](/reference/verification-matrix)
 - [XcodeBuildMCP](/tools/xcodebuildmcp)
 - [Troubleshooting](/reference/troubleshooting)

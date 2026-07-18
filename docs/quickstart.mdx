@@ -65,16 +65,18 @@ Global install is optional.
 # <workspace-root>/.xcodebuildmcp/config.yaml
 schemaVersion: 1
 enabledWorkflows: ["simulator", "ui-automation", "debugging"]
-# Optional sessionDefaults: projectPath, scheme, simulatorName — see upstream docs
+# Optional sessionDefaults (auto-fill MCP + CLI):
+#   projectPath or workspacePath, scheme, simulatorId (preferred) or simulatorName
 ```
 
 | Fact | Detail |
 | --- | --- |
-| Default workflows | Only **`simulator`** is enabled unless you configure more |
-| Need macOS / device / UI automation | Add workflows such as `macos`, `device`, `ui-automation` — see [configuration](https://xcodebuildmcp.com/docs/configuration) and [workflows](https://xcodebuildmcp.com/docs/workflows) |
+| Default workflows | **`simulator`** (+ session defaults tools). Add more only when needed |
+| Need macOS / device / UI automation | Add `macos`, `device`, `ui-automation`, … — [configuration](https://xcodebuildmcp.com/docs/configuration) · [workflows](https://xcodebuildmcp.com/docs/workflows) |
 | After config change | **Reload or restart** the MCP session |
+| MCP vs CLI names | MCP: `build_run_sim`, `discover_projs`. CLI: `xcodebuildmcp simulator build-and-run` — full map on [XcodeBuildMCP](/tools/xcodebuildmcp) |
 
-Interactive setup: `xcodebuildmcp setup` (upstream CLI). Session discipline: [XcodeBuildMCP](/tools/xcodebuildmcp) and repo `MCP.md`.
+Interactive setup: `xcodebuildmcp setup`. List tools: `xcodebuildmcp tools`. Diagnostics: `xcodebuildmcp doctor`. Session discipline: [XcodeBuildMCP](/tools/xcodebuildmcp) and repo `MCP.md`.
 
 Host MCP registration is product-specific (Codex, Cursor, Claude Code). Use the host’s MCP docs; this site does not invent a single universal JSON path.
 
@@ -96,10 +98,11 @@ More scenarios: [Copy-paste prompts](/reference/prompts).
 
 1. Confirm **active workspace** = consumer app/package (not this foundation repo unless skill maintenance was requested).
 2. Route: `$apple-development-foundation` for a shortlist, or invoke the skill directly (`$codex-bootstrap`, `$swiftui-component-author`, …).
-3. Call **`session_show_defaults`** before the first build/run/test.
-4. Implement only what the task needs; run review skills before shipping shared UI or sensitive code.
-5. Verify with XcodeBuildMCP (and Maestro when UI regression matters).
-6. Report project/scheme/simulator, what ran, and residual risk.
+3. Call **`session_show_defaults`** before the first build/run/test; fix via **`session_set_defaults`** if needed.
+4. For simulator launch, prefer MCP **`build_run_sim`** (CLI: `simulator build-and-run`).
+5. Implement only what the task needs; run review skills before shipping shared UI or sensitive code.
+6. Verify with XcodeBuildMCP (and Maestro when UI regression matters); pin **`simulatorId`** when sharing a device with Maestro.
+7. Report project/scheme/simulatorId, what ran, and residual risk.
 
 Scenario paths: [Task recipes](/workflow/task-recipes).
 
@@ -125,8 +128,10 @@ Requires Node.js ≥ 22.12. App/skill work does **not** require the docs site.
 
 ## Next
 
-- [Session workflow](/workflow)
-- [Task recipes](/workflow/task-recipes)
-- [Skill routing](/workflow/skill-routing)
-- [Bootstrap a new app](/skills/bootstrap)
-- [Troubleshooting](/reference/troubleshooting)
+1. [Task recipes](/workflow/task-recipes) — pick the matching scenario  
+2. [Session workflow](/workflow) — full loop when the task spans multiple steps  
+3. [Skill routing](/workflow/skill-routing) — `$apple-development-foundation` shortlist  
+4. [Bootstrap a new app](/skills/bootstrap) — new consumer SwiftUI project  
+5. [Troubleshooting](/reference/troubleshooting) — install / MCP / Maestro blockers  
+
+Agent feed (after deploy): site-root `llms.txt`. Skills source of truth: `.agents/skills/manifest.json` + each `SKILL.md`.

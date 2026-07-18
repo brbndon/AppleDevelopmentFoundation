@@ -4,6 +4,6 @@ export default defineMeta({
   title: "Workflow",
   icon: "git-branch",
   order: 2,
-  pages: ["index", "skill-routing", "consumer-workspace", "task-recipes"],
+  pages: ["index", "task-recipes", "skill-routing", "consumer-workspace"],
 });
 

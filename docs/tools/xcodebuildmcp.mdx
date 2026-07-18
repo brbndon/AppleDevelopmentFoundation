@@ -12,75 +12,179 @@ Prefer **XcodeBuildMCP** tools instead of raw `xcodebuild`, `xcrun`, or `simctl`
 | **Use when** | Building, testing, launching, inspecting UI, or managing simulators/devices for Apple apps |
 | **Do not use as** | A substitute for reading skill workflows; product implementation still goes through foundation skills |
 | **Canonical in-repo** | `MCP.md` |
-| **Upstream** | [xcodebuildmcp.com](https://xcodebuildmcp.com) |
+| **Upstream** | [xcodebuildmcp.com](https://xcodebuildmcp.com) · [CLI](https://xcodebuildmcp.com/docs/cli) · [Tools](https://xcodebuildmcp.com/docs/tools) · [Workflows](https://xcodebuildmcp.com/docs/workflows) |
+| **Verified against** | XcodeBuildMCP **2.6.2** tool catalog (`npx xcodebuildmcp tools`) + official docs |
 
-## Fast path (every session)
+## Naming: MCP vs CLI
+
+XcodeBuildMCP exposes the **same implementations** two ways. Names differ:
+
+| Surface | Form | Example |
+| --- | --- | --- |
+| **MCP** (agent tool list) | Underscored tool id | `build_run_sim`, `discover_projs`, `session_show_defaults` |
+| **CLI** (shell / CI) | `xcodebuildmcp <workflow> <verb>` | `xcodebuildmcp simulator build-and-run` |
+
+This playbook prefers **MCP names** (coding agents’ primary path). When the host has shell but no MCP tools, use the CLI column.
+
+List everything installed locally:
+
+```bash
+xcodebuildmcp tools              # grouped by workflow
+xcodebuildmcp tools --json       # machine-readable CLI verbs
+xcodebuildmcp simulator build-and-run --help
+```
+
+Interactive config: `xcodebuildmcp setup`. Optional agent skill install: `xcodebuildmcp init`. Env diagnostics: `xcodebuildmcp doctor` (include doctor output on support issues).
+
+## Fast path (every MCP session)
 
 1. Call **`session_show_defaults`** before the first build/run/test action.
-2. Use **`discover_projs`** only when defaults show **missing or incorrect** project/workspace context — not speculatively, and **not in parallel** with show-defaults.
-3. For simulator **run** intent, prefer the **combined build-and-run** tool over separate build then run.
-4. Report active context (project/workspace, scheme, simulator/device) and the **exact failing step** on errors.
+2. If defaults are empty or wrong: **`session_set_defaults`** (and/or seed `sessionDefaults` in config). Use **`discover_projs`** only when you still need to find projects — **not** speculatively, and **not in parallel** with show-defaults.
+3. For simulator **run** intent, prefer **`build_run_sim`** (one-shot build + install + launch) over separate `build_sim` → `install_app_sim` → `launch_app_sim`.
+4. Prefer **`simulatorId`** (exact UDID) over name-only selection; avoid unstable “latest OS” churn when pinning a device for Maestro.
+5. Report active context (project/workspace, scheme, simulator/device) and the **exact failing tool** on errors.
 
 ## Install and configure
 
-1. Register XcodeBuildMCP in the agent host’s MCP server list (host-specific).
-2. Create or edit project-local config at the workspace root:
+1. Register XcodeBuildMCP in the agent host’s MCP server list (host-specific). Server entrypoint is typically `xcodebuildmcp mcp` (stdio).
+2. Create or edit project-local config at the **consumer** workspace root:
 
 ```yaml
 # <workspace-root>/.xcodebuildmcp/config.yaml
 schemaVersion: 1
 enabledWorkflows: ["simulator", "ui-automation", "debugging"]
+# Optional — reduces rediscovery every session:
+# sessionDefaults:
+#   projectPath: "./MyApp.xcodeproj"   # or workspacePath (mutually exclusive; workspace wins if both set)
+#   scheme: "MyApp"
+#   simulatorId: "<UDID>"              # preferred over simulatorName when pinning
+#   simulatorName: "iPhone 17 Pro"
+#   configuration: "Debug"
 ```
 
-`schemaVersion: 1` is required. Interactive generator: `xcodebuildmcp setup`.
+`schemaVersion: 1` is required. Layering (highest wins): **session tools** → **config file** → **env vars**. Details: [Configuration](https://xcodebuildmcp.com/docs/configuration) · [Session defaults](https://xcodebuildmcp.com/docs/session-defaults).
 
 ### Workflow selection (MCP context)
 
-By default only the **`simulator`** workflow is advertised to the agent. Enable more when the task needs them (names from upstream workflows catalog):
+By default the MCP server advertises **`simulator`** tools. **Session-management** tools (`session_show_defaults`, `session_set_defaults`, …) are also available by default. Other workflows stay off until enabled — names from the [upstream workflows catalog](https://xcodebuildmcp.com/docs/workflows):
 
-| Need | Enable (examples) |
+| Need | Enable workflow | Notes |
+| --- | --- | --- |
+| iOS simulator build/run/test | `simulator` (default) | Core build path |
+| Show / set / clear defaults; named profiles | `session-management` (default) | See session tools below |
+| Simulator boot/erase/appearance/location | `simulator-management` | Lifecycle & env chrome |
+| UI gestures, screenshots, hierarchy automation | `ui-automation` | Often paired with `snapshot_ui` |
+| Physical device | `device` | Needs signing in Xcode |
+| macOS app build/run/test | `macos` | |
+| SwiftPM packages | `swift-package` | |
+| Debug attach / breakpoints | `debugging` | Stateful (daemon in CLI mode) |
+| Scaffold new projects | `project-scaffolding` | |
+| Project/scheme discovery tools | `project-discovery` | `discover_projs` also appears under other workflows |
+| Env / dependency diagnostics | `doctor` | |
+| Xcode IDE bridge | `xcode-ide` | Opt-in |
+
+After changing config: **reload or restart** the MCP session.
+
+### Monorepo named profiles
+
+For multiple apps in one repo, use `sessionDefaultsProfiles` + `activeSessionDefaultsProfile` in config, or switch at runtime with **`session_use_defaults_profile`**. Profiles are isolated (no inheritance). CLI: `--profile <name>` on a single invocation. See [Named profiles](https://xcodebuildmcp.com/docs/session-defaults#named-profiles).
+
+## Session tools (MCP)
+
+| MCP tool | Purpose |
 | --- | --- |
-| iOS simulator build/run/test | `simulator` (default) |
-| Simulator boot/erase/appearance | often with `simulator-management` |
-| UI gestures, screenshots, hierarchy automation | `ui-automation` |
-| Physical device | `device` (+ signing in Xcode) |
-| macOS app build/run/test | `macos` |
-| SwiftPM packages | `swift-package` |
-| Debug attach / breakpoints | `debugging` |
-| Scaffold new projects | `project-scaffolding` |
-| Project/scheme discovery | `project-discovery` (tools may still be used via session flow) |
+| `session_show_defaults` | Read current project/scheme/simulator/device defaults |
+| `session_set_defaults` | Set or patch defaults for the rest of the session (can persist to config) |
+| `session_clear_defaults` | Clear session defaults |
+| `session_use_defaults_profile` | Switch named profile (monorepo) |
 
-After changing config: **reload or restart** the MCP session. Full schema and layering (session tools > config file > env): [Configuration](https://xcodebuildmcp.com/docs/configuration) · [Workflows](https://xcodebuildmcp.com/docs/workflows).
+## Tool map (MCP name → CLI)
 
-Optional `sessionDefaults` in config (project path, scheme, simulator name) reduce discovery churn — see upstream session-defaults docs. Runtime overrides via session tools still win.
+Exact advertised set depends on `enabledWorkflows` and XcodeBuildMCP version. Prefer the host’s live tool list. Mapping verified against **2.6.2** + official docs:
 
-## Tool map by intent (representative)
+| Intent | MCP tool(s) | CLI equivalent |
+| --- | --- | --- |
+| Show defaults | `session_show_defaults` | (session defaults auto-fill CLI flags from config) |
+| Set / clear / profile | `session_set_defaults`, `session_clear_defaults`, `session_use_defaults_profile` | config `sessionDefaults` / `--profile` |
+| Find projects | `discover_projs` | `xcodebuildmcp project-discovery discover-projects` (also under `simulator` / `device` / `macos`) |
+| List schemes / settings | `list_schemes`, `show_build_settings` | `… list-schemes`, `… show-build-settings` |
+| List simulators | `list_sims` | `xcodebuildmcp simulator list` |
+| Simulator **build only** | `build_sim` | `xcodebuildmcp simulator build` |
+| Simulator **build + install + launch** (preferred for run) | **`build_run_sim`** | **`xcodebuildmcp simulator build-and-run`** |
+| Simulator install / launch / stop | `install_app_sim`, `launch_app_sim`, `stop_app_sim` | `simulator install`, `launch-app`, `stop` |
+| Simulator test | `test_sim` | `xcodebuildmcp simulator test` |
+| Simulator boot / open | `boot_sim`, `open_sim` | `simulator boot`, `open` |
+| Screenshot / UI snapshot | `screenshot`, `snapshot_ui` | `simulator screenshot`, `snapshot-ui` |
+| Record video | `record_sim_video` | `xcodebuildmcp simulator record-video` (daemon/stateful) |
+| Device build + run | `build_run_device` | `xcodebuildmcp device build-and-run` |
+| Device build / test / install / launch | `build_device`, `test_device`, `install_app_device`, `launch_app_device` | `device build`, `test`, `install`, `launch` |
+| macOS build + run | `build_run_macos` | `xcodebuildmcp macos build-and-run` |
+| macOS build / test / launch | `build_macos`, `test_macos`, `launch_mac_app` | `macos build`, `test`, `launch` |
+| SwiftPM | `swift_package_build`, `swift_package_test`, `swift_package_run`, … | `xcodebuildmcp swift-package …` |
+| UI automation | `tap`, `swipe`, `type_text`, `gesture`, `wait_for_ui`, … | `xcodebuildmcp ui-automation …` |
+| Scaffold | `scaffold_ios_project`, `scaffold_macos_project` | `project-scaffolding scaffold-ios` / `scaffold-macos` |
+| Doctor | `doctor` | `xcodebuildmcp doctor` |
 
-Exact MCP tool identifiers can vary by XcodeBuildMCP version and enabled workflows. Use this map for **intent**; prefer the host’s tool list and any global `xcodebuildmcp` skill for precise names.
+:::note Do not invent tool ids
+If a tool is missing from the host list, enable the workflow and restart MCP — do not fall back to raw `xcodebuild` without reporting the blocker. Upstream live catalog: [Tools reference](https://xcodebuildmcp.com/docs/tools).
+:::
 
-| Intent | Representative tools / groups |
-| --- | --- |
-| Show / set session context | `session_show_defaults`, session set-defaults tools |
-| Find projects/schemes | `discover_projs`, scheme listing, build-settings inspection |
-| Simulator build / run / test | build-and-run (preferred for run), build, test, install, launch |
-| Simulator lifecycle | boot, erase, location, appearance |
-| macOS | build, run, test (requires `macos` workflow) |
-| Physical device | build, test, install, launch (requires `device` + signing) |
-| Logs | stream and capture from simulators and devices |
-| UI inspection | screenshots, view hierarchy with coordinates, taps/swipes/gestures |
-| SwiftPM | build, run, test packages |
-| Scaffolding | generate iOS/macOS project templates |
+## `launchArgs` vs `extraArgs`
+
+Official contract (build-and-run and launch tools):
+
+| Parameter | Goes to | Use for |
+| --- | --- | --- |
+| **`launchArgs`** | App process (`ProcessInfo.processInfo.arguments`) | Runtime flags, UI-testing hooks (`--uitesting`, mocks) |
+| **`extraArgs`** | `xcodebuild` / build settings only | e.g. `-only-testing:MyAppTests` — **not** passed to the app |
+
+Applies to MCP tools such as `build_run_sim`, `build_run_device`, `build_run_macos`, `launch_app_sim`, `launch_app_device`, `launch_mac_app` (and their CLI counterparts).
+
+## CLI recipes (shell / CI / agents without MCP tools)
+
+Same config file as MCP. Synopsis: `xcodebuildmcp <workflow> <tool> [options]`.
+
+```shell
+# Build + run simulator (preferred one-shot)
+xcodebuildmcp simulator build-and-run \
+  --scheme MyApp \
+  --project-path ./MyApp.xcodeproj \
+  --simulator-id <UDID>
+
+# With runtime launch args (JSON form)
+xcodebuildmcp simulator build-and-run --json '{
+  "scheme": "MyApp",
+  "projectPath": "./MyApp.xcodeproj",
+  "simulatorId": "<UDID>",
+  "launchArgs": ["--uitesting"]
+}'
+
+# Tests with live progress + focused suite
+xcodebuildmcp simulator test --json '{
+  "workspacePath": "./MyApp.xcworkspace",
+  "scheme": "MyApp",
+  "simulatorId": "<UDID>",
+  "progress": true,
+  "extraArgs": ["-only-testing:MyAppTests"]
+}'
+```
+
+Long-running CLI calls stream progress. For agent parsers prefer `--output jsonl`; humans use default `text`; `--output json` waits for a single final payload. See [CLI](https://xcodebuildmcp.com/docs/cli) · [Output formats](https://xcodebuildmcp.com/docs/output-formats).
+
+Stateful tools (log capture, video, LLDB, some SwiftPM runs) use a **per-workspace daemon** in CLI mode (`xcodebuildmcp daemon status|logs|…`). MCP keeps session state in-process.
 
 ## Failure modes
 
 | Symptom | Next step |
 | --- | --- |
-| No macOS/device/UI tools in the tool list | Enable the matching `enabledWorkflows` entry; restart MCP |
-| Wrong scheme or simulator | Re-read `session_show_defaults`; fix defaults before rebuilding |
-| Empty or wrong project path | Set workspace root; `discover_projs` only if defaults are wrong |
+| No macOS/device/UI tools in the tool list | Enable matching `enabledWorkflows`; **reload/restart** MCP |
+| Wrong scheme or simulator | `session_show_defaults` → `session_set_defaults` or config; prefer `simulatorId` |
+| Empty or wrong project path | Fix workspace root; `discover_projs` only if defaults still wrong |
 | Signing / device install errors | Fix signing in Xcode; enable `device` only when needed; report exact tool failure |
-| Agent used raw `xcodebuild` | Prefer MCP; if MCP is unavailable, report the blocker explicitly |
-| Flaky simulator selection | Pin one simulator **ID**; avoid unstable `OS=latest`-style selection |
+| Agent used raw `xcodebuild` | Prefer MCP; if MCP unavailable, use CLI recipes above or report blocker |
+| Flaky simulator selection | Pin one **`simulatorId`**; avoid `useLatestOS` / name-only churn for regression |
+| MCP and CLI disagree on device | Same UDID + app state for both |
+| Daemon / video / debug stuck (CLI) | `xcodebuildmcp daemon status` · `daemon logs` · [CLI daemon docs](https://xcodebuildmcp.com/docs/cli) |
 
 More rows: [Troubleshooting](/reference/troubleshooting).
 
@@ -88,15 +192,16 @@ More rows: [Troubleshooting](/reference/troubleshooting).
 
 ```text
 Goal: Prove the consumer app builds and tests on the intended target.
-Constraints: XcodeBuildMCP only (no raw xcodebuild if MCP is available). Report residual risk.
-Inputs: Active consumer project, scheme, simulator or macOS target.
-Done when: session_show_defaults reported; build (and tests if present) executed; outcomes stated.
-Verification: Prefer combined build-and-run for launch; never claim pass without running the tool.
+Constraints: XcodeBuildMCP MCP tools if available; else CLI. No silent raw xcodebuild. Report residual risk.
+Inputs: Active consumer project, scheme, simulatorId or macOS target.
+Done when: session_show_defaults reported; build_run_sim or build/test executed; outcomes stated.
+Verification: Prefer build_run_sim for launch; never claim pass without running the tool.
 ```
 
 ## Related
 
 - Repo `MCP.md`
-- [Maestro](/tools/maestro) — pair for UI regression
+- [Maestro](/tools/maestro) — pair for UI regression (same simulator ID)
 - [Verification matrix](/reference/verification-matrix)
 - [Task recipes](/workflow/task-recipes)
+- [Troubleshooting](/reference/troubleshooting)

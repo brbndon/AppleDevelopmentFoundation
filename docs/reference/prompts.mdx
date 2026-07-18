@@ -39,7 +39,7 @@ Inputs:
 - Navigation shape: <tabs | sidebar | none yet>
 - Consumer path: <…>
 Done when: App skeleton builds; skill chain applied or explicitly skipped with reason; handoff lists next skills.
-Verification: session_show_defaults → MCP build (prefer build-and-run) → tests if present → optional screenshot/hierarchy.
+Verification: session_show_defaults → build_run_sim (prefer) → test_sim if present → optional screenshot/snapshot_ui.
 ```
 
 ## Ship a feature
@@ -53,6 +53,21 @@ Constraints:
 Inputs: Consumer project path, acceptance criteria, any existing patterns to match.
 Done when: Feature matches criteria; reviews applied where relevant; no unrelated refactors.
 Verification: $swift-testing-verification + XcodeBuildMCP build/test; Maestro for critical UI paths if needed.
+```
+
+## Author reusable UI (tabs / tokens / components)
+
+```text
+Goal: Add or refactor reusable UI in the consumer workspace: <tabs | design tokens | components>.
+Constraints:
+- App-level tabs only: $swiftui-tab-navigation (not page-style TabView content or segmented controls).
+- Tokens/appearance: $apple-design-system in the consumer repo — no application branding baked into foundation skills.
+- Components: $swiftui-component-author on the consumer design system.
+- Platform divergence only when needed: $ios-macos-platform-adaptation.
+- Do not land code in AppleDevelopmentFoundation archived Sources/.
+Inputs: Consumer path, existing design system (if any), peer destinations list if tabs.
+Done when: Shared UI builds; a11y review on reusable surfaces; handoff lists residual risk.
+Verification: session_show_defaults → MCP build; $apple-accessibility-review; $swift-testing-verification if APIs/logic changed.
 ```
 
 ## Fix a bug
@@ -90,11 +105,11 @@ Constraints: XcodeBuildMCP only if available; report if MCP is missing instead o
 Inputs: Project/workspace, scheme, simulator or macOS target.
 Done when: Defaults shown; build and tests executed; outcomes and next tool call on failure reported.
 Verification:
-1. session_show_defaults
-2. discover_projs only if defaults wrong/missing
-3. Build (prefer build-and-run for launch)
-4. Run tests if present
-Never claim pass without running the tool.
+1. session_show_defaults (session_set_defaults if needed)
+2. discover_projs only if defaults still wrong/missing
+3. build_run_sim for launch (or build_run_macos / build_run_device)
+4. test_sim / test_macos if present
+Never claim pass without running the tool. MCP names above; CLI: xcodebuildmcp simulator build-and-run, etc.
 ```
 
 ## Maestro UI regression

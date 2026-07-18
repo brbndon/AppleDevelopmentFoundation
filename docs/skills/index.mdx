@@ -8,40 +8,44 @@ description: Local Codex skills for Apple development — when to use each and w
 **Source of truth:** `.agents/skills/manifest.json` (install/verify) and `.agents/skills/README.md` (use / do-not-use). Router catalog: `apple-development-foundation/master-skill.json`.
 
 :::note Sync status
-This table was last reviewed against `manifest.json` on **2026-07-17** (15 skills). When the manifest or skill purposes change, update this page in the same change set — do not leave agents on a stale inventory.
+This table was last reviewed against `manifest.json` on **2026-07-18** (15 skills). When the manifest or skill purposes change, update this page in the same change set — do not leave agents on a stale inventory.
 :::
 
 ## Inventory
 
-| Skill | Use for | Do not use for |
-| --- | --- | --- |
-| `apple-development-foundation` | Reference-first child-skill routing; explicit foundation audits | Replacing child instructions; implied audits/verification |
-| `codex-bootstrap` | New iOS/macOS SwiftUI projects in the **consumer** workspace | One-off screens; archived package work in this repo |
-| `apple-platform-planner` | Planning a platform feature | Implementation-only requests |
-| `swiftui-tab-navigation` | App-level tabs / system Liquid Glass tab chrome | Page-style tabs, segmented controls, business screens |
-| `swiftui-component-author` | Reusable SwiftUI components | App-specific screen copy |
-| `apple-design-system` | Design-system tokens and components | Application branding |
-| `ios-macos-platform-adaptation` | Divergent iOS vs macOS behavior | Shared identical behavior |
-| `swift-package-module-author` | Independently importable SPM module in the active workspace | App-local feature; archived package here |
-| `reusable-code-extractor` | Proven app code → consumer shared module | Speculative abstraction; landing code in this repo |
-| `swift-concurrency-review` | async/await, actors, cancellation | Unrelated styling |
-| `apple-accessibility-review` | Reusable UI accessibility | Non-UI services |
-| `apple-security-privacy-review` | Files, logging, permissions, sensitive data | Visual-only polish |
-| `swift-testing-verification` | Verification after meaningful code changes | Planning-only work |
-| `maestro-apple-app-testing` | End-to-end Maestro UI testing | Non-testing product implementation |
-| `codex-skill-maintainer` | Creating/updating skills in this repo | Ordinary product code changes |
+Deep procedure lives in each skill’s `SKILL.md` — prefer reading that over forking long instructions into this site. Paths are relative to the foundation repository root.
 
-Deep procedure: `.agents/skills/<name>/SKILL.md` — prefer reading the skill over forking long instructions into this site.
+| Skill | Path | Use for | Do not use for |
+| --- | --- | --- |
+| `apple-development-foundation` | `.agents/skills/apple-development-foundation/SKILL.md` | Reference-first child-skill routing; explicit foundation audits | Replacing child instructions; implied audits/verification |
+| `codex-bootstrap` | `.agents/skills/codex-bootstrap/SKILL.md` | New iOS/macOS SwiftUI projects in the **consumer** workspace | One-off screens; archived package work in this repo |
+| `apple-platform-planner` | `.agents/skills/apple-platform-planner/SKILL.md` | Planning a platform feature | Implementation-only requests |
+| `swiftui-tab-navigation` | `.agents/skills/swiftui-tab-navigation/SKILL.md` | App-level tabs / system Liquid Glass tab chrome | Page-style tabs, segmented controls, business screens |
+| `swiftui-component-author` | `.agents/skills/swiftui-component-author/SKILL.md` | Reusable SwiftUI components | App-specific screen copy |
+| `apple-design-system` | `.agents/skills/apple-design-system/SKILL.md` | Design-system tokens and components | Application branding |
+| `ios-macos-platform-adaptation` | `.agents/skills/ios-macos-platform-adaptation/SKILL.md` | Divergent iOS vs macOS behavior | Shared identical behavior |
+| `swift-package-module-author` | `.agents/skills/swift-package-module-author/SKILL.md` | Independently importable SPM module in the active workspace | App-local feature; archived package here |
+| `reusable-code-extractor` | `.agents/skills/reusable-code-extractor/SKILL.md` | Proven app code → consumer shared module | Speculative abstraction; landing code in this repo |
+| `swift-concurrency-review` | `.agents/skills/swift-concurrency-review/SKILL.md` | async/await, actors, cancellation | Unrelated styling |
+| `apple-accessibility-review` | `.agents/skills/apple-accessibility-review/SKILL.md` | Reusable UI accessibility | Non-UI services |
+| `apple-security-privacy-review` | `.agents/skills/apple-security-privacy-review/SKILL.md` | Files, logging, permissions, sensitive data | Visual-only polish |
+| `swift-testing-verification` | `.agents/skills/swift-testing-verification/SKILL.md` | Verification after meaningful code changes | Planning-only work |
+| `maestro-apple-app-testing` | `.agents/skills/maestro-apple-app-testing/SKILL.md` | End-to-end Maestro UI testing | Non-testing product implementation |
+| `codex-skill-maintainer` | `.agents/skills/codex-skill-maintainer/SKILL.md` | Creating/updating skills in this repo | Ordinary product code changes |
 
 ## Start by task
 
-| Task | Guide |
-| --- | --- |
-| New app | [Bootstrap](/skills/bootstrap) |
-| Reviews | [Reviews and quality](/skills/reviews-and-quality) |
-| Tests / UI | [Testing](/skills/testing) |
-| Maintain skills | [Authoring skills](/skills/authoring) |
-| Scenario matrix | [Task recipes](/workflow/task-recipes) |
+| Task | Guide | Skill(s) |
+| --- | --- | --- |
+| New app | [Bootstrap](/skills/bootstrap) | `$codex-bootstrap` |
+| App-level tabs / Liquid Glass chrome | [Task recipes](/workflow/task-recipes#author-reusable-ui-tabs-tokens-components) · skill `SKILL.md` | `$swiftui-tab-navigation` |
+| Design tokens / shared components | [Task recipes](/workflow/task-recipes#author-reusable-ui-tabs-tokens-components) | `$apple-design-system` → `$swiftui-component-author` |
+| iOS vs macOS divergence | [Task recipes](/workflow/task-recipes#ship-a-feature-in-an-existing-app) | `$ios-macos-platform-adaptation` |
+| New SPM module / extract shared code | [Task recipes](/workflow/task-recipes#add-a-shared-spm-module-or-extract-reusable-code) | `$swift-package-module-author` / `$reusable-code-extractor` |
+| Reviews | [Reviews and quality](/skills/reviews-and-quality) | concurrency / security / a11y skills |
+| Tests / UI | [Testing](/skills/testing) | `$swift-testing-verification` · `$maestro-apple-app-testing` |
+| Maintain skills | [Authoring skills](/skills/authoring) | `$codex-skill-maintainer` |
+| Full scenario matrix | [Task recipes](/workflow/task-recipes) | — |
 
 ## Install and verify
 

@@ -5,7 +5,7 @@ description: Skills referenced by this foundation but not vendored in the reposi
 
 # External skills
 
-Some workflows are intentionally **not** copied into `.agents/skills/` or `manifest.json`. Agents should route to the globally installed skill when the task matches.
+Some workflows are intentionally **not** copied into `.agents/skills/` or `manifest.json`. Agents should route to the **globally installed** skill when the task matches. Do not treat missing inventory entries as foundation bugs when this page documents them as external.
 
 ## App Store screenshots
 
@@ -14,8 +14,11 @@ Some workflows are intentionally **not** copied into `.agents/skills/` or `manif
 | Skill | `$app-store-screenshots` |
 | Upstream | [ParthJadhav/app-store-screenshots](https://github.com/ParthJadhav/app-store-screenshots) |
 | Use for | App Store / Play Store marketing screenshots, device mockups, exportable sets, screenshot-editor scaffolding |
+| Not for | In-app product UI implementation; foundation skill maintenance |
 
 Install the skill in the agent host per upstream docs; do not vendor it into this foundation unless the maintainers decide otherwise.
+
+Recipe: [Task recipes — App Store screenshots](/workflow/task-recipes#app-store-marketing-screenshots).
 
 ## Host / platform skills
 
@@ -24,3 +27,9 @@ Agents may also have host-provided skills (for example a global `xcodebuildmcp` 
 1. This foundation’s Apple skills for product workflow
 2. Host skill for MCP-specific command nuances
 3. Repo `MCP.md` for session discipline that must stay consistent
+
+## Related
+
+- [Skills inventory](/skills) (in-repo only)
+- [Skill routing](/workflow/skill-routing)
+- [Task recipes](/workflow/task-recipes)

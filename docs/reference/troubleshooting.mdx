@@ -25,10 +25,12 @@ Installer **never** overwrites conflicting names. Details: [Scripts](/tools/scri
 | Symptom | Likely cause | Next step |
 | --- | --- | --- |
 | Build/run tools missing for macOS or device | Only default `simulator` workflow enabled | Set `enabledWorkflows` in `.xcodebuildmcp/config.yaml`, then **reload/restart** the MCP session — see [XcodeBuildMCP](/tools/xcodebuildmcp) |
-| Defaults wrong (project/scheme/simulator) | Stale or empty session defaults | Call `session_show_defaults` first; set defaults or use `discover_projs` **only** when defaults are missing/wrong — never parallel with show-defaults |
-| `discover_projs` finds nothing useful | Wrong workspace root / multi-root monorepo | Open the consumer app root; set explicit project/workspace + scheme in session defaults or config `sessionDefaults` |
+| Defaults wrong (project/scheme/simulator) | Stale or empty session defaults | `session_show_defaults` → `session_set_defaults` (or config `sessionDefaults`); `discover_projs` **only** if still missing/wrong — never parallel with show-defaults |
+| `discover_projs` finds nothing useful | Wrong workspace root / multi-root monorepo | Open the consumer app root; set project/workspace + scheme; or use named profiles (`session_use_defaults_profile` / `sessionDefaultsProfiles`) |
 | UI automation tools missing | Workflow not enabled | Add `ui-automation` (and related) to `enabledWorkflows`; restart MCP |
-| Agent falls back to raw `xcodebuild` / `simctl` | MCP unavailable or misconfigured | Report the blocker; fix MCP config before inventing CLI workflows when the host should use MCP |
+| Agent invents tool names like `build-and-run` as MCP ids | MCP vs CLI naming confusion | MCP ids are underscored (`build_run_sim`); CLI is `xcodebuildmcp simulator build-and-run` — [map](/tools/xcodebuildmcp#tool-map-mcp-name--cli) |
+| Agent falls back to raw `xcodebuild` / `simctl` | MCP unavailable or misconfigured | Prefer MCP; if missing, use official CLI recipes or report the blocker — do not invent a full raw-CLI workflow silently |
+| CLI video/debug/logs broken | Daemon/stateful session | `xcodebuildmcp daemon status` / `daemon logs` — see upstream CLI daemon docs |
 
 Canonical session order: repo `MCP.md` and [XcodeBuildMCP](/tools/xcodebuildmcp).
 
