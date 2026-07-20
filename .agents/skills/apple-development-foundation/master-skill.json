@@ -61,6 +61,12 @@
       "purpose": "Add or change reusable semantic design-system tokens and components"
     },
     {
+      "id": "apple-app-marketing-site",
+      "path": ".agents/skills/apple-app-marketing-site/SKILL.md",
+      "role": "web-marketing",
+      "purpose": "Build or re-theme a static Astro marketing site for an Apple consumer app"
+    },
+    {
       "id": "ios-macos-platform-adaptation",
       "path": ".agents/skills/ios-macos-platform-adaptation/SKILL.md",
       "role": "platform",
