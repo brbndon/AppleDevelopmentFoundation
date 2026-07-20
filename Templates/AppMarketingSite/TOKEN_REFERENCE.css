@@ -1,0 +1,46 @@
+/*
+  Starter design tokens for an Apple-inspired app marketing site.
+  Paste into web/src/styles/global.css and adjust values per product.
+*/
+
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces */
+  --color-canvas: #f5f5f7;
+  --color-surface: #ffffff;
+
+  /* Text */
+  --color-ink: #1d1d1f;
+  --color-muted: #6e6e73;
+  --color-faint: #86868b;
+
+  /* Chrome */
+  --color-line: #d2d2d7;
+  --color-night: #1d1d1f;
+  --color-on-night: #f5f5f7;
+  --color-on-accent: #ffffff;
+
+  /* Optional brand accent — wire .btn / links to this when not monochrome
+  --color-accent: #0a7f70;
+  --color-accent-hover: #086659;
+  */
+
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+
+  --shadow-device:
+    0 50px 100px -28px rgb(0 0 0 / 0.32),
+    0 22px 44px -20px rgb(0 0 0 / 0.2),
+    0 0 0 1px rgb(0 0 0 / 0.06);
+  --shadow-soft: 0 16px 48px rgb(0 0 0 / 0.07);
+
+  --radius-control: 0.75rem;
+  --radius-card: 1.25rem;
+  --radius-pill: 9999px;
+}
+
+/*
+  Tailwind v4 maps --color-* to utilities:
+  bg-canvas, text-ink, border-line, bg-night, shadow-device, etc.
+*/

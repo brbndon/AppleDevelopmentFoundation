@@ -37,7 +37,7 @@ See [Agent host support](docs/reference/host-support.mdx).
 | `.agents/skills/` | Live reusable skills |
 | `Scripts/` | Live catalog, installer, consumer-guidance, and verification tools |
 | `docs/`, `MCP.md` | Live agent playbook and command reference |
-| `Templates/` | Skill and consumer-project templates |
+| `Templates/` | Skill and consumer-project templates (includes `AppMarketingSite/`) |
 | `archive/` | Preserved exploratory package, demos, old website, historical documentation, and package tooling |
 
 ## Install skills
@@ -65,6 +65,7 @@ Point Codex at this repo when bootstrapping apps:
 | `swiftui-tab-navigation` | Build native app-level tabs with system Liquid Glass behavior |
 | `swiftui-component-author` | Author reusable SwiftUI components |
 | `apple-design-system` | Add or change reusable design-system tokens and components |
+| `apple-app-marketing-site` | Build or re-theme a static Astro marketing site for an Apple app |
 | `ios-macos-platform-adaptation` | Adapt behavior between iOS and macOS |
 | `swift-package-module-author` | Add an independently importable Swift Package module |
 | `reusable-code-extractor` | Extract proven app code into a shared module |

@@ -140,6 +140,20 @@
       "modules": []
     },
     {
+      "name": "apple-app-marketing-site",
+      "path": "apple-app-marketing-site",
+      "description": "Use when creating, re-theming, polishing, or migrating a static Astro + Tailwind marketing site for an iOS or macOS app (landing, help, support, privacy, terms). Do not use for SwiftUI app UI, App Store screenshot sets, or general web apps unrelated to Apple product marketing.",
+      "role": "web-marketing",
+      "scope": "repository-or-user",
+      "purpose": "Build or re-theme a static Astro marketing site for an Apple consumer app",
+      "use_for": "Apple app marketing sites (Astro + Tailwind): scaffold, polish, retheme, deploy",
+      "do_not_use_for": "SwiftUI app UI, App Store screenshots, or general non-marketing web apps",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
       "name": "ios-macos-platform-adaptation",
       "path": "ios-macos-platform-adaptation",
       "description": "Use when an Apple-platform feature genuinely behaves differently on iOS and macOS. Do not use when native behavior is identical or when only planning a new feature.",

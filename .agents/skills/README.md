@@ -12,6 +12,7 @@ These source-controlled skills are intentionally general Apple-development workf
 | swiftui-tab-navigation | native app-level SwiftUI tabs and system Liquid Glass tab chrome | page-style tabs, segmented controls, or business-specific screens |
 | swiftui-component-author | reusable SwiftUI components | app-specific screen copy |
 | apple-design-system | design-system changes | application branding |
+| apple-app-marketing-site | Apple app marketing sites (Astro + Tailwind): scaffold, polish, retheme, deploy | SwiftUI app UI, App Store screenshots, or general non-marketing web apps |
 | ios-macos-platform-adaptation | divergent platform behavior | shared identical behavior |
 | swift-package-module-author | a reusable package target in the active workspace | an app-local feature or archived package work in this repository |
 | reusable-code-extractor | generalizing proven app code into consumer shared modules | speculative extraction or landing code in this repository's archived package |
