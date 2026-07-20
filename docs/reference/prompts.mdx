@@ -123,7 +123,7 @@ Constraints:
 - MCP for inspect/debug; maestro test for regression YAML.
 Inputs: App identifier, existing .maestro/ conventions, flows to cover.
 Done when: Flows run; flakes classified; pass/fail counts and artifacts reported.
-Verification: Smallest flow after each change → tagged suite → full suite when practical.
+Verification: Run only the single smallest relevant flow after each flow or journey change. Do not add tagged or complete-suite runs unless the user explicitly requests them or a documented release/CI gate requires them.
 ```
 
 ## Foundation skill maintenance

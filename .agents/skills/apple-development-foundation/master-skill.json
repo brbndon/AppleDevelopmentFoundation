@@ -112,7 +112,7 @@
       "id": "maestro-apple-app-testing",
       "path": ".agents/skills/maestro-apple-app-testing/SKILL.md",
       "role": "verification",
-      "purpose": "Build, inspect, and test Apple apps with Maestro end-to-end workflows"
+      "purpose": "Build, inspect, and test affected Apple app journeys with Maestro"
     },
     {
       "id": "codex-skill-maintainer",

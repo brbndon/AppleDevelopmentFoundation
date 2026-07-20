@@ -20,7 +20,7 @@ These source-controlled skills are intentionally general Apple-development workf
 | apple-accessibility-review | reusable UI accessibility | a non-UI service |
 | apple-security-privacy-review | files, logging, permissions, and sensitive data | visual-only polish |
 | swift-testing-verification | meaningful change verification | planning-only requests |
-| maestro-apple-app-testing | thorough Maestro testing for Apple apps | non-testing product implementation |
+| maestro-apple-app-testing | focused Maestro testing for Apple app journeys | non-testing product implementation |
 | codex-skill-maintainer | skill changes | product code changes |
 <!-- END GENERATED SKILL CATALOG -->
 

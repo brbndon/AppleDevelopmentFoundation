@@ -1,6 +1,6 @@
 ---
 name: maestro-apple-app-testing
-description: Use when building, debugging, authoring, or thoroughly testing an Apple app with Maestro, including iOS simulator flows, UI inspection, screenshots, flaky-flow diagnosis, and end-to-end regression coverage. Do not use for non-testing product implementation or standalone unit tests.
+description: Use when building, debugging, authoring, or journey-level testing an Apple app with Maestro, including iOS simulator flows, UI inspection, screenshots, flaky-flow diagnosis, and focused regression of the affected flow(s). Prefer the single edited or directly affected flow over tagged or full suites. Do not use for non-testing product implementation or standalone unit tests.
 ---
 
 # Maestro Apple app testing
@@ -17,6 +17,20 @@ simulators/devices, existing `.maestro/` flows, and the requested behavior or bu
 Output: repeatable Maestro flows or focused edits, executed test results, screenshots
 and debug artifacts when useful, and a concise report of coverage, failures, and
 remaining manual checks. Never claim a test passed without running it.
+
+## Scope Maestro to changed journeys
+
+Do not run Maestro merely because code changed. Use it when a task edits a Maestro
+flow or changes user-visible UI, interaction, navigation, or journey behavior. For
+non-UI code, run Maestro only when the changed logic directly affects a known user
+journey; use focused unit, integration, or build verification for documentation,
+tooling, refactors, and logic outside a user journey.
+
+Map the change to its existing flow(s) before testing. Run only the one edited or
+directly affected flow during normal work; if a shared change genuinely affects
+multiple journeys, run only those directly affected flows and state why. Do not run
+tagged suites or every flow as a routine final check. Run a complete suite only when
+the user explicitly requests it or an explicit release/CI policy requires it.
 
 ## Workflow
 
@@ -38,10 +52,10 @@ remaining manual checks. Never claim a test passed without running it.
    selecting them: an identifier inside `.tabItem` may not propagate to the generated
    button, so use its confirmed accessibility label when no identifier is exposed.
    Do not use arbitrary sleeps when a state assertion or wait can express the condition.
-6. Test the happy path, validation and error states, loading/empty states, relaunch
-   and persistence behavior, navigation/back behavior, permissions, keyboard/input,
-   and accessibility-visible labels. Cover the highest-risk flows first, then run the
-   full suite with tags when the project provides them.
+6. When authoring or repairing a flow, cover its relevant happy path, validation and
+   error states, loading/empty states, relaunch and persistence behavior,
+   navigation/back behavior, permissions, keyboard/input, and accessibility-visible
+   labels. Keep that coverage in the focused flow; do not expand to unrelated flows.
 7. On failure, preserve or request debug output, screenshots, hierarchy, and video
    when useful; classify the failure as app behavior, test selector/flow, fixture,
    simulator/device, build, or environment. Reproduce once before changing a flow.
@@ -60,7 +74,8 @@ and report platform-specific gaps rather than assuming iOS selectors or behavior
 
 ## Verification contract
 
-Run the smallest relevant flow after each flow change, then the relevant tagged suite
-and finally the complete suite when practical. Use `--debug-output` or equivalent
-artifacts for failures. Do not modify production data or use real credentials; use
-fixtures, test accounts, and environment variables supplied by the workspace.
+Run the single smallest relevant flow after each flow or journey change. Do not add a
+tagged or complete-suite run unless the user explicitly requests it or a documented
+release/CI gate requires it. Use `--debug-output` or equivalent artifacts for
+failures. Do not modify production data or use real credentials; use fixtures, test
+accounts, and environment variables supplied by the workspace.

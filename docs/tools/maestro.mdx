@@ -5,11 +5,11 @@ description: End-to-end UI testing for Apple apps with Maestro, paired with Xcod
 
 # Maestro
 
-Use **`$maestro-apple-app-testing`** as the main workflow for thorough Apple UI testing: simulator flows, inspection, screenshots, flaky-flow diagnosis, and regression coverage.
+Use **`$maestro-apple-app-testing`** as the main workflow for focused Apple UI testing: simulator flows, inspection, screenshots, flaky-flow diagnosis, and journey-level regression of the affected flow(s).
 
 | | |
 | --- | --- |
-| **Use when** | Building, debugging, authoring, or thoroughly testing an Apple app with Maestro |
+| **Use when** | Building, debugging, authoring, or journey-level testing an Apple app with Maestro |
 | **Do not use for** | Non-testing product implementation; pure unit/concurrency logic |
 | **Skill source** | `.agents/skills/maestro-apple-app-testing/SKILL.md` |
 
@@ -43,8 +43,9 @@ If Maestro or its MCP server is unavailable, **stop and report** the exact block
 3. Build and install/launch with XcodeBuildMCP: prefer MCP **`build_run_sim`**; use the matching CLI only when active policy explicitly permits it.
 4. Inspect the screen (Maestro MCP and/or `snapshot_ui` / hierarchy tools) before editing selectors.
 5. Author or update flows under the consumer project’s agreed path (often `.maestro/`).
-6. Run the smallest relevant flow; then tagged suite / full suite when practical.
-7. On failure: preserve debug output, screenshots, hierarchy, video when useful; classify; reproduce once; fix; re-run.
+6. Map the change to its existing flow(s). Run **only** the single edited or directly affected flow. Do **not** run tagged suites or every flow as a routine final check.
+7. On failure: preserve debug output, screenshots, hierarchy, video when useful; classify; reproduce once; fix; re-run the same focused flow.
+8. Run a complete suite only when the user explicitly requests it or a documented release/CI gate requires it.
 
 ## Authoring rules (distilled from the skill)
 
@@ -52,7 +53,7 @@ If Maestro or its MCP server is unavailable, **stop and report** the exact block
 - Use automatic waiting / state assertions; **do not** use arbitrary sleeps when a wait can express the condition.
 - Handle permissions and onboarding with conditionals or dedicated subflows.
 - Inspect system-generated controls (for example SwiftUI **tab** buttons) before selecting: an identifier inside `.tabItem` may **not** propagate to the generated button — use the confirmed accessibility **label** when no identifier is exposed.
-- Cover highest-risk flows first: happy path, validation/errors, loading/empty, relaunch/persistence, navigation/back, permissions, keyboard/input, accessibility-visible labels.
+- When authoring or repairing a flow, cover its relevant happy path, validation/errors, loading/empty, relaunch/persistence, navigation/back, permissions, keyboard/input, and accessibility-visible labels **inside that focused flow** — do not expand to unrelated flows.
 - Never modify production data or use real credentials; use fixtures, test accounts, and env vars from the workspace.
 - Never claim a test passed without running it.
 
@@ -62,7 +63,7 @@ If Maestro or its MCP server is unavailable, **stop and report** the exact block
 2. Classify failure: **app behavior** vs **selector/flow** vs **fixture** vs **simulator/device** vs **build** vs **environment**.
 3. Reproduce once before changing the flow.
 4. Fix the classified cause (selector, wait, app bug, env) — not random timeouts.
-5. Re-run the smallest failing slice, then the broader suite.
+5. Re-run the same smallest failing flow only. Do not escalate to a tagged or complete suite unless the user asks or release/CI policy requires it.
 
 ## Do not use Maestro for
 
