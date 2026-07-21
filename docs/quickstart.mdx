@@ -128,7 +128,7 @@ More scenarios: [Copy-paste prompts](/reference/prompts).
 ## 4. First task checklist
 
 1. Confirm **active workspace** = consumer app/package (not this foundation repo unless skill maintenance was requested).
-2. Route: `$apple-development-foundation` for a shortlist, or invoke the skill directly (`$codex-bootstrap`, `$swiftui-component-author`, …).
+2. Route: `$apple-development-foundation` for new chats and new-app bootstrap (it shortlists `$codex-bootstrap`). Invoke a child skill directly only when it is already selected or the task is clearly scoped to that child (`$swiftui-component-author`, …).
 3. Call **`session_show_defaults`** before the first build/run/test; report the
    project/workspace, scheme, configuration, and exact simulator/device, then fix
    missing values via **`session_set_defaults`** if needed.
