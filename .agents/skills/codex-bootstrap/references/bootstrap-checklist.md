@@ -18,8 +18,8 @@ Use during and after `$codex-bootstrap` in the **consumer workspace**.
 - [ ] Existing consumer instructions preserved unless an explicit merge was authorized
 - [ ] New guidance previewed from `assets/consumer-AGENTS.md.template` when applicable
 - [ ] Project/workspace, scheme, configuration, platforms, deployment versions,
-      simulator/config, and repository-native check commands customized or left as
-      explicit placeholders
+      iOS simulatorId and/or macOS destination notes, and repository-native check
+      commands customized or left as explicit placeholders
 - [ ] Apple verification policy knobs set or reviewed (XcodeBuildMCP CLI fallback
       and raw `xcodebuild` / `xcrun` / `simctl`: each `require-approval` |
       `allowed` | `denied`; keep template default `require-approval` unless the
@@ -45,11 +45,16 @@ Use during and after `$codex-bootstrap` in the **consumer workspace**.
 ## XcodeBuildMCP verification
 
 - [ ] `session_show_defaults` called
-- [ ] Project/workspace, scheme, configuration, and exact simulator context confirmed
-- [ ] No same-project simulator test process already active
-- [ ] Build succeeded on target platform
+- [ ] Project/workspace, scheme, configuration, and platform destination confirmed
+- [ ] Platform branch followed (iOS simulator tools vs macOS `macos` workflow)
+- [ ] iOS: exact `simulatorId`; no competing same-project simulator test process;
+      `build_run_sim` / `test_sim` as applicable
+- [ ] macOS: `macos` workflow enabled; `build_run_macos` and/or `test_macos` as
+      applicable — not `test_sim` / ui-automation
 - [ ] Tests run serially with parallel testing disabled by default (if present)
-- [ ] Optional: screenshot or view hierarchy confirms launch
+- [ ] Optional iOS-only: screenshot or view hierarchy confirms launch
+- [ ] macOS: no screenshot/hierarchy required (ui-automation is iOS-only); if no
+      tests yet, `test_macos` skip and residual risk reported
 - [ ] If MCP was unavailable, fallback followed consumer policy enums (`allowed`,
       or `require-approval` with fresh approval for that step; never when `denied`);
       otherwise the task was reported blocked with policy values in force

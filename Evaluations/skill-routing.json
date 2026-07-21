@@ -43,6 +43,26 @@
               "report_residual_risk": true
             }
           }
+        },
+        {
+          "id": "foundation-router-use-bootstrap-macos",
+          "prompt": "Use $apple-development-foundation to bootstrap a new macOS-only SwiftUI app in /Projects/DeskNotes with a single root shell and no tabs.",
+          "expected": {
+            "skill_ids": [
+              "apple-development-foundation",
+              "codex-bootstrap",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
         }
       ],
       "should_not_use": [
@@ -93,6 +113,25 @@
             "skill_ids": [
               "codex-bootstrap",
               "swiftui-tab-navigation",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "bootstrap-use-new-macos-app",
+          "prompt": "Bootstrap a new macOS SwiftUI app in /Projects/DeskNotes; verify with XcodeBuildMCP macOS tools, not the iOS simulator.",
+          "expected": {
+            "skill_ids": [
+              "codex-bootstrap",
               "swift-testing-verification"
             ],
             "workspace_classification": "consumer-workspace",

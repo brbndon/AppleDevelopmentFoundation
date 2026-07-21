@@ -12,7 +12,7 @@ Agent-facing playbook (install, routing, MCP, verification): Blume site under `d
 - Keep skills neutral and reusable: no business models, branding, secrets, user-specific paths, or hidden network behavior
 - Follow the Apple verification capability ladder in `MCP.md`: XcodeBuildMCP MCP tools first; XcodeBuildMCP CLI only when the active project/user policy explicitly permits it; repository-native raw Xcode tooling only when that policy authorizes it; otherwise report blocked. Never infer fallback permission from tool availability.
 - For Maestro app testing, use `$maestro-apple-app-testing` as the main workflow; combine XcodeBuildMCP for Apple builds/simulators with Maestro MCP and CLI flows for UI inspection and regression coverage.
-- Use `$codex-bootstrap` or the `codex-bootstrap` skill when starting a new iOS/macOS SwiftUI project with these skills
+- Use `$apple-development-foundation` for new-chat routing and new iOS/macOS app bootstrap (it shortlists `$codex-bootstrap`); use `$codex-bootstrap` directly when already selected
 - Update skills through `.agents/skills/`; see `docs/skills/skill-authoring-guide.mdx` before changing skill behavior
 
 ## Skill routing

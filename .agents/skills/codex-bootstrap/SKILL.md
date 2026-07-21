@@ -82,18 +82,29 @@ For extraction from an existing app, use **`reusable-code-extractor`** into the 
 
 ## Step 5 — XcodeBuildMCP verification
 
-Use XcodeBuildMCP (see repo `MCP.md`) — not raw `xcodebuild`/`simctl`:
+Use XcodeBuildMCP (see repo `MCP.md`) — not raw `xcodebuild`/`simctl`. Enable the
+`macos` workflow in `.xcodebuildmcp/config.yaml` when macOS tools are missing
+(simulator tools alone are the MCP default).
 
 1. `session_show_defaults` — establish or confirm project/workspace, scheme,
-   configuration, and simulator/device; report all five before the first action
+   configuration, and platform destination; report that context before the first
+   action
 2. `discover_projs` — only if defaults are missing or wrong
-3. Resolve and reuse one exact `simulatorId`; prefer combined build-and-run for a
-   simulator launch
-4. Before simulator testing, wait for other `xcodebuild`, `xctest`, or project
-   test-runner processes for the same project to finish
-5. Run `test_sim` without a redundant preceding build and default to
-   `extraArgs: ["-parallel-testing-enabled", "NO"]`
-6. Optional: screenshot or view hierarchy to confirm the shell launches
+3. Branch by target platform (do not use iOS simulator tools for macOS-only apps):
+   - **iOS (simulator):** resolve and reuse one exact `simulatorId`; prefer
+     `build_run_sim` for launch; before tests, wait for same-project
+     `xcodebuild` / `xctest` / test-runner processes; run `test_sim` without a
+     redundant preceding build and default to
+     `extraArgs: ["-parallel-testing-enabled", "NO"]`; optional `screenshot` /
+     `snapshot_ui` (ui-automation workflow; iOS simulator only)
+   - **macOS:** use the `macos` workflow — prefer `build_run_macos` for a launch
+     smoke when useful; run `test_macos` when a test target exists (required
+     verification when tests are present). Default
+     `extraArgs: ["-parallel-testing-enabled", "NO"]`. Do **not** call
+     `test_sim`, `build_run_sim`, or ui-automation screenshot/hierarchy tools —
+     XcodeBuildMCP ui-automation is iOS-simulator-only. If no test target exists
+     yet, report that `test_macos` was skipped and residual risk
+   - **Both:** verify each platform with its own tool path above
 
 If an MCP capability is unavailable, follow this ladder without skipping tiers.
 Read the consumer `AGENTS.md` **Apple verification policy** knobs; shell access or
@@ -104,7 +115,8 @@ an installed binary is never permission by itself:
    `require-approval` with fresh user approval for this step. Skip when `denied`.
 3. Repository-native raw `xcodebuild` / `xcrun` / `simctl` only when the raw-tooling
    policy is `allowed`, or `require-approval` with fresh user approval. Skip when
-   `denied`.
+   `denied`. For macOS fallbacks, state destination architecture explicitly
+   (for example `platform=macOS,arch=arm64`).
 4. Report blocked when no authorized path exists, including the policy values in
    force, checks not run, next action, and residual risk.
 
@@ -112,7 +124,9 @@ Never infer fallback permission from shell access or an installed command. Prese
 the same project/workspace, scheme, configuration, exact destination, serialized
 test scope, and reporting in any authorized fallback.
 
-Report scheme, simulator/device, and any failure with the next actionable tool call. Full checklist: [references/bootstrap-checklist.md](references/bootstrap-checklist.md).
+Report scheme, destination (simulatorId or macOS), and any failure with the next
+actionable tool call. Full checklist:
+[references/bootstrap-checklist.md](references/bootstrap-checklist.md).
 
 ## Step 6 — Handoff
 

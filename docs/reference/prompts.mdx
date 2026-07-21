@@ -30,7 +30,8 @@ Start with `$apple-development-foundation` when the task is broad or the chat is
 ```text
 Goal: Bootstrap a new iOS (or macOS) SwiftUI app in the consumer workspace.
 Constraints:
-- Use $codex-bootstrap and sibling skills from /path/to/AppleDevelopmentFoundation/.agents/skills.
+- Entry point: $apple-development-foundation → $codex-bootstrap (or $codex-bootstrap if already selected).
+- Prefer foundation routing over generic host-local macOS/iOS skills.
 - If multiple peer destinations: $swiftui-tab-navigation for native primary navigation.
 - Design system: reuse consumer tokens or create a minimal neutral system in the consumer repo.
 - No invented business domain; no edits to AppleDevelopmentFoundation archived package.
@@ -39,7 +40,9 @@ Inputs:
 - Navigation shape: <tabs | sidebar | none yet>
 - Consumer path: <…>
 Done when: App skeleton builds; skill chain applied or explicitly skipped with reason; handoff lists next skills.
-Verification: session_show_defaults → build_run_sim (prefer) → test_sim if present → optional screenshot/snapshot_ui.
+Verification:
+- iOS: session_show_defaults → build_run_sim → test_sim if present → optional screenshot/snapshot_ui
+- macOS: enable macos workflow → build_run_macos → test_macos if present (no ui-automation)
 ```
 
 ## Ship a feature
@@ -107,8 +110,7 @@ Done when: Defaults shown; build and tests executed; outcomes and next tool call
 Verification:
 1. session_show_defaults (session_set_defaults if needed)
 2. discover_projs only if defaults still wrong/missing
-3. build_run_sim for launch (or build_run_macos / build_run_device)
-4. test_sim / test_macos if present
+3. iOS: build_run_sim → test_sim; macOS: enable macos workflow → build_run_macos → test_macos (no ui-automation)
 Never claim pass without running an authorized tool. Report project/workspace, scheme, configuration, exact destination, command/tool, and residual risk.
 ```
 
