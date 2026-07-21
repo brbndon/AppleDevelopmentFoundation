@@ -47,7 +47,10 @@ When the user wants a new app:
 
 The initializer requires `--target`, refuses the foundation repository and any
 existing `AGENTS.md`, and never modifies global Codex configuration. Existing
-instructions require a reviewed, explicitly authorized manual merge.
+instructions require a reviewed, explicitly authorized manual merge. When creating
+or merging the consumer contract, set the **Apple verification policy** knobs
+(XcodeBuildMCP CLI fallback and raw Xcode tooling: default `require-approval`)
+so agents do not invent fallback permission.
 
 Details: [Bootstrap](/skills/bootstrap).
 

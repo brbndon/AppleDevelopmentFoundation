@@ -76,7 +76,10 @@ root as `AGENTS.md`. It
 refuses an existing `AGENTS.md` and never edits global `~/.codex/AGENTS.md`; review
 and manually merge approved sections when consumer instructions already exist.
 Customize the template's project/workspace, scheme, configuration, platforms,
-deployment versions, simulator/config, and repository-native verification commands.
+deployment versions, simulator/config, repository-native verification commands,
+and Apple verification policy knobs (XcodeBuildMCP CLI fallback and raw
+`xcodebuild`/`xcrun`/`simctl`: `require-approval` by default, or `allowed` /
+`denied`).
 
 1. Add XcodeBuildMCP to Codex’s MCP server list using current Codex and XcodeBuildMCP documentation.
 2. In the **consumer** (or monorepo) workspace root, create project-local config when you need more than the default simulator tools:

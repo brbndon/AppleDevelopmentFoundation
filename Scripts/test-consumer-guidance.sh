@@ -10,6 +10,28 @@ trap 'rm -rf "$scratch"' EXIT
 
 fail() { echo "FAIL: $*" >&2; exit 1; }
 
+# Lock Apple verification policy knobs on the template and any copied contract.
+assert_apple_verification_policy() {
+  local file="$1"
+  [[ -f "$file" ]] || fail "missing file for policy assertion: $file"
+  grep -q '## Apple verification policy' "$file" \
+    || fail "missing Apple verification policy section in $file"
+  grep -q 'XcodeBuildMCP CLI fallback:' "$file" \
+    || fail "missing XcodeBuildMCP CLI fallback knob in $file"
+  grep -q 'Repository-native raw `xcodebuild` / `xcrun` / `simctl`:' "$file" \
+    || fail "missing raw Xcode tooling policy knob in $file"
+  grep -q 'allowed values: `require-approval` | `allowed` | `denied`' "$file" \
+    || fail "missing allowed policy enum values in $file"
+  grep -q 'XcodeBuildMCP CLI fallback: `require-approval`' "$file" \
+    || fail "CLI fallback default is not require-approval in $file"
+  grep -q 'Repository-native raw `xcodebuild` / `xcrun` / `simctl`: `require-approval`' "$file" \
+    || fail "raw tooling default is not require-approval in $file"
+  grep -q 'Shell access or an installed' "$file" \
+    || fail "missing shell-is-not-permission guidance in $file"
+}
+
+assert_apple_verification_policy "$template"
+
 consumer="$scratch/Consumer App With Spaces"
 mkdir -p "$consumer"
 consumer="$(cd "$consumer" && pwd -P)"
@@ -21,6 +43,7 @@ dry_output="$("$initializer" --target "$consumer" --dry-run)"
 
 "$initializer" --target "$consumer" >/dev/null
 cmp -s "$template" "$consumer/AGENTS.md" || fail "created guidance differs from template"
+assert_apple_verification_policy "$consumer/AGENTS.md"
 
 printf 'existing consumer instructions\n' > "$consumer/AGENTS.md"
 if "$initializer" --target "$consumer" >/dev/null 2>&1; then

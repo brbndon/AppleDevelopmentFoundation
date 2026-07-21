@@ -23,9 +23,9 @@ Run review skills **after** the relevant code exists, and **before** calling sha
 | **Use when** | async/await, actors, tasks, observation across isolation, `Sendable` diagnostics, cancellation |
 | **Do not use for** | Unrelated UI styling; pure synchronous API design |
 
-**Focus:** Map actor isolation and state ownership; prefer structured concurrency; propagate cancellation; avoid detached tasks without a written reason; keep UI on the main actor; resolve Sendable at boundaries.
+**Focus:** Isolation map → structured concurrency → cancellation → MainActor UI → Sendable boundaries → observation pitfalls. Full ordered checklist lives in the skill.
 
-**Outputs:** Findings/fix set, deterministic tests where practical, strict-concurrency build result when available. A **review-only** request does not change code.
+**Outputs:** Severity-ranked findings/fix set, deterministic tests where practical, strict-concurrency build result when available. A **review-only** request does not change code.
 
 ## Accessibility — `$apple-accessibility-review`
 
@@ -58,7 +58,7 @@ Run review skills **after** the relevant code exists, and **before** calling sha
 
 **Never log:** credentials, tokens, private content, raw imports, complete sensitive paths, security-scoped URLs.
 
-**Focus:** Data minimization; validate imports before reading; scoped-resource lifetime; sandbox/entitlements; credential handling; unsafe paths; distinguish user-facing recovery from developer diagnostics.
+**Focus:** Data inventory → storage placement → logging redaction → import/scoped access → entitlements → unsafe paths. Full ordered checklist lives in the skill. Distinguish user-facing recovery from developer diagnostics.
 
 ## Related
 

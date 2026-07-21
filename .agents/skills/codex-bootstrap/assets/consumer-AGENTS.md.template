@@ -21,6 +21,23 @@ this contract for files in their scope.
 - Targeted tests: `<REPOSITORY_NATIVE_TARGETED_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
 - Full tests: `<REPOSITORY_NATIVE_FULL_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
 
+## Apple verification policy
+
+Fill these before relying on fallback behavior. Shell access or an installed
+binary is never permission by itself.
+
+- XcodeBuildMCP CLI fallback: `require-approval`
+  (allowed values: `require-approval` | `allowed` | `denied`)
+- Repository-native raw `xcodebuild` / `xcrun` / `simctl`: `require-approval`
+  (allowed values: `require-approval` | `allowed` | `denied`)
+
+Interpret as:
+
+- `allowed` — the matching ladder step may run without asking again
+- `require-approval` — ask the user before that step when MCP tools cannot
+  complete the needed action
+- `denied` — never use that step; report blocked when MCP cannot complete it
+
 Do not guess missing values. Inspect checked-in project configuration and scripts,
 then ask before choosing among materially different targets or workflows. Keep
 machine-specific simulator IDs in project-local configuration only when the team
@@ -96,15 +113,17 @@ simulator management. Do not silently fall back to raw `xcodebuild`, `xcrun`, or
 6. Run simulator tests serially with
    `extraArgs: ["-parallel-testing-enabled", "NO"]` unless the project explicitly
    requires and has verified parallel workers.
-7. If an MCP capability is unavailable, use XcodeBuildMCP CLI only when this
-   repository's rules or the user explicitly permit CLI fallback. Shell access or
-   an installed binary is not permission.
-8. Use repository-native raw `xcodebuild`, `xcrun`, or `simctl` tooling only when
-   the active repository/user policy authorizes it; obtain explicit approval when
-   required. Preserve the same project/workspace, scheme, configuration, exact
+7. If an MCP capability is unavailable, apply **Apple verification policy**
+   above for XcodeBuildMCP CLI. Use CLI only when that policy is `allowed`, or
+   when it is `require-approval` and the user has just approved this step. If the
+   policy is `denied`, skip CLI and evaluate the next ladder step.
+8. Use repository-native raw `xcodebuild`, `xcrun`, or `simctl` only when the
+   raw-tooling policy is `allowed`, or `require-approval` with fresh user
+   approval. Preserve the same project/workspace, scheme, configuration, exact
    destination, serialized execution, and test scope.
 9. If no authorized path exists, report blocked with the exact unavailable
-   capability, policy boundary, checks not run, next action, and residual risk.
+   capability, policy value in force, checks not run, next action, and residual
+   risk.
 
 For Swift packages without an Xcode project, prefer the XcodeBuildMCP Swift
 package workflow when available, then use configured repository-native commands

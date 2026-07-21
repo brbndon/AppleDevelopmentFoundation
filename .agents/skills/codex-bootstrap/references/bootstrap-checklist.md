@@ -20,6 +20,10 @@ Use during and after `$codex-bootstrap` in the **consumer workspace**.
 - [ ] Project/workspace, scheme, configuration, platforms, deployment versions,
       simulator/config, and repository-native check commands customized or left as
       explicit placeholders
+- [ ] Apple verification policy knobs set or reviewed (XcodeBuildMCP CLI fallback
+      and raw `xcodebuild` / `xcrun` / `simctl`: each `require-approval` |
+      `allowed` | `denied`; keep template default `require-approval` unless the
+      team authorized otherwise)
 - [ ] Global `~/.codex/AGENTS.md` left untouched
 
 ## Structure
@@ -46,8 +50,9 @@ Use during and after `$codex-bootstrap` in the **consumer workspace**.
 - [ ] Build succeeded on target platform
 - [ ] Tests run serially with parallel testing disabled by default (if present)
 - [ ] Optional: screenshot or view hierarchy confirms launch
-- [ ] If MCP was unavailable, CLI use was explicitly permitted or repository-native
-      tooling was authorized; otherwise the task was reported blocked
+- [ ] If MCP was unavailable, fallback followed consumer policy enums (`allowed`,
+      or `require-approval` with fresh approval for that step; never when `denied`);
+      otherwise the task was reported blocked with policy values in force
 - [ ] Any fallback preserved project/workspace, scheme, configuration, exact
       destination, serialized test scope, commands/tools, and residual risk
 

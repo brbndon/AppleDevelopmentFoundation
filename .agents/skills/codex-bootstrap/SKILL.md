@@ -36,12 +36,18 @@ Before creating project files:
    `Scripts/init-consumer-guidance.sh --target <consumer> --dry-run` can preview
    the file; the non-dry-run form refuses conflicts by default.
 4. Customize project/workspace, scheme, configuration, platforms, deployment
-   versions, exact simulator or `.xcodebuildmcp/config.yaml`, and repository-native
-   formatter/linter/test commands from inspected consumer configuration. Leave an
-   explicit placeholder when a value cannot be established; do not invent it.
-5. If existing guidance lacks this engineering baseline, show the missing sections
-   and ask for authorization before merging them. A bootstrap can continue under
-   existing instructions when guidance changes are not authorized.
+   versions, exact simulator or `.xcodebuildmcp/config.yaml`, repository-native
+   formatter/linter/test commands, and **Apple verification policy** knobs from
+   inspected consumer configuration and team preference. The knobs are
+   XcodeBuildMCP CLI fallback and repository-native raw `xcodebuild` / `xcrun` /
+   `simctl`, each `require-approval` | `allowed` | `denied`. Template default is
+   `require-approval` for both — keep that unless the user authorizes a different
+   policy. Leave an explicit placeholder when a value cannot be established; do
+   not invent it.
+5. If existing guidance lacks this engineering baseline (including the Apple
+   verification policy section and both knobs), show the missing sections and ask
+   for authorization before merging them. A bootstrap can continue under existing
+   instructions when guidance changes are not authorized.
 
 Never modify global `~/.codex/AGENTS.md` or infer the foundation repository itself
 as the consumer target.
@@ -89,14 +95,18 @@ Use XcodeBuildMCP (see repo `MCP.md`) — not raw `xcodebuild`/`simctl`:
    `extraArgs: ["-parallel-testing-enabled", "NO"]`
 6. Optional: screenshot or view hierarchy to confirm the shell launches
 
-If an MCP capability is unavailable, follow this ladder without skipping tiers:
+If an MCP capability is unavailable, follow this ladder without skipping tiers.
+Read the consumer `AGENTS.md` **Apple verification policy** knobs; shell access or
+an installed binary is never permission by itself:
 
 1. XcodeBuildMCP MCP tools.
-2. Matching XcodeBuildMCP CLI workflow only when active repository/user policy
-   explicitly permits CLI fallback.
-3. Repository-native raw Apple tooling only when active policy authorizes it;
-   obtain explicit approval when that policy requires it.
-4. Report blocked when no authorized path exists.
+2. Matching XcodeBuildMCP CLI workflow only when the CLI policy is `allowed`, or
+   `require-approval` with fresh user approval for this step. Skip when `denied`.
+3. Repository-native raw `xcodebuild` / `xcrun` / `simctl` only when the raw-tooling
+   policy is `allowed`, or `require-approval` with fresh user approval. Skip when
+   `denied`.
+4. Report blocked when no authorized path exists, including the policy values in
+   force, checks not run, next action, and residual risk.
 
 Never infer fallback permission from shell access or an installed command. Preserve
 the same project/workspace, scheme, configuration, exact destination, serialized
