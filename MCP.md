@@ -64,7 +64,7 @@ See the host’s live tool list and any global `xcodebuildmcp` skill for version
 
 **Reference these skills in any Codex session:**
 
-> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `codex-bootstrap`, then apply `swiftui-tab-navigation`, `apple-design-system`, `swiftui-component-author`, and review skills as needed.
+> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `$apple-development-foundation` for routing (it shortlists `$codex-bootstrap` for new apps). Invoke `$codex-bootstrap` directly only when that skill is already selected. Then apply `$swiftui-tab-navigation`, `$apple-design-system`, `$swiftui-component-author`, and review skills as needed.
 
 **Bootstrap a new SwiftUI app:**
 
