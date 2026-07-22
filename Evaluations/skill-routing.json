@@ -111,6 +111,7 @@
           "prompt": "Bootstrap a new iOS SwiftUI app in /Projects/Journal with Timeline and Settings as peer destinations.",
           "expected": {
             "skill_ids": [
+              "apple-development-foundation",
               "codex-bootstrap",
               "swiftui-tab-navigation",
               "swift-testing-verification"
@@ -131,6 +132,7 @@
           "prompt": "Bootstrap a new macOS SwiftUI app in /Projects/DeskNotes; verify with XcodeBuildMCP macOS tools, not the iOS simulator.",
           "expected": {
             "skill_ids": [
+              "apple-development-foundation",
               "codex-bootstrap",
               "swift-testing-verification"
             ],
@@ -150,6 +152,7 @@
           "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens.",
           "expected": {
             "skill_ids": [
+              "apple-development-foundation",
               "codex-bootstrap",
               "apple-design-system",
               "ios-macos-platform-adaptation",

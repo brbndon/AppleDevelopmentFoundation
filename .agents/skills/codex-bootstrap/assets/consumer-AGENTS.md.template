@@ -12,8 +12,12 @@ this contract for files in their scope.
 - Build configuration: `<CONFIGURATION>`
 - Target platforms: `<IOS_MACOS_WATCHOS_TVOS_VISIONOS_OR_SWIFT_PACKAGE>`
 - Minimum deployment versions: `<PLATFORM_VERSION_PAIRS>`
-- Simulator: `<EXACT_SIMULATOR_ID>` or project-local defaults in
-  `.xcodebuildmcp/config.yaml`
+- Destination:
+  - iOS / simulator targets: `<EXACT_SIMULATOR_ID>` or project-local defaults in
+    `.xcodebuildmcp/config.yaml`
+  - macOS targets: `<MACOS_ARCH_OR_PROJECT_DEFAULT>` (enable the XcodeBuildMCP
+    `macos` workflow); leave as `n/a` when the repo is iOS-only
+  - Shared iOS + macOS: fill both of the above
 - Formatter: `<REPOSITORY_NATIVE_FORMATTER_COMMAND_OR_NOT_CONFIGURED>`
 - Linter: `<REPOSITORY_NATIVE_LINTER_COMMAND_OR_NOT_CONFIGURED>`
 - Additional type or build checks:
@@ -40,8 +44,8 @@ Interpret as:
 
 Do not guess missing values. Inspect checked-in project configuration and scripts,
 then ask before choosing among materially different targets or workflows. Keep
-machine-specific simulator IDs in project-local configuration only when the team
-intentionally shares them.
+machine-specific simulator IDs and Mac destinations in project-local configuration
+only when the team intentionally shares them.
 
 ## Engineering lifecycle
 
@@ -86,42 +90,56 @@ Use an inspect → implement → verify → handoff lifecycle, scaled to the tas
 - Summarize what changed and why.
 - Report every verification command or MCP action and its outcome.
 - Report the active project/workspace, scheme, configuration, platform, and exact
-  simulator or device used.
+  destination (simulatorId and/or macOS) used.
 - Identify skipped or failed checks, remaining risks, and preserved unrelated
   working-tree changes.
 
 ## XcodeBuildMCP workflow
 
-Use XcodeBuildMCP first for Apple-platform builds, tests, simulator runs, and
-simulator management. Do not silently fall back to raw `xcodebuild`, `xcrun`, or
-`simctl`.
+Use XcodeBuildMCP first for Apple-platform builds, tests, and runs. Do not
+silently fall back to raw `xcodebuild`, `xcrun`, or `simctl`. Branch by the
+**Target platforms** value above — do not use iOS simulator tools for a
+macOS-only app, and do not skip the `macos` workflow when macOS is in scope.
 
 1. Before the first build, run, or test action in a session, call
    `session_show_defaults`. Report the active project/workspace, scheme,
-   configuration, and simulator/device.
+   configuration, and platform destination.
 2. If defaults are missing or incorrect, use `session_set_defaults`; use project
-   discovery only when the correct path is not already known. Prefer one exact
-   `simulatorId` over name-only or `OS=latest` destinations.
-3. Reuse an already-booted simulator. For a manual simulator launch, use
-   `build_run_sim`; do not separately build, boot, install, and launch for the
-   same operation.
-4. Use `test_sim` as the complete simulator test workflow. Do not build
-   immediately before it unless a separate compile-only build was requested.
-5. Before simulator tests, check for another active `xcodebuild`, `xctest`, or
-   project test-runner process. Wait rather than starting a concurrent run for
-   the same project.
-6. Run simulator tests serially with
-   `extraArgs: ["-parallel-testing-enabled", "NO"]` unless the project explicitly
-   requires and has verified parallel workers.
-7. If an MCP capability is unavailable, apply **Apple verification policy**
+   discovery only when the correct path is not already known.
+3. **iOS (simulator) targets:**
+   - Prefer one exact `simulatorId` over name-only or `OS=latest` destinations.
+   - Reuse an already-booted simulator. For a manual launch, use `build_run_sim`;
+     do not separately build, boot, install, and launch for the same operation.
+   - Use `test_sim` as the complete simulator test workflow. Do not build
+     immediately before it unless a separate compile-only build was requested.
+   - Before simulator tests, check for another active `xcodebuild`, `xctest`, or
+     project test-runner process. Wait rather than starting a concurrent run for
+     the same project.
+   - Run simulator tests serially with
+     `extraArgs: ["-parallel-testing-enabled", "NO"]` unless the project
+     explicitly requires and has verified parallel workers.
+   - Optional: `screenshot` / `snapshot_ui` when the `ui-automation` workflow is
+     enabled (iOS simulator only).
+4. **macOS targets:**
+   - Enable and use the XcodeBuildMCP `macos` workflow.
+   - Prefer `build_run_macos` for a launch smoke when useful.
+   - Use `test_macos` when a test target exists; default
+     `extraArgs: ["-parallel-testing-enabled", "NO"]`.
+   - Do **not** call `build_run_sim`, `test_sim`, or ui-automation
+     screenshot/hierarchy tools for macOS — those are iOS-simulator-only.
+   - If no test target exists yet, report that `test_macos` was skipped and the
+     residual risk.
+5. **Shared iOS + macOS:** verify each platform with its branch above.
+6. If an MCP capability is unavailable, apply **Apple verification policy**
    above for XcodeBuildMCP CLI. Use CLI only when that policy is `allowed`, or
    when it is `require-approval` and the user has just approved this step. If the
    policy is `denied`, skip CLI and evaluate the next ladder step.
-8. Use repository-native raw `xcodebuild`, `xcrun`, or `simctl` only when the
+7. Use repository-native raw `xcodebuild`, `xcrun`, or `simctl` only when the
    raw-tooling policy is `allowed`, or `require-approval` with fresh user
    approval. Preserve the same project/workspace, scheme, configuration, exact
-   destination, serialized execution, and test scope.
-9. If no authorized path exists, report blocked with the exact unavailable
+   destination, serialized execution, and test scope. For macOS fallbacks, state
+   destination architecture explicitly (for example `platform=macOS,arch=arm64`).
+8. If no authorized path exists, report blocked with the exact unavailable
    capability, policy value in force, checks not run, next action, and residual
    risk.
 
