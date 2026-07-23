@@ -1,0 +1,223 @@
+---
+title: AGENTS.md template
+description: Copy-paste the project-local consumer AGENTS.md contract for SwiftUI and Apple-platform repos.
+---
+
+# AGENTS.md template
+
+SwiftUI and other Apple-platform **consumer** repos that use Apple Development Foundation skills should have a root `AGENTS.md`. If yours is missing, copy the template below. If one already exists, preserve it and merge only with explicit authorization.
+
+This contract is **project-local**. Paste it into `<consumer>/AGENTS.md`. Do **not** paste it into global `~/.codex/AGENTS.md`.
+
+## How to install
+
+1. **Copy/paste** — Create `<consumer>/AGENTS.md` from the template on this page when the file is missing.
+2. **Initializer** — From this foundation repo:
+   ```bash
+   ./Scripts/init-consumer-guidance.sh --target /path/to/consumer --dry-run
+   ./Scripts/init-consumer-guidance.sh --target /path/to/consumer
+   ```
+3. **Bootstrap** — `$codex-bootstrap` (via `$apple-development-foundation` when routing) may propose create or merge; it waits for authorization and never overwrites silently.
+
+The initializer refuses this foundation repository and any existing `AGENTS.md` path. Details: [Scripts](/tools/scripts) · [Bootstrap](/skills/bootstrap) · [Troubleshooting](/reference/troubleshooting).
+
+## Customize before relying on it
+
+Fill every `<…>` placeholder from checked-in project configuration. Do not invent schemes, destinations, or policy values.
+
+| Fill in | Examples |
+| --- | --- |
+| Project or workspace | `App.xcodeproj`, `App.xcworkspace` |
+| Scheme / configuration | scheme name, `Debug` |
+| Platforms and min OS | iOS 17+, macOS 14+, or both |
+| Destinations | exact `simulatorId`; macOS arch or `n/a` |
+| Formatter / linter / checks | repo-native commands or `not configured` |
+| Targeted and full tests | repo-native or MCP test scope |
+| Apple verification policy | XcodeBuildMCP CLI and raw `xcodebuild`/`xcrun`/`simctl`: keep `require-approval` unless you authorize `allowed` or `denied` |
+
+Scoped `AGENTS.md` files in subdirectories refine this root contract for their trees; keep them when present.
+
+## Canonical source
+
+The bootstrap skill asset is the source of truth:
+
+`.agents/skills/codex-bootstrap/assets/consumer-AGENTS.md.template`
+
+This page mirrors that file for website copy-paste. Prefer the skill asset when scripting installs.
+
+## Template
+
+Copy everything inside the fence into `<consumer>/AGENTS.md`:
+
+```markdown
+# Consumer Apple-platform engineering contract
+
+This file governs work in this repository. Customize every value in angle
+brackets before relying on project-specific build or test instructions. Preserve
+more-specific `AGENTS.md` files in subdirectories; their instructions refine
+this contract for files in their scope.
+
+## Project configuration
+
+- Project or workspace: `<PROJECT_OR_WORKSPACE_FILE>`
+- Scheme: `<SCHEME>`
+- Build configuration: `<CONFIGURATION>`
+- Target platforms: `<IOS_MACOS_WATCHOS_TVOS_VISIONOS_OR_SWIFT_PACKAGE>`
+- Minimum deployment versions: `<PLATFORM_VERSION_PAIRS>`
+- Destination:
+  - iOS / simulator targets: `<EXACT_SIMULATOR_ID>` or project-local defaults in
+    `.xcodebuildmcp/config.yaml`
+  - macOS targets: `<MACOS_ARCH_OR_PROJECT_DEFAULT>` (enable the XcodeBuildMCP
+    `macos` workflow); leave as `n/a` when the repo is iOS-only
+  - Shared iOS + macOS: fill both of the above
+- Formatter: `<REPOSITORY_NATIVE_FORMATTER_COMMAND_OR_NOT_CONFIGURED>`
+- Linter: `<REPOSITORY_NATIVE_LINTER_COMMAND_OR_NOT_CONFIGURED>`
+- Additional type or build checks:
+  `<REPOSITORY_NATIVE_CHECK_COMMANDS_OR_NOT_CONFIGURED>`
+- Targeted tests: `<REPOSITORY_NATIVE_TARGETED_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
+- Full tests: `<REPOSITORY_NATIVE_FULL_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
+
+## Apple verification policy
+
+Fill these before relying on fallback behavior. Shell access or an installed
+binary is never permission by itself.
+
+- XcodeBuildMCP CLI fallback: `require-approval`
+  (allowed values: `require-approval` | `allowed` | `denied`)
+- Repository-native raw `xcodebuild` / `xcrun` / `simctl`: `require-approval`
+  (allowed values: `require-approval` | `allowed` | `denied`)
+
+Interpret as:
+
+- `allowed` — the matching ladder step may run without asking again
+- `require-approval` — ask the user before that step when MCP tools cannot
+  complete the needed action
+- `denied` — never use that step; report blocked when MCP cannot complete it
+
+Do not guess missing values. Inspect checked-in project configuration and scripts,
+then ask before choosing among materially different targets or workflows. Keep
+machine-specific simulator IDs and Mac destinations in project-local configuration
+only when the team intentionally shares them.
+
+## Engineering lifecycle
+
+Use an inspect → implement → verify → handoff lifecycle, scaled to the task.
+
+### Inspect
+
+- Read every `AGENTS.md` from the repository root through the files in scope.
+- Inspect `git status` and relevant diffs before editing. Treat existing changes
+  as user-owned and preserve unrelated work.
+- Read relevant manifests, project settings, package definitions, task runners,
+  and repository scripts. Prefer documented repository commands.
+- Identify the smallest coherent file and target scope that satisfies the task.
+
+### Implement
+
+- Make the smallest cohesive change that satisfies the request. Avoid unrelated
+  cleanup and preserve established architecture unless the task changes it.
+- Use Swift 6 for new Swift code. If an existing target is not configured for
+  Swift 6, report the compatibility constraint and request authorization before
+  changing project-wide language settings. Prefer structured concurrency,
+  explicit state ownership, native observation, and initializer or environment
+  dependency injection. Do not introduce a view model without a state-ownership
+  or testability reason.
+- Do not add, remove, or upgrade dependencies, change lockfiles, or run data
+  migrations unless explicitly authorized.
+- Do not deploy, publish, push, create a pull request, cut a release, or change
+  external systems unless explicitly authorized.
+- Never use destructive Git operations or blanket staging. Stage only explicit
+  paths when a commit is requested or otherwise authorized by repository policy.
+
+### Verify
+
+- Start with the narrowest relevant formatter, linter, build, and tests from the
+  project configuration above. Broaden verification according to risk.
+- Treat failures as work to investigate. Do not silently ignore a failed or
+  unavailable check.
+- Do not modify code merely to make unrelated pre-existing failures disappear.
+
+### Handoff
+
+- Summarize what changed and why.
+- Report every verification command or MCP action and its outcome.
+- Report the active project/workspace, scheme, configuration, platform, and exact
+  destination (simulatorId and/or macOS) used.
+- Identify skipped or failed checks, remaining risks, and preserved unrelated
+  working-tree changes.
+
+## XcodeBuildMCP workflow
+
+Use XcodeBuildMCP first for Apple-platform builds, tests, and runs. Do not
+silently fall back to raw `xcodebuild`, `xcrun`, or `simctl`. Branch by the
+**Target platforms** value above — do not use iOS simulator tools for a
+macOS-only app, and do not skip the `macos` workflow when macOS is in scope.
+
+1. Before the first build, run, or test action in a session, call
+   `session_show_defaults`. Report the active project/workspace, scheme,
+   configuration, and platform destination.
+2. If defaults are missing or incorrect, use `session_set_defaults`; use project
+   discovery only when the correct path is not already known.
+3. **iOS (simulator) targets:**
+   - Prefer one exact `simulatorId` over name-only or `OS=latest` destinations.
+   - Reuse an already-booted simulator. For a manual launch, use `build_run_sim`;
+     do not separately build, boot, install, and launch for the same operation.
+   - Use `test_sim` as the complete simulator test workflow. Do not build
+     immediately before it unless a separate compile-only build was requested.
+   - Before simulator tests, check for another active `xcodebuild`, `xctest`, or
+     project test-runner process. Wait rather than starting a concurrent run for
+     the same project.
+   - Run simulator tests serially with
+     `extraArgs: ["-parallel-testing-enabled", "NO"]` unless the project
+     explicitly requires and has verified parallel workers.
+   - Optional: `screenshot` / `snapshot_ui` when the `ui-automation` workflow is
+     enabled (iOS simulator only).
+4. **macOS targets:**
+   - Enable and use the XcodeBuildMCP `macos` workflow.
+   - Prefer `build_run_macos` for a launch smoke.
+   - Use `test_macos` when a test target exists; default
+     `extraArgs: ["-parallel-testing-enabled", "NO"]`.
+   - If neither launch smoke nor `test_macos` runs, require at least
+     `build_macos` so the target is compiled.
+   - Do **not** call `build_run_sim`, `test_sim`, or ui-automation
+     screenshot/hierarchy tools for macOS — those are iOS-simulator-only.
+   - If no test target exists yet, report that `test_macos` was skipped and the
+     residual risk only after `build_run_macos` or `build_macos` succeeds.
+5. **Shared iOS + macOS:** verify each platform with its branch above.
+6. If an MCP capability is unavailable, apply **Apple verification policy**
+   above for XcodeBuildMCP CLI. Use CLI only when that policy is `allowed`, or
+   when it is `require-approval` and the user has just approved this step. If the
+   policy is `denied`, skip CLI and evaluate the next ladder step.
+7. Use repository-native raw `xcodebuild`, `xcrun`, or `simctl` only when the
+   raw-tooling policy is `allowed`, or `require-approval` with fresh user
+   approval. Preserve the same project/workspace, scheme, configuration, exact
+   destination, serialized execution, and test scope. For macOS fallbacks, state
+   destination architecture explicitly (for example `platform=macOS,arch=arm64`).
+8. If no authorized path exists, report blocked with the exact unavailable
+   capability, policy value in force, checks not run, next action, and residual
+   risk.
+
+For Swift packages without an Xcode project, prefer the XcodeBuildMCP Swift
+package workflow when available, then use configured repository-native commands
+only when active policy authorizes them, with the same inspect and reporting discipline.
+
+## Accessibility, privacy, and security
+
+- SwiftUI must support Dynamic Type, VoiceOver, keyboard access where applicable,
+  sufficient contrast, Reduce Motion, and Differentiate Without Color.
+- Give every icon-only control a descriptive accessibility label. Preserve native
+  controls and platform conventions unless a custom interaction is justified and
+  equivalently accessible.
+- Request only necessary entitlements and permissions. Explain user-data impact
+  when changing persistence, imports/exports, permissions, or file access.
+- Never log credentials, tokens, private content, raw imported data, complete
+  sensitive paths, or security-scoped URLs. Redact diagnostics and keep secrets
+  out of source control, fixtures, screenshots, and handoff text.
+```
+
+## Related
+
+- [Consumer workspace](/workflow/consumer-workspace)
+- [Bootstrap](/skills/bootstrap)
+- [Scripts](/tools/scripts)
+- [Troubleshooting](/reference/troubleshooting)

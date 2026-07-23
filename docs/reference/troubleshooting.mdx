@@ -26,7 +26,7 @@ Installer **never** overwrites conflicting names. Details: [Scripts](/tools/scri
 | Symptom | Likely cause | Next step |
 | --- | --- | --- |
 | `An explicit --target is required` | Consumer repository was not selected | Re-run `./Scripts/init-consumer-guidance.sh --target /path/to/consumer --dry-run` |
-| `Conflict; leaving existing consumer instructions untouched` | Consumer already owns an `AGENTS.md` | Keep it unchanged; compare `.agents/skills/codex-bootstrap/assets/consumer-AGENTS.md.template`, propose specific missing sections, and merge only with explicit authorization |
+| `Conflict; leaving existing consumer instructions untouched` | Consumer already owns an `AGENTS.md` | Keep it unchanged; compare `.agents/skills/codex-bootstrap/assets/consumer-AGENTS.md.template` or [AGENTS.md template](/workflow/agents-md-template), propose specific missing sections, and merge only with explicit authorization |
 | Foundation repository target is refused | Initializer was pointed at this skills repository | Select the actual consumer app/package root explicitly |
 | `install-global-instructions.sh is retired` | Legacy global behavior was invoked | Use the project-local initializer; global `~/.codex/AGENTS.md` is never modified |
 | Generated guidance still contains `<...>` | Required customization is incomplete | Fill project/workspace, scheme, configuration, platforms, deployment versions, simulator/config, and repository-native check commands from checked-in consumer configuration |
