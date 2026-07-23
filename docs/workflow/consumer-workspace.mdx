@@ -40,7 +40,8 @@ When the user wants a new app:
 2. Inspect existing consumer `AGENTS.md` files and preserve them.
 3. With authorization, preview or create a missing root contract from the
    `codex-bootstrap/assets/consumer-AGENTS.md.template` skill asset using
-   `./Scripts/init-consumer-guidance.sh --target <consumer> --dry-run`.
+   `./Scripts/init-consumer-guidance.sh --target <consumer> --dry-run`, or
+   copy from [AGENTS.md template](/workflow/agents-md-template).
 4. Invoke `$apple-development-foundation` so it routes to `$codex-bootstrap` against
    the **consumer** path (use `$codex-bootstrap` directly only when already selected).
 5. Chain sibling skills as needed (tabs, design system, components, reviews).
@@ -53,7 +54,7 @@ or merging the consumer contract, set the **Apple verification policy** knobs
 (XcodeBuildMCP CLI fallback and raw Xcode tooling: default `require-approval`)
 so agents do not invent fallback permission.
 
-Details: [Bootstrap](/skills/bootstrap).
+Details: [Bootstrap](/skills/bootstrap) · [AGENTS.md template](/workflow/agents-md-template).
 
 ## Skill maintenance (this repo only)
 

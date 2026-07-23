@@ -5,22 +5,41 @@ description: Structured, scenario-based prompts for routing skills, bootstrap, v
 
 # Copy-paste prompts
 
-Each prompt is an **agent contract**: goal, constraints, inputs, done definition, verification. Replace `/path/to/…` and task specifics. `$skill-name` is the verified Codex invocation; other hosts require a manually verified equivalent described in [Agent host support](/reference/host-support).
+Each prompt is an **agent contract**: goal, constraints, inputs, done definition, verification, stop, handoff. Paste one block into a new session, then replace every `<…>` placeholder. `$skill-name` is the verified Codex invocation; other hosts need a manually verified equivalent — see [Agent host support](/reference/host-support).
+
+## How to use
+
+1. Pick the scenario that matches the request (or start with **Point a session** for a new chat).
+2. Fill placeholders before sending. Leave a field as `unknown` only when the agent must discover it — never invent paths, schemes, or policy values.
+3. Prefer one prompt per session goal. Chain a second prompt only after the first handoff.
+4. Pair with the matching [task recipe](/workflow/task-recipes) when you need the skill/tool table, not a pasteable contract.
+
+**Common placeholders**
+
+| Token | Meaning |
+| --- | --- |
+| `<consumer path>` | Active app/package workspace (not this foundation repo unless skill maintenance) |
+| `<skills path>` | Absolute path to `AppleDevelopmentFoundation/.agents/skills` |
+| `<platforms / min OS>` | e.g. iOS 17+, macOS 14+, or both |
+| `<scheme>` / `<simulatorId>` | Exact Xcode scheme and one pinned simulator UUID |
 
 ## Point a session at these skills
 
 ```text
 Goal: Use Apple Development Foundation skills for Apple-platform work in this session.
 Constraints:
-- Work only in the consumer workspace unless the user asked for foundation skill maintenance.
-- Follow the Apple verification capability ladder: MCP tools; explicitly permitted XcodeBuildMCP CLI; authorized repository-native tools; otherwise report blocked.
+- Work only in <consumer path> unless the user asked for foundation skill maintenance.
+- Read root and scoped consumer AGENTS.md before acting on verification policy or editing guidance.
+- Follow the Apple verification capability ladder: MCP tools → explicitly permitted XcodeBuildMCP CLI → authorized repository-native tools → otherwise report blocked. Never infer permission from tool availability.
 - Do not expand AppleDevelopmentFoundation `archive/Sources/`, `archive/Website/`, or package modules.
 - Ordinary routing is not an audit, install, or full-repo scan.
 Inputs:
-- Skills path: /path/to/AppleDevelopmentFoundation/.agents/skills
+- Skills path: <skills path>
 - Task: <user task>
 Done when: Correct skills shortlisted and applied; implementation matches the task; verification reported.
 Verification: session_show_defaults before first build/run/test; MCP build/test as applicable; residual risk listed.
+Stop when: Consumer path unclear; policy would require unauthorized fallback; task is foundation package work without explicit ask.
+Handoff: skills used, project/workspace + scheme + configuration + destination, what ran, residual risk, next skill if any.
 ```
 
 Start with `$apple-development-foundation` when the task is broad or the chat is new; otherwise invoke the matching skill directly.
@@ -32,17 +51,45 @@ Goal: Bootstrap a new iOS (or macOS) SwiftUI app in the consumer workspace.
 Constraints:
 - Entry point: $apple-development-foundation → $codex-bootstrap (or $codex-bootstrap if already selected).
 - Prefer foundation routing over generic host-local macOS/iOS skills.
+- Before writing project files: inspect consumer AGENTS.md; preserve existing instructions; create or merge from the consumer-AGENTS template only with explicit authorization. Never edit ~/.codex/AGENTS.md.
+- Set or review Apple verification policy knobs (XcodeBuildMCP CLI fallback and repository-native raw xcodebuild/xcrun/simctl): keep require-approval unless the user authorizes allowed or denied.
 - If multiple peer destinations: $swiftui-tab-navigation for native primary navigation.
 - Design system: reuse consumer tokens or create a minimal neutral system in the consumer repo.
 - No invented business domain; no edits to AppleDevelopmentFoundation archived package.
 Inputs:
-- Platforms / min OS: <…>
+- Consumer path: <consumer path>
+- Platforms / min OS: <platforms / min OS>
 - Navigation shape: <tabs | sidebar | none yet>
-- Consumer path: <…>
-Done when: App skeleton builds; skill chain applied or explicitly skipped with reason; handoff lists next skills.
+- Peer destinations (if any): <list or none>
+- Project-local AGENTS.md: <create | preserve | propose merge | skip>
+Done when: App skeleton builds; AGENTS.md created/preserved/proposed as authorized; skill chain applied or explicitly skipped with reason; handoff lists next skills.
 Verification:
-- iOS: session_show_defaults → build_run_sim → test_sim if present → optional screenshot/snapshot_ui
-- macOS: enable macos workflow → build_run_macos (or at least build_macos if no launch/tests) → test_macos if present (no ui-automation)
+- session_show_defaults (session_set_defaults if needed); discover_projs only if defaults still wrong
+- iOS: one exact <simulatorId> → build_run_sim → wait for same-project test runners → test_sim if present (extraArgs: ["-parallel-testing-enabled", "NO"]) → optional screenshot/snapshot_ui
+- macOS: enable macos workflow → build_run_macos (or at least build_macos if no launch/tests) → test_macos if present (extraArgs: ["-parallel-testing-enabled", "NO"]; no ui-automation / test_sim — iOS-simulator-only)
+- Both platforms: verify each platform on its own tool path above
+Stop when: No clear consumer workspace; AGENTS.md create/merge requested but unauthorized; planning-only request (use Plan only prompt); request is a single screen (use $swiftui-component-author instead).
+Handoff: structure created; AGENTS.md status; skills applied/next; project/workspace, scheme, configuration, destination, tools, residual risk.
+```
+
+## Plan only (no implementation)
+
+```text
+Goal: Produce an implementation plan and skill shortlist for <task> without writing product code.
+Constraints:
+- Entry: $apple-development-foundation and/or $apple-platform-planner as appropriate.
+- Do not create/edit app sources, project files, or AGENTS.md unless the user separately authorizes guidance edits.
+- Prefer foundation skills over generic host-local Apple skills.
+- Call out platform split, navigation, design-system needs, and review skills that will apply later.
+Inputs:
+- Consumer path: <consumer path>
+- Platforms / min OS: <platforms / min OS>
+- Acceptance criteria: <…>
+- Known constraints: <…>
+Done when: Ordered plan, skill chain, verification plan, and open questions are written; no unauthorized file changes.
+Verification: N/A for code — state what would run after implementation authorization.
+Stop when: User asks to implement (switch to bootstrap or ship-feature prompt) or consumer path is unclear.
+Handoff: plan, shortlist, blockers/questions, residual unknowns.
 ```
 
 ## Ship a feature
@@ -53,9 +100,15 @@ Constraints:
 - Plan with $apple-platform-planner only if multi-feature or multi-platform; otherwise implement.
 - Use design/component/platform skills only when the change needs them.
 - Shared UI: $apple-accessibility-review before calling done. Async: $swift-concurrency-review. Files/logging/permissions: $apple-security-privacy-review.
-Inputs: Consumer project path, acceptance criteria, any existing patterns to match.
-Done when: Feature matches criteria; reviews applied where relevant; no unrelated refactors.
+- Match existing consumer patterns; no unrelated refactors.
+Inputs:
+- Consumer path: <consumer path>
+- Acceptance criteria: <…>
+- Patterns to match: <files/modules or "discover">
+Done when: Feature matches criteria; reviews applied where relevant; verification executed.
 Verification: $swift-testing-verification + XcodeBuildMCP build/test; Maestro for critical UI paths if needed.
+Stop when: Criteria conflict with existing architecture and need a product decision; required MCP path blocked by policy.
+Handoff: files touched, reviews run, scheme/destination/results, residual risk, follow-ups.
 ```
 
 ## Author reusable UI (tabs / tokens / components)
@@ -68,9 +121,26 @@ Constraints:
 - Components: $swiftui-component-author on the consumer design system.
 - Platform divergence only when needed: $ios-macos-platform-adaptation.
 - Do not land code in AppleDevelopmentFoundation `archive/Sources/`.
-Inputs: Consumer path, existing design system (if any), peer destinations list if tabs.
+Inputs: Consumer path: <consumer path>; existing design system (if any); peer destinations list if tabs.
 Done when: Shared UI builds; a11y review on reusable surfaces; handoff lists residual risk.
 Verification: session_show_defaults → MCP build; $apple-accessibility-review; $swift-testing-verification if APIs/logic changed.
+Stop when: Request is a one-off screen with no reuse intent (implement locally instead of extracting).
+Handoff: tokens/components/tabs added, a11y notes, build target, residual risk.
+```
+
+## Add a shared module or extract reusable code
+
+```text
+Goal: <create a shared SPM module | extract proven app code into a consumer shared module>.
+Constraints:
+- New module in the active workspace: $swift-package-module-author.
+- Extract from an existing app: $reusable-code-extractor into the consumer shared module — not into AppleDevelopmentFoundation `archive/Sources/`.
+- Keep public API minimal; update app imports; no branding or secrets in the shared layer.
+Inputs: Consumer path: <consumer path>; module name; code to extract or API sketch; app targets that will import it.
+Done when: Module builds and is importable from the consumer app; extraction callers updated if applicable.
+Verification: Package/app build via authorized XcodeBuildMCP (or swift_package_* tools); $swift-testing-verification for public API/logic.
+Stop when: User asks to land the module in the foundation archived package without explicit package-work authorization.
+Handoff: module path/products, import sites, verification results, residual risk.
 ```
 
 ## Fix a bug
@@ -81,9 +151,15 @@ Constraints:
 - Prefer the smallest failing test or Maestro flow first.
 - No broad cleanup unrelated to the bug.
 - If UI flake: $maestro-apple-app-testing diagnosis loop (hierarchy → classify → reproduce once → fix).
-Inputs: Repro steps, logs/screenshots if any, consumer project path.
+Inputs:
+- Consumer path: <consumer path>
+- Repro steps: <…>
+- Logs/screenshots if any: <…>
+- Scheme / destination: <scheme>; exact <simulatorId> or macOS destination
 Done when: Repro fails before fix and passes after; residual risk stated.
-Verification: Re-run the same unit/UI check via XcodeBuildMCP / Maestro; report scheme and simulator ID.
+Verification: Re-run the same unit/UI check via XcodeBuildMCP / Maestro; report <scheme> and exact <simulatorId> or macOS destination.
+Stop when: Cannot reproduce; fix would require speculative multi-area rewrite — report findings instead.
+Handoff: root cause, diff summary, before/after check, residual risk.
 ```
 
 ## Review before ship
@@ -95,23 +171,37 @@ Constraints:
 - $apple-security-privacy-review for storage, files, logging, permissions, imports, sensitive data.
 - $apple-accessibility-review for reusable SwiftUI (not non-UI services).
 - Do not claim automated a11y proof for semantics the environment cannot test.
-Inputs: Changed files / PR scope.
+- Fix findings only when the user authorized fixes; otherwise report only.
+Inputs: Changed files / PR scope: <…>
 Done when: Severity-ranked findings (and fixes if authorized); manual checks listed.
-Verification: Strict concurrency build when relevant; then verification matrix for the change type.
+Verification: Strict concurrency build when relevant; then docs/reference/verification-matrix.mdx for the change type.
+Stop when: Scope is unclear (ask for PR/diff bounds) or review would require editing without authorization.
+Handoff: findings by severity, fixes applied or deferred, manual checks, residual risk.
 ```
 
 ## Verify after bootstrap or feature work
 
 ```text
 Goal: Prove the consumer target builds and tests on the intended device class.
-Constraints: Follow active policy: XcodeBuildMCP MCP tools first; CLI only when explicitly permitted; repository-native raw Xcode tools only when authorized; otherwise report blocked.
-Inputs: Project/workspace, scheme, simulator or macOS target.
-Done when: Defaults shown; build and tests executed; outcomes and next tool call on failure reported.
+Constraints:
+- Follow active consumer AGENTS.md Apple verification policy: XcodeBuildMCP MCP tools first; CLI only when explicitly permitted; repository-native raw Xcode tools only when authorized; otherwise report blocked.
+- Never infer fallback permission from shell access or an installed binary.
+- Pin one exact <simulatorId> for iOS; do not use OS=latest.
+- Serialize same-project simulator tests; default extraArgs: ["-parallel-testing-enabled", "NO"].
+Inputs:
+- Consumer path: <consumer path>
+- Project/workspace: <…>
+- Scheme: <scheme>
+- Destination: exact <simulatorId> or macOS target
+Done when: Defaults shown; build and tests executed (or compile-only when no tests); outcomes and next tool call on failure reported.
 Verification:
 1. session_show_defaults (session_set_defaults if needed)
 2. discover_projs only if defaults still wrong/missing
-3. iOS: build_run_sim → test_sim; macOS: enable macos workflow → build_run_macos (or at least build_macos if no launch/tests) → test_macos if present (no ui-automation)
-Never claim pass without running an authorized tool. Report project/workspace, scheme, configuration, exact destination, command/tool, and residual risk.
+3. iOS: build_run_sim → test_sim if present (extraArgs: ["-parallel-testing-enabled", "NO"]); optional screenshot/snapshot_ui
+4. macOS: enable macos workflow → build_run_macos (or at least build_macos if no launch/tests) → test_macos if present (extraArgs: ["-parallel-testing-enabled", "NO"]; no ui-automation / test_sim)
+Never claim pass without running an authorized tool. Report project/workspace, scheme, configuration, exact destination, command/tool, skipped checks, and residual risk.
+Stop when: No authorized capability remains — report blocked with policy values in force.
+Handoff: context, commands/tools, pass/fail, skips, residual risk, next action.
 ```
 
 ## Maestro UI regression
@@ -120,12 +210,19 @@ Never claim pass without running an authorized tool. Report project/workspace, s
 Goal: Author or stabilize Maestro coverage for <critical paths>.
 Constraints:
 - Use $maestro-apple-app-testing with XcodeBuildMCP for build/install/sim control.
-- One exact simulator ID; do not use OS=latest.
+- One exact <simulatorId>; do not use OS=latest.
 - If maestro CLI missing: report blocker before writing speculative flows.
 - MCP for inspect/debug; maestro test for regression YAML.
-Inputs: App identifier, existing .maestro/ conventions, flows to cover.
+- After each flow or journey change, run only the edited or directly affected flow(s). If a shared UI or navigation change genuinely affects several journeys, run all of those directly affected flows and state why. Do not run tagged or full-suite runs unless the user or a documented release/CI gate requires them.
+Inputs:
+- Consumer path: <consumer path>
+- App identifier: <…>
+- Scheme / simulator: <scheme>; exact <simulatorId>
+- Existing .maestro/ conventions; flows to cover: <…>
 Done when: Flows run; flakes classified; pass/fail counts and artifacts reported.
-Verification: Run only the single smallest relevant flow after each flow or journey change. Do not add tagged or complete-suite runs unless the user explicitly requests them or a documented release/CI gate requires them.
+Verification: Targeted maestro test on the edited/affected flow(s); report <simulatorId> and artifacts.
+Stop when: CLI missing, simulator ambiguous, or flake class needs product decision (timing vs selector vs app bug).
+Handoff: flows added/changed, results, flake classification, residual risk.
 ```
 
 ## Foundation skill maintenance
@@ -137,22 +234,30 @@ Constraints:
 - Follow docs/skills/skill-authoring-guide.mdx.
 - Keep skills neutral (no branding, secrets, user-specific paths, hidden network).
 - Update canonical manifest.json metadata and run ./Scripts/generate-skill-catalog.py; do not edit generated inventories directly.
-Inputs: Skill change request.
+Inputs: Skill change request: <…>
 Done when: Contracts pass and generated catalog projections are current.
 Verification: ./Scripts/verify-skills.sh; ./Scripts/test-install-skills.sh if installer behavior changed; install --dry-run.
+Stop when: Change would bake consumer branding or secrets into a shared skill.
+Handoff: skills touched, verify script results, catalog regeneration note, residual risk.
 ```
 
 ## Explicit foundation audit (only when requested)
 
 ```text
-Goal: Run an explicit Apple Development Foundation skill inventory audit.
+Goal: Run an explicit Apple Development Foundation audit for the selected scope (inventory comparison and/or installer verification).
 Constraints:
-- Invoke $apple-development-foundation in audit mode using master-skill.json classifications.
+- Invoke $apple-development-foundation in audit mode.
 - Do not treat ordinary routing as an audit.
-- Run foundation verification scripts only if this repo or its installer is in scope.
-Inputs: Audit scope (inventory comparison, installer, both).
-Done when: Classifications and comparison reported; verification outcomes only if in scope.
-Verification: Per master-skill.json verification commands when applicable.
+- Inventory comparison or both: use master-skill.json classifications and compare inventories.
+- Installer or both: run foundation verification scripts for this repo or its installer.
+- Installer-only: do not run or invent an inventory comparison.
+Inputs: Audit scope: <inventory comparison | installer | both>
+Done when:
+- inventory comparison or both: classifications and comparison reported
+- installer or both: foundation verification script outcomes reported
+Verification: Per master-skill.json verification commands when installer is in scope; otherwise N/A for installer scripts.
+Stop when: User only asked for routing/shortlist — do not escalate into audit mode.
+Handoff: residual risk always; classifications and diffs vs expected inventory only when inventory is in scope; verification outcomes only when installer is in scope.
 ```
 
 ## Related
