@@ -28,6 +28,16 @@ assert_apple_verification_policy() {
     || fail "raw tooling default is not require-approval in $file"
   grep -q 'Shell access or an installed' "$file" \
     || fail "missing shell-is-not-permission guidance in $file"
+  grep -q '\*\*macOS targets:\*\*' "$file" \
+    || fail "missing macOS verification branch in $file"
+  grep -q 'test_macos' "$file" \
+    || fail "missing test_macos in $file"
+  grep -q 'build_run_macos' "$file" \
+    || fail "missing build_run_macos in $file"
+  grep -q 'build_macos' "$file" \
+    || fail "missing build_macos compile fallback in $file"
+  grep -q '\*\*iOS (simulator) targets:\*\*' "$file" \
+    || fail "missing iOS simulator verification branch in $file"
 }
 
 assert_apple_verification_policy "$template"

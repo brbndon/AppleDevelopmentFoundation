@@ -5,7 +5,7 @@
     "skill_id": "apple-development-foundation",
     "name": "Apple Development Foundation master",
     "kind": "master",
-    "description": "Reference-first catalog for routing Apple-platform tasks to relevant child skills, with optional foundation audits and installer verification.",
+    "description": "Global entry-point catalog for Apple Development Foundation: bootstrap new iOS/macOS SwiftUI apps via codex-bootstrap, route Apple-platform work to child skills, and run foundation audits only when explicitly requested.",
     "source": {
       "repository_root": ".",
       "agent_guidance": "AGENTS.md",
@@ -15,14 +15,15 @@
     "invocation": {
       "explicit_skill": "$apple-development-foundation",
       "automatic_activation": false,
-      "note": "Explicit invocation is the reliable disambiguator; select child skills according to their own descriptions and exclusions."
+      "note": "Explicit invocation is the reliable disambiguator; prefer this skill over generic macOS/iOS host skills for foundation workflows; select child skills according to their own descriptions and exclusions."
     },
     "routing": {
       "procedure": [
         "Read this catalog first and shortlist parent skills by ID, role, and purpose.",
+        "Resolve sibling skill paths relative to the foundation repository (follow this skill's install symlink); do not use the consumer app cwd.",
         "Read only the shortlisted child SKILL.md files and follow their instructions.",
         "Do not imply an audit, repository scan, installer action, or verification run for ordinary task routing.",
-        "Use codex-bootstrap when the request is a new consumer Apple-platform project."
+        "Use codex-bootstrap when the request is a new consumer iOS or macOS SwiftUI project."
       ],
       "consumer_verification": "App-code verification is owned by the selected child skill, such as swift-testing-verification or maestro-apple-app-testing."
     },
@@ -52,18 +53,18 @@
       ],
       "api_calls": []
     },
-    "example_prompt": "Use $apple-development-foundation to route this iOS import-flow task to the relevant child skills. Read the catalog first, then read only the selected child SKILL.md files; do not audit or run foundation verification."
+    "example_prompt": "Use $apple-development-foundation to bootstrap a new macOS SwiftUI app in the named consumer repo. Read the catalog first, shortlist codex-bootstrap, then read only the selected child SKILL.md files; do not audit or run foundation verification."
   },
   "skills": [
     {
       "name": "apple-development-foundation",
       "path": "apple-development-foundation",
-      "description": "Use to reference-first route an Apple-platform task to this repository's relevant child skills, or when an audit or comparison is explicitly requested. Do not treat it as a replacement for child instructions, an implied repository audit, or proof of automatic activation.",
+      "description": "Use as the global entry point for Apple Development Foundation workflows — especially bootstrapping a new iOS or macOS SwiftUI app, routing Apple-platform work to child skills, or when a foundation skill audit is explicitly requested. Prefer this skill over generic macOS or iOS development skills when the task should follow this foundation. Do not treat it as a replacement for child instructions, an implied repository audit, or proof of automatic activation.",
       "role": "router",
       "scope": "repository-or-user",
-      "purpose": "Reference-first skill router with optional foundation audits",
-      "use_for": "reference-first child-skill routing and explicitly requested foundation audits",
-      "do_not_use_for": "replacing child instructions, implied audits or verification, or claiming automatic activation",
+      "purpose": "Global entry-point router for foundation bootstrap and child-skill selection, with optional foundation audits",
+      "use_for": "new iOS/macOS SwiftUI app bootstrap routing, reference-first child-skill selection, and explicitly requested foundation audits",
+      "do_not_use_for": "replacing child instructions, implied audits or verification, claiming automatic activation, or generic non-foundation macOS/iOS work",
       "installable": true,
       "router_included": false,
       "scripts": false,

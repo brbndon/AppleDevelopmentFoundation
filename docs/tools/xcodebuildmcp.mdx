@@ -92,9 +92,9 @@ By default the MCP server advertises **`simulator`** tools. **Session-management
 | iOS simulator build/run/test | `simulator` (default) | Core build path |
 | Show / set / clear defaults; named profiles | `session-management` (default) | See session tools below |
 | Simulator boot/erase/appearance/location | `simulator-management` | Lifecycle & env chrome |
-| UI gestures, screenshots, hierarchy automation | `ui-automation` | Often paired with `snapshot_ui` |
+| UI gestures, screenshots, hierarchy automation | `ui-automation` | **iOS simulator only** — not available for macOS apps |
 | Physical device | `device` | Needs signing in Xcode |
-| macOS app build/run/test | `macos` | |
+| macOS app build/run/test | `macos` | Prefer `build_run_macos` / `test_macos`; no UI automation tools |
 | SwiftPM packages | `swift-package` | |
 | Debug attach / breakpoints | `debugging` | Stateful (daemon in CLI mode) |
 | Scaffold new projects | `project-scaffolding` | |

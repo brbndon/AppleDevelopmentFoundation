@@ -19,7 +19,7 @@ Deep procedure lives in each skill’s `SKILL.md` — prefer reading that over f
 
 | Skill | Path | Use for | Do not use for |
 | --- | --- | --- | --- |
-| `apple-development-foundation` | `.agents/skills/apple-development-foundation/SKILL.md` | reference-first child-skill routing and explicitly requested foundation audits | replacing child instructions, implied audits or verification, or claiming automatic activation |
+| `apple-development-foundation` | `.agents/skills/apple-development-foundation/SKILL.md` | new iOS/macOS SwiftUI app bootstrap routing, reference-first child-skill selection, and explicitly requested foundation audits | replacing child instructions, implied audits or verification, claiming automatic activation, or generic non-foundation macOS/iOS work |
 | `codex-bootstrap` | `.agents/skills/codex-bootstrap/SKILL.md` | bootstrapping new iOS or macOS projects in the consumer workspace using these skills | one-off screens or editing archived package code in this repository |
 | `apple-platform-planner` | `.agents/skills/apple-platform-planner/SKILL.md` | planning an Apple-platform feature | implementation-only requests |
 | `swiftui-tab-navigation` | `.agents/skills/swiftui-tab-navigation/SKILL.md` | native app-level SwiftUI tabs and system Liquid Glass tab chrome | page-style tabs, segmented controls, or business-specific screens |
@@ -41,7 +41,7 @@ Deep procedure lives in each skill’s `SKILL.md` — prefer reading that over f
 
 | Task | Guide | Skill(s) |
 | --- | --- | --- |
-| New app | [Bootstrap](/skills/bootstrap) | `$codex-bootstrap` |
+| New app | [Bootstrap](/skills/bootstrap) | `$apple-development-foundation` → `$codex-bootstrap` (direct `$codex-bootstrap` only if already selected) |
 | App-level tabs / Liquid Glass chrome | [Task recipes](/workflow/task-recipes#author-reusable-ui-tabs-tokens-components) · skill `SKILL.md` | `$swiftui-tab-navigation` |
 | Design tokens / shared components | [Task recipes](/workflow/task-recipes#author-reusable-ui-tabs-tokens-components) | `$apple-design-system` → `$swiftui-component-author` |
 | iOS vs macOS divergence | [Task recipes](/workflow/task-recipes#ship-a-feature-in-an-existing-app) | `$ios-macos-platform-adaptation` |

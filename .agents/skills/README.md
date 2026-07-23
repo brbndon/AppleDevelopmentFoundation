@@ -6,7 +6,7 @@ These source-controlled skills are intentionally general Apple-development workf
 <!-- Generated from .agents/skills/manifest.json. Do not edit this section directly. -->
 | Skill | Use for | Do not use for |
 | --- | --- | --- |
-| apple-development-foundation | reference-first child-skill routing and explicitly requested foundation audits | replacing child instructions, implied audits or verification, or claiming automatic activation |
+| apple-development-foundation | new iOS/macOS SwiftUI app bootstrap routing, reference-first child-skill selection, and explicitly requested foundation audits | replacing child instructions, implied audits or verification, claiming automatic activation, or generic non-foundation macOS/iOS work |
 | codex-bootstrap | bootstrapping new iOS or macOS projects in the consumer workspace using these skills | one-off screens or editing archived package code in this repository |
 | apple-platform-planner | planning an Apple-platform feature | implementation-only requests |
 | swiftui-tab-navigation | native app-level SwiftUI tabs and system Liquid Glass tab chrome | page-style tabs, segmented controls, or business-specific screens |

@@ -8,7 +8,7 @@
   "skill_id": "apple-development-foundation",
   "name": "Apple Development Foundation master",
   "kind": "master",
-  "description": "Reference-first catalog for routing Apple-platform tasks to relevant child skills, with optional foundation audits and installer verification.",
+  "description": "Global entry-point catalog for Apple Development Foundation: bootstrap new iOS/macOS SwiftUI apps via codex-bootstrap, route Apple-platform work to child skills, and run foundation audits only when explicitly requested.",
   "source": {
     "repository_root": ".",
     "agent_guidance": "AGENTS.md",
@@ -18,14 +18,15 @@
   "invocation": {
     "explicit_skill": "$apple-development-foundation",
     "automatic_activation": false,
-    "note": "Explicit invocation is the reliable disambiguator; select child skills according to their own descriptions and exclusions."
+    "note": "Explicit invocation is the reliable disambiguator; prefer this skill over generic macOS/iOS host skills for foundation workflows; select child skills according to their own descriptions and exclusions."
   },
   "routing": {
     "procedure": [
       "Read this catalog first and shortlist parent skills by ID, role, and purpose.",
+      "Resolve sibling skill paths relative to the foundation repository (follow this skill's install symlink); do not use the consumer app cwd.",
       "Read only the shortlisted child SKILL.md files and follow their instructions.",
       "Do not imply an audit, repository scan, installer action, or verification run for ordinary task routing.",
-      "Use codex-bootstrap when the request is a new consumer Apple-platform project."
+      "Use codex-bootstrap when the request is a new consumer iOS or macOS SwiftUI project."
     ],
     "consumer_verification": "App-code verification is owned by the selected child skill, such as swift-testing-verification or maestro-apple-app-testing."
   },
@@ -147,5 +148,5 @@
     ],
     "api_calls": []
   },
-  "example_prompt": "Use $apple-development-foundation to route this iOS import-flow task to the relevant child skills. Read the catalog first, then read only the selected child SKILL.md files; do not audit or run foundation verification."
+  "example_prompt": "Use $apple-development-foundation to bootstrap a new macOS SwiftUI app in the named consumer repo. Read the catalog first, shortlist codex-bootstrap, then read only the selected child SKILL.md files; do not audit or run foundation verification."
 }

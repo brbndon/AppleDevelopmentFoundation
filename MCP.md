@@ -64,24 +64,24 @@ See the host’s live tool list and any global `xcodebuildmcp` skill for version
 
 **Reference these skills in any Codex session:**
 
-> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `codex-bootstrap`, then apply `swiftui-tab-navigation`, `apple-design-system`, `swiftui-component-author`, and review skills as needed.
+> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` — start with `$apple-development-foundation` for routing (it shortlists `$codex-bootstrap` for new apps). Invoke `$codex-bootstrap` directly only when that skill is already selected. Then apply `$swiftui-tab-navigation`, `$apple-design-system`, `$swiftui-component-author`, and review skills as needed.
 
 **Bootstrap a new SwiftUI app:**
 
-> Bootstrap a new iOS (or macOS) SwiftUI app using `$codex-bootstrap` and the skills in `/path/to/AppleDevelopmentFoundation/.agents/skills`. If the app has multiple peer destinations, use `$swiftui-tab-navigation` for native primary navigation. Use the consumer's design system or create a minimal neutral one. Verify with XcodeBuildMCP.
+> Use `$apple-development-foundation` as the entry point to bootstrap a new iOS (or macOS) SwiftUI app in the consumer workspace. It should route to `$codex-bootstrap` and chain `$swiftui-tab-navigation`, `$apple-design-system`, `$swiftui-component-author`, and review skills as needed. Verify with XcodeBuildMCP on the correct platform.
 
 **Verify after bootstrap or feature work:**
 
-> Call `session_show_defaults`, then build and test on the iOS simulator with XcodeBuildMCP (`build_run_sim` / `test_sim` preferred). Report scheme, simulatorId, and any failures with the next actionable tool call.
+> Call `session_show_defaults`, then verify with XcodeBuildMCP on the target platform: iOS → `build_run_sim` / `test_sim` (exact `simulatorId`); macOS → enable `macos` workflow, then `build_run_macos` / `test_macos`. Do not use simulator or ui-automation tools for macOS-only apps. Report scheme, destination, and any failures with the next actionable tool call.
 
 ## Bootstrap verification checklist
 
 After `$codex-bootstrap` completes initial structure:
 
-1. `session_show_defaults` — confirm project/workspace, scheme, configuration, and exact simulator/device
-2. Build on simulator via `build_run_sim` (or macOS via `build_run_macos` if applicable)
-3. Run unit tests if present (`test_sim` / `test_macos`)
-4. Optional: capture a screenshot or view hierarchy to confirm the shell launches
+1. `session_show_defaults` — confirm project/workspace, scheme, configuration, and platform destination
+2. **iOS:** `build_run_sim` for launch smoke; **macOS:** `build_run_macos` (requires `macos` workflow). If macOS launch smoke and tests are not run, at least `build_macos`
+3. Run unit tests if present (`test_sim` / `test_macos`) with parallel testing disabled by default
+4. Optional iOS-only: capture a screenshot or view hierarchy (`ui-automation`). macOS has no XcodeBuildMCP UI automation — rely on `test_macos`; if tests are absent, still require `build_run_macos` or at least `build_macos` (do not declare complete on residual risk alone)
 5. Apply review skills (`swift-concurrency-review`, `apple-security-privacy-review`, `apple-accessibility-review`) before shipping shared components
 
 Keep bootstraps focused on reusable skills and clean architecture in the **consumer workspace**. Do not rebuild the archived package in this repo unless asked — see [ARCHIVE.md](ARCHIVE.md).

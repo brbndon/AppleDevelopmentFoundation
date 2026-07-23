@@ -5,7 +5,10 @@ description: Scaffold a new iOS or macOS SwiftUI app in the consumer workspace w
 
 # Bootstrap
 
-Invoke **`$codex-bootstrap`** when starting a new iOS/macOS SwiftUI project or major feature set in the **consumer** workspace.
+Invoke **`$apple-development-foundation`** (routes to **`$codex-bootstrap`**) when
+starting a new iOS/macOS SwiftUI project or major feature set in the **consumer**
+workspace. You may also invoke `$codex-bootstrap` directly when the bootstrap
+skill is already selected.
 
 | | |
 | --- | --- |
@@ -51,14 +54,17 @@ Extraction of proven app code → `$reusable-code-extractor` into the **consumer
 ## Verification (XcodeBuildMCP)
 
 1. `session_show_defaults`; report project/workspace, scheme, configuration, and
-   exact simulator/device (then `session_set_defaults` if needed)
+   platform destination (then `session_set_defaults` if needed)
 2. `discover_projs` only if defaults are still wrong/missing
-3. Simulator: prefer **`build_run_sim`**. macOS: **`build_run_macos`**
-4. Before simulator tests, wait for any same-project `xcodebuild`, `xctest`, or
-   project test runner; use `test_sim` without a redundant build and default to
+3. **iOS simulator:** prefer **`build_run_sim`**; wait for same-project test
+   runners; run `test_sim` without a redundant build and default to
    `extraArgs: ["-parallel-testing-enabled", "NO"]`
-5. Tests on macOS if present: `test_macos`
-6. Optional `screenshot` / `snapshot_ui`
+4. **macOS:** enable the `macos` workflow; prefer **`build_run_macos`** for
+   launch smoke; run **`test_macos`** when tests exist (same parallel-testing
+   default). If neither launch smoke nor tests run, require at least
+   **`build_macos`**. Do not use `test_sim` or ui-automation tools — they are
+   iOS-simulator-only
+5. Optional iOS-only: `screenshot` / `snapshot_ui`
 
 If MCP is unavailable, use the XcodeBuildMCP CLI only when active policy explicitly
 permits it. Use repository-native raw Apple tooling only when active policy

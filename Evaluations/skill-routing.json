@@ -43,6 +43,26 @@
               "report_residual_risk": true
             }
           }
+        },
+        {
+          "id": "foundation-router-use-bootstrap-macos",
+          "prompt": "Use $apple-development-foundation to bootstrap a new macOS-only SwiftUI app in /Projects/DeskNotes with a single root shell and no tabs.",
+          "expected": {
+            "skill_ids": [
+              "apple-development-foundation",
+              "codex-bootstrap",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
         }
       ],
       "should_not_use": [
@@ -91,8 +111,29 @@
           "prompt": "Bootstrap a new iOS SwiftUI app in /Projects/Journal with Timeline and Settings as peer destinations.",
           "expected": {
             "skill_ids": [
+              "apple-development-foundation",
               "codex-bootstrap",
               "swiftui-tab-navigation",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "bootstrap-use-new-macos-app",
+          "prompt": "Bootstrap a new macOS SwiftUI app in /Projects/DeskNotes; verify with XcodeBuildMCP macOS tools, not the iOS simulator.",
+          "expected": {
+            "skill_ids": [
+              "apple-development-foundation",
+              "codex-bootstrap",
               "swift-testing-verification"
             ],
             "workspace_classification": "consumer-workspace",
@@ -111,6 +152,7 @@
           "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens.",
           "expected": {
             "skill_ids": [
+              "apple-development-foundation",
               "codex-bootstrap",
               "apple-design-system",
               "ios-macos-platform-adaptation",

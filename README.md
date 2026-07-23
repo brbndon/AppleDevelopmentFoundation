@@ -53,13 +53,13 @@ See [MCP.md](MCP.md) for XcodeBuildMCP setup, tool names, copy-paste prompts, an
 
 Point Codex at this repo when bootstrapping apps:
 
-> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` (start with `codex-bootstrap`).
+> Use the skills from `/path/to/AppleDevelopmentFoundation/.agents/skills` (start with `$apple-development-foundation` → `$codex-bootstrap` for new apps).
 
 ## Skill inventory
 
 | Skill | One-liner |
 | --- | --- |
-| `apple-development-foundation` | Reference-first child-skill router with optional foundation audits |
+| `apple-development-foundation` | Global entry point: bootstrap routing + child-skill shortlist (audits only when asked) |
 | `codex-bootstrap` | Bootstrap a new iOS/macOS SwiftUI project using these skills |
 | `apple-platform-planner` | Plan a platform feature before implementation |
 | `swiftui-tab-navigation` | Build native app-level tabs with system Liquid Glass behavior |
@@ -78,7 +78,7 @@ Point Codex at this repo when bootstrapping apps:
 
 Full use/do-not-use table: [.agents/skills/README.md](.agents/skills/README.md). Manifest: [.agents/skills/manifest.json](.agents/skills/manifest.json).
 
-For a single reusable baseline in a new chat, invoke `$apple-development-foundation`; it uses its [machine-readable catalog](.agents/skills/apple-development-foundation/master-skill.json) to shortlist child skills before reading their instructions. Audits and foundation verification are explicit requests.
+For a single reusable baseline in a new chat—especially a new iOS or macOS app—invoke `$apple-development-foundation`; it uses its [machine-readable catalog](.agents/skills/apple-development-foundation/master-skill.json) to shortlist child skills (including `codex-bootstrap`) before reading their instructions. Prefer it over generic host-local macOS/iOS skills for foundation workflows. Audits and foundation verification are explicit requests.
 
 ## External skill routing
 
