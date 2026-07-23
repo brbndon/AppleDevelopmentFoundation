@@ -122,13 +122,15 @@ macOS-only app, and do not skip the `macos` workflow when macOS is in scope.
      enabled (iOS simulator only).
 4. **macOS targets:**
    - Enable and use the XcodeBuildMCP `macos` workflow.
-   - Prefer `build_run_macos` for a launch smoke when useful.
+   - Prefer `build_run_macos` for a launch smoke.
    - Use `test_macos` when a test target exists; default
      `extraArgs: ["-parallel-testing-enabled", "NO"]`.
+   - If neither launch smoke nor `test_macos` runs, require at least
+     `build_macos` so the target is compiled.
    - Do **not** call `build_run_sim`, `test_sim`, or ui-automation
      screenshot/hierarchy tools for macOS — those are iOS-simulator-only.
    - If no test target exists yet, report that `test_macos` was skipped and the
-     residual risk.
+     residual risk only after `build_run_macos` or `build_macos` succeeds.
 5. **Shared iOS + macOS:** verify each platform with its branch above.
 6. If an MCP capability is unavailable, apply **Apple verification policy**
    above for XcodeBuildMCP CLI. Use CLI only when that policy is `allowed`, or

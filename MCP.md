@@ -79,9 +79,9 @@ See the host’s live tool list and any global `xcodebuildmcp` skill for version
 After `$codex-bootstrap` completes initial structure:
 
 1. `session_show_defaults` — confirm project/workspace, scheme, configuration, and platform destination
-2. **iOS:** `build_run_sim` for launch smoke; **macOS:** `build_run_macos` (requires `macos` workflow)
+2. **iOS:** `build_run_sim` for launch smoke; **macOS:** `build_run_macos` (requires `macos` workflow). If macOS launch smoke and tests are not run, at least `build_macos`
 3. Run unit tests if present (`test_sim` / `test_macos`) with parallel testing disabled by default
-4. Optional iOS-only: capture a screenshot or view hierarchy (`ui-automation`). macOS has no XcodeBuildMCP UI automation — rely on `test_macos` (or report skipped tests)
+4. Optional iOS-only: capture a screenshot or view hierarchy (`ui-automation`). macOS has no XcodeBuildMCP UI automation — rely on `test_macos`; if tests are absent, still require `build_run_macos` or at least `build_macos` (do not declare complete on residual risk alone)
 5. Apply review skills (`swift-concurrency-review`, `apple-security-privacy-review`, `apple-accessibility-review`) before shipping shared components
 
 Keep bootstraps focused on reusable skills and clean architecture in the **consumer workspace**. Do not rebuild the archived package in this repo unless asked — see [ARCHIVE.md](ARCHIVE.md).

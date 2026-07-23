@@ -98,12 +98,14 @@ Use XcodeBuildMCP (see repo `MCP.md`) — not raw `xcodebuild`/`simctl`. Enable 
      `extraArgs: ["-parallel-testing-enabled", "NO"]`; optional `screenshot` /
      `snapshot_ui` (ui-automation workflow; iOS simulator only)
    - **macOS:** use the `macos` workflow — prefer `build_run_macos` for a launch
-     smoke when useful; run `test_macos` when a test target exists (required
-     verification when tests are present). Default
+     smoke; run `test_macos` when a test target exists (required verification
+     when tests are present). If neither launch smoke nor `test_macos` runs,
+     require at least `build_macos` so the skeleton is compiled. Default
      `extraArgs: ["-parallel-testing-enabled", "NO"]`. Do **not** call
      `test_sim`, `build_run_sim`, or ui-automation screenshot/hierarchy tools —
      XcodeBuildMCP ui-automation is iOS-simulator-only. If no test target exists
-     yet, report that `test_macos` was skipped and residual risk
+     yet, report that `test_macos` was skipped and residual risk only after
+     `build_run_macos` or `build_macos` succeeds
    - **Both:** verify each platform with its own tool path above
 
 If an MCP capability is unavailable, follow this ladder without skipping tiers.

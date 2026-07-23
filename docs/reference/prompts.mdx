@@ -42,7 +42,7 @@ Inputs:
 Done when: App skeleton builds; skill chain applied or explicitly skipped with reason; handoff lists next skills.
 Verification:
 - iOS: session_show_defaults → build_run_sim → test_sim if present → optional screenshot/snapshot_ui
-- macOS: enable macos workflow → build_run_macos → test_macos if present (no ui-automation)
+- macOS: enable macos workflow → build_run_macos (or at least build_macos if no launch/tests) → test_macos if present (no ui-automation)
 ```
 
 ## Ship a feature
@@ -110,7 +110,7 @@ Done when: Defaults shown; build and tests executed; outcomes and next tool call
 Verification:
 1. session_show_defaults (session_set_defaults if needed)
 2. discover_projs only if defaults still wrong/missing
-3. iOS: build_run_sim → test_sim; macOS: enable macos workflow → build_run_macos → test_macos (no ui-automation)
+3. iOS: build_run_sim → test_sim; macOS: enable macos workflow → build_run_macos (or at least build_macos if no launch/tests) → test_macos if present (no ui-automation)
 Never claim pass without running an authorized tool. Report project/workspace, scheme, configuration, exact destination, command/tool, and residual risk.
 ```
 

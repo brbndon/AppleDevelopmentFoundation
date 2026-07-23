@@ -22,8 +22,9 @@ For Xcode projects, use the first authorized path:
    - **macOS:** enable/use the `macos` workflow; prefer `test_macos` (and
      `build_run_macos` when a launch smoke is needed). Do not use `test_sim` or
      ui-automation screenshot/hierarchy tools for macOS — those are
-     iOS-simulator-only. If no test target exists, report the skip and residual
-     risk rather than claiming UI verification.
+     iOS-simulator-only. If no test target exists, require at least `build_macos`
+     (or `build_run_macos`) and report the test skip and residual risk rather
+     than claiming UI verification.
 2. XcodeBuildMCP CLI only when active repository/user policy explicitly permits
    CLI fallback.
 3. Repository-native raw Xcode tooling only when active policy authorizes it;

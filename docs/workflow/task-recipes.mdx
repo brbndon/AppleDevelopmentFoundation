@@ -22,7 +22,7 @@ Short paths for coding agents. Pick the scenario that matches the user request, 
 | --- | --- |
 | Skills | **`$apple-development-foundation`** → **`$codex-bootstrap`** → chain in skill (planner, tabs, design system, components, platform, reviews, testing). Invoke `$codex-bootstrap` directly only when already selected. |
 | Tools | XcodeBuildMCP |
-| Verify | Platform branch: iOS → `build_run_sim` / `test_sim` (+ optional screenshot); macOS → `build_run_macos` / `test_macos` (no ui-automation) |
+| Verify | Platform branch: iOS → `build_run_sim` / `test_sim` (+ optional screenshot); macOS → `build_run_macos` / `test_macos`, or at least `build_macos` if neither runs (no ui-automation) |
 | Do not | Expand this repo’s `archive/Sources/`; invent business domain the user did not supply |
 
 Details: [Bootstrap](/skills/bootstrap).

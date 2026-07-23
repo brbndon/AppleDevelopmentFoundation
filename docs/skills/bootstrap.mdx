@@ -61,7 +61,8 @@ Extraction of proven app code → `$reusable-code-extractor` into the **consumer
    `extraArgs: ["-parallel-testing-enabled", "NO"]`
 4. **macOS:** enable the `macos` workflow; prefer **`build_run_macos`** for
    launch smoke; run **`test_macos`** when tests exist (same parallel-testing
-   default). Do not use `test_sim` or ui-automation tools — they are
+   default). If neither launch smoke nor tests run, require at least
+   **`build_macos`**. Do not use `test_sim` or ui-automation tools — they are
    iOS-simulator-only
 5. Optional iOS-only: `screenshot` / `snapshot_ui`
 

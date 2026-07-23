@@ -34,6 +34,8 @@ assert_apple_verification_policy() {
     || fail "missing test_macos in $file"
   grep -q 'build_run_macos' "$file" \
     || fail "missing build_run_macos in $file"
+  grep -q 'build_macos' "$file" \
+    || fail "missing build_macos compile fallback in $file"
   grep -q '\*\*iOS (simulator) targets:\*\*' "$file" \
     || fail "missing iOS simulator verification branch in $file"
 }
