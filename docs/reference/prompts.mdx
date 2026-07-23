@@ -174,7 +174,7 @@ Constraints:
 - Fix findings only when the user authorized fixes; otherwise report only.
 Inputs: Changed files / PR scope: <…>
 Done when: Severity-ranked findings (and fixes if authorized); manual checks listed.
-Verification: Strict concurrency build when relevant; then [verification matrix](/reference/verification-matrix) for the change type.
+Verification: Strict concurrency build when relevant; then docs/reference/verification-matrix.mdx for the change type.
 Stop when: Scope is unclear (ask for PR/diff bounds) or review would require editing without authorization.
 Handoff: findings by severity, fixes applied or deferred, manual checks, residual risk.
 ```
@@ -213,14 +213,14 @@ Constraints:
 - One exact <simulatorId>; do not use OS=latest.
 - If maestro CLI missing: report blocker before writing speculative flows.
 - MCP for inspect/debug; maestro test for regression YAML.
-- After each flow or journey change, run only the single smallest relevant flow — not tagged or full-suite runs unless the user or a documented release/CI gate requires them.
+- After each flow or journey change, run only the edited or directly affected flow(s). If a shared UI or navigation change genuinely affects several journeys, run all of those directly affected flows and state why. Do not run tagged or full-suite runs unless the user or a documented release/CI gate requires them.
 Inputs:
 - Consumer path: <consumer path>
 - App identifier: <…>
 - Scheme / simulator: <scheme>; exact <simulatorId>
 - Existing .maestro/ conventions; flows to cover: <…>
 Done when: Flows run; flakes classified; pass/fail counts and artifacts reported.
-Verification: Targeted maestro test on the edited/affected flow; report <simulatorId> and artifacts.
+Verification: Targeted maestro test on the edited/affected flow(s); report <simulatorId> and artifacts.
 Stop when: CLI missing, simulator ambiguous, or flake class needs product decision (timing vs selector vs app bug).
 Handoff: flows added/changed, results, flake classification, residual risk.
 ```
@@ -244,16 +244,20 @@ Handoff: skills touched, verify script results, catalog regeneration note, resid
 ## Explicit foundation audit (only when requested)
 
 ```text
-Goal: Run an explicit Apple Development Foundation skill inventory audit.
+Goal: Run an explicit Apple Development Foundation audit for the selected scope (inventory comparison and/or installer verification).
 Constraints:
-- Invoke $apple-development-foundation in audit mode using master-skill.json classifications.
+- Invoke $apple-development-foundation in audit mode.
 - Do not treat ordinary routing as an audit.
-- Run foundation verification scripts only if this repo or its installer is in scope.
+- Inventory comparison or both: use master-skill.json classifications and compare inventories.
+- Installer or both: run foundation verification scripts for this repo or its installer.
+- Installer-only: do not run or invent an inventory comparison.
 Inputs: Audit scope: <inventory comparison | installer | both>
-Done when: Classifications and comparison reported; verification outcomes only if in scope.
-Verification: Per master-skill.json verification commands when applicable.
+Done when:
+- inventory comparison or both: classifications and comparison reported
+- installer or both: foundation verification script outcomes reported
+Verification: Per master-skill.json verification commands when installer is in scope; otherwise N/A for installer scripts.
 Stop when: User only asked for routing/shortlist — do not escalate into audit mode.
-Handoff: classifications, diffs vs expected inventory, verification outcomes if run, residual risk.
+Handoff: residual risk always; classifications and diffs vs expected inventory only when inventory is in scope; verification outcomes only when installer is in scope.
 ```
 
 ## Related
