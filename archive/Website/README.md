@@ -13,7 +13,7 @@ Authoritative entry points:
 
 ## Local preview (archive work only)
 
-Only when explicitly working on this archived material:
+Only when explicitly working on this archived material. From the `archive/` directory:
 
 ```bash
 npm ci --prefix Website
