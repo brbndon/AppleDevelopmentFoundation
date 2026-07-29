@@ -25,6 +25,38 @@ this contract for files in their scope.
 - Targeted tests: `<REPOSITORY_NATIVE_TARGETED_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
 - Full tests: `<REPOSITORY_NATIVE_FULL_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
 
+## E2E test contract
+
+Document the deterministic app contract before relying on Maestro journeys. Keep
+secrets out of this file, flow files, fixtures, and artifacts.
+
+- App identifier (bundle ID): `<BUNDLE_IDENTIFIER>`
+- `.maestro/` location and naming: `<REPOSITORY_ROOT_OR_AGREED_PATH>`; name
+  flows `<JOURNEY>.yaml` and reusable subflows `<SUBFLOW>.yaml` using
+  `<NAMING_OR_TAGGING_CONVENTION>`
+- Exact simulator/configuration: simulator ID `<EXACT_SIMULATOR_ID>`, scheme
+  `<SCHEME>`, and build configuration `<CONFIGURATION>`; use the same
+  destination and configuration for XcodeBuildMCP, Maestro MCP, and CLI runs
+- Launch arguments/environment: `<LAUNCH_ARGUMENTS>` and
+  `<ENVIRONMENT_VARIABLES_OR_CONFIG_SOURCE>`; inject secrets locally or in CI
+  rather than committing them
+- Reset and seed strategy: `<RESET_OR_FRESH_INSTALL_PROCEDURE>` and
+  `<SEED_COMMAND_OR_FIXTURE>`; state what persists across relaunch and when app
+  data, keychain, permissions, or backend state must be reset
+- Onboarding state: `<FIRST_RUN_AND_COMPLETED_STATE>`; specify how tests enter
+  each state and whether onboarding is required, conditional, or a dedicated
+  subflow
+- Fixtures and test accounts: `<DETERMINISTIC_FIXTURE_SOURCE>` and
+  `<NON_PRODUCTION_TEST_ACCOUNT_NAMES>`; define ownership, cleanup, and
+  account reset behavior
+- Deep links: `<SUPPORTED_DEEP_LINKS_AND_INVOCATION>`
+- Artifacts: `<DEBUG_OUTPUT_SCREENSHOT_HIERARCHY_VIDEO_DESTINATION>`; preserve
+  failure artifacts while redacting secrets and private user data
+- Accessibility-ID conventions: use stable
+  `<ACCESSIBILITY_ID_PREFIX>.<SEMANTIC_NAME>` selectors on actionable elements,
+  keep human-readable accessibility labels, and document any native-control
+  exception
+
 ## Apple verification policy
 
 Fill these before relying on fallback behavior. Shell access or an installed
