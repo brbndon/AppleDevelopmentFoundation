@@ -17,3 +17,5 @@ System navigation chrome owns Liquid Glass. Prefer native `TabView`, toolbars, n
 - Do not mix Regular and Clear in the same surface hierarchy without a clear media reason.
 - Do not fake system tab/nav bars with custom `glassEffect`, materials, overlays, or safe-area bars.
 - Do not keep older custom bar/sheet **opaque backgrounds** that fight scroll-edge / system materials — remove them when adopting system chrome.
+- Do not treat glass appearance as a plain opacity fade when customizing materials; prefer system materialization behavior.
+- In steady states, avoid large content intersections under glass chrome (rely on system scroll-edge effects; don’t pin opaque blockers that kill blur).

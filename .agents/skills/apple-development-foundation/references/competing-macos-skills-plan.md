@@ -21,9 +21,17 @@ catalog’s bootstrap → design-system → verification chain.
 | Pure HIG / visual critique with no foundation workflow | External design skill is fine | Do not invent bootstrap |
 | Gesture polish / fluid motion depth | Foundation first (native chrome, a11y, craft defaults) | Host-local `apple-design` only if still needed |
 | iOS 26 Liquid Glass **API** patterns | Foundation “system chrome first” (`swiftui-tab-navigation` + `liquid-glass-chrome`) | Host-local `liquid-glass-design` only after restraint rules |
+| “What should animate?” / opportunity map | Foundation craft first (`swiftui-component-author` frequency gate) | Host-local `find-animation-opportunities` |
+| Audit / improve motion across the app | Foundation craft + a11y baselines | Host-local `improve-animations` (read-only plans) |
 | Foundation skill inventory / installer audit | `$apple-development-foundation` (audit path) | Foundation verify scripts only |
 
-Host-local skills such as `apple-design` and `liquid-glass-design` are **not** in this catalog and are not installed by `./Scripts/install-skills.sh` unless later promoted.
+Host-local skills such as `apple-design`, `liquid-glass-design`,
+`find-animation-opportunities`, `improve-animations`, and
+`animation-vocabulary` are **not** in this catalog and are not installed by
+`./Scripts/install-skills.sh` unless later promoted.
+
+Procedure detail (Liquid Glass steps, animation delete-first refactor, host
+paths): [design-motion-glass-routing.md](design-motion-glass-routing.md).
 
 ## Description / discovery levers (done or next)
 

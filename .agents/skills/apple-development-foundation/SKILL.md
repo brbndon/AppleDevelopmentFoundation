@@ -39,3 +39,6 @@ override their exclusions, install global files, or claim automatic activation.
 For host-local skills that compete with this catalog (generic macOS development
 guides, design-only skills, and similar), see
 [references/competing-macos-skills-plan.md](references/competing-macos-skills-plan.md).
+For Liquid Glass, animation polish, and motion-audit routing (foundation first,
+host depth only if needed), see
+[references/design-motion-glass-routing.md](references/design-motion-glass-routing.md).
