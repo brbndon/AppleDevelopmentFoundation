@@ -13,13 +13,13 @@ Build primary navigation from native SwiftUI containers in the **consumer worksp
 2. Prefer the system tab container. On supported iOS versions, native tab chrome adopts the current system appearance, including Liquid Glass on iOS 26. Do not imitate it with `glassEffect`, materials, overlays, or a custom safe-area bar.
 3. Keep loading, onboarding, unrecoverable failures, and other pre-content routing outside the tab shell. Give each tab its own `NavigationStack` when it owns drill-down navigation.
 4. Add typed selection state only when programmatic tab changes, restoration, inspection destinations, or deep links require it. Preserve existing direct inspection and deep-link routes.
-5. Use concise text plus SF Symbols in each tab label. Keep selection semantics and interaction native; apply only semantic app tinting.
+5. Use concise text plus SF Symbols in each tab label. Keep selection semantics and interaction native; apply only semantic app tinting (one primary accent, not every bar item).
 6. If iOS and macOS need genuinely different primary-navigation conventions, invoke `ios-macos-platform-adaptation`; do not force an iOS tab bar onto a macOS app that calls for a sidebar, windows, or commands.
-7. Read [references/native-tab-shell.md](references/native-tab-shell.md) when implementing the shell or updating UI automation.
+7. Read [references/liquid-glass-chrome.md](references/liquid-glass-chrome.md) for Liquid Glass do/don’t (system chrome first; Regular/Clear; no glass-on-glass or glass-as-content). Read [references/native-tab-shell.md](references/native-tab-shell.md) when implementing the shell or updating UI automation.
 
 ## Verification
 
-Use `swift-testing-verification` and XcodeBuildMCP with one exact target. Build and run, capture a screenshot or hierarchy on the newest supported runtime, exercise every tab and nested back path, and verify any minimum-OS fallback the project supports. Run affected XCTest or Maestro journeys after selector changes.
+Use `swift-testing-verification` and XcodeBuildMCP with one exact target. Build and run, capture a screenshot or hierarchy on the newest supported runtime, exercise every tab and nested back path, and verify any minimum-OS fallback the project supports. When chrome changes, confirm no custom bar/sheet background fights system materials. Run affected XCTest or Maestro journeys after selector changes.
 
 Inspect the runtime hierarchy before choosing UI-test selectors. SwiftUI creates the actual tab buttons; an accessibility identifier placed inside `.tabItem` may not propagate to those generated controls. Prefer an exposed stable identifier when present, otherwise use the visible accessibility label and scope XCTest queries to `tabBars`.
 

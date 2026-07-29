@@ -12,7 +12,7 @@ Review **reusable SwiftUI** in the **consumer workspace** for accessibility and 
 Work top-down through the component or shared UI under review:
 
 1. **VoiceOver** — meaningful labels, traits, values, hints only when needed; correct grouping/combine; decorative images hidden; custom controls expose actions.
-2. **Dynamic Type** — layouts reflow; no truncated essential text at large sizes; avoid fixed heights that clip content.
+2. **Dynamic Type** — layouts reflow; scroll by default; primary text grows first; no truncated essential text at large sizes; avoid fixed heights that clip content.
 3. **Focus and keyboard** — logical order on platforms with keyboard/focus (especially macOS); no keyboard traps; actionable elements reachable.
 4. **Touch and hit targets** — controls remain usable; spacing does not rely on tiny hit areas alone.
 5. **Color and contrast** — text and essential icons remain readable; Increased Contrast considered when the project supports it.

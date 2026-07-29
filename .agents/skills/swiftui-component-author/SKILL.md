@@ -13,10 +13,11 @@ Create or refactor a **reusable** SwiftUI component in the **consumer workspace*
 2. **Inspect first.** Read existing design-system tokens, sibling components, and repository UI conventions. Prefer extending an existing component over forking a near-duplicate.
 3. **Prefer native controls.** Use system controls and semantic configuration. Avoid custom chrome that reimplements buttons, lists, or navigation unless the product requires it and accessibility parity is planned.
 4. **Own state explicitly.** Prefer initializer parameters and environment injection. Use native observation for shared app state. Do not introduce a view model without a state-ownership or testability reason written in the handoff.
-5. **Accessibility baseline (required).** Support Dynamic Type, VoiceOver labels/traits/grouping, keyboard and focus order where the platform has them, sufficient contrast, Reduce Motion, Differentiate Without Color, and a descriptive label for every icon-only control. Touch targets must remain usable.
-6. **Keep the public API small.** Expose only configuration the consumers need. Document defaults and non-obvious parameters. Prefer semantic style enums over raw colors/fonts when tokens exist.
-7. **Ship a preview or example** that exercises primary configurations and at least one accessibility-sensitive case (for example large Dynamic Type or an empty state).
-8. **Test what the component owns.** Focused tests for configuration logic, state transitions, and public API contracts. Do not claim VoiceOver or visual polish passed without evidence — list manual checks.
+5. **Accessibility baseline (required).** Support Dynamic Type, VoiceOver labels/traits/grouping, keyboard and focus order where the platform has them, sufficient contrast, Reduce Motion, Differentiate Without Color, and a descriptive label for every icon-only control. Touch targets must remain usable (~44×44 pt). At large Dynamic Type sizes, allow scrolling by default and prioritize primary text growth so essential content is not clipped.
+6. **Visual craft.** Match SF Symbol weight and scale to adjacent text. Prefer frequency-gated, interruptible motion: critically damped defaults; bounce only after momentum; press feedback on touch-down; source-anchored sheets/menus when origin matters; never lock input during transitions. Prefer system transitions; avoid multi-second decorative choreography and motion that is the only affordance of meaning. Icon-only controls need a label and a usable hit area.
+7. **Keep the public API small.** Expose only configuration the consumers need. Document defaults and non-obvious parameters. Prefer semantic style enums over raw colors/fonts when tokens exist.
+8. **Ship a preview or example** that exercises primary configurations and at least one accessibility-sensitive case (for example large Dynamic Type or an empty state).
+9. **Test what the component owns.** Focused tests for configuration logic, state transitions, and public API contracts. Do not claim VoiceOver or visual polish passed without evidence — list manual checks.
 
 ## Stop conditions
 
