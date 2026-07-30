@@ -41,31 +41,35 @@ configured. For a project without iOS/iPadOS UI, set each value to `n/a`.
 - Artifacts: `<DEBUG_OUTPUT_SCREENSHOT_HIERARCHY_VIDEO_DESTINATION_OR_N_A>`;
   preserve failure artifacts while redacting secrets and private user data
 
-## E2E test contract
+## UI E2E test contract
 
-Optional. Fill this section only when the project uses Maestro (or another UI
-E2E tool) for iOS simulator journeys. For macOS-only apps, visionOS/watchOS
-targets, Swift packages, or repos without UI E2E, set:
+Optional. Fill this section only when the project uses a UI E2E tool for user
+journeys. This may be Maestro, XCUITest, Appium, or another configured tool.
+For a consumer without UI E2E—whether it is macOS-only, visionOS/watchOS, a
+Swift package, or another target—set:
 
-- Maestro / UI E2E: `not configured` (or `n/a`)
+- UI E2E tool: `not configured` (or `n/a`)
 
-and leave the remaining fields as `n/a`. Do not invent a simulator ID, `.maestro/`
-layout, or onboarding flow when E2E is not in scope. Agents must not treat an
-unconfigured contract as an iOS Maestro destination.
+and leave the remaining fields as `n/a`. Do not invent a destination,
+tool-specific test directory, or onboarding flow when E2E is not in scope.
+Agents must not treat an unconfigured contract as an executable UI E2E
+destination.
 
-When Maestro/iOS E2E **is** in use, document the deterministic app contract
-before relying on journeys. Keep secrets out of this file, flow files, fixtures,
-and artifacts.
+When UI E2E **is** in use, document the deterministic app contract before
+relying on journeys. Keep secrets out of this file, flow files, fixtures, and
+artifacts.
 
-- Maestro / UI E2E: `<CONFIGURED_OR_NOT_CONFIGURED_OR_N_A>`
+- UI E2E tool: `<E2E_TOOL_NAME_OR_NOT_CONFIGURED_OR_N_A>`
 - App identifier (bundle ID): `<BUNDLE_IDENTIFIER_OR_N_A>`
-- `.maestro/` location and naming: `<REPOSITORY_ROOT_OR_AGREED_PATH_OR_N_A>`;
-  name flows `<JOURNEY>.yaml` and reusable subflows `<SUBFLOW>.yaml` using
+- Test location and naming: `<TOOL_SPECIFIC_ROOT_OR_AGREED_PATH_OR_N_A>`;
+  document journeys/tests `<JOURNEY_OR_TEST_NAME>` and reusable
+  subflows/helpers `<SUBFLOW_OR_HELPER_NAME>` using
   `<NAMING_OR_TAGGING_CONVENTION_OR_N_A>`
-- Exact simulator/configuration: simulator ID
-  `<EXACT_SIMULATOR_ID_OR_N_A>`, scheme `<SCHEME_OR_N_A>`, and build
+- Exact destination/configuration: destination ID
+  `<EXACT_DEVICE_OR_SIMULATOR_ID_OR_N_A>`, scheme `<SCHEME_OR_N_A>`, and build
   configuration `<CONFIGURATION_OR_N_A>`; when configured, use the same
-  destination and configuration for XcodeBuildMCP, Maestro MCP, and CLI runs
+  destination and configuration for XcodeBuildMCP and the configured UI E2E
+  runner
 - E2E-only launch arguments/environment beyond the UI inspection contract:
   `<LAUNCH_ARGUMENTS_OR_N_A>` and `<ENVIRONMENT_VARIABLES_OR_CONFIG_SOURCE_OR_N_A>`;
   inject secrets locally or in CI rather than committing them
