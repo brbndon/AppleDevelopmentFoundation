@@ -33,9 +33,9 @@ The scope below describes where a skill performs its work. The manifest's `repos
 
 ## Framework boundaries
 
-The fixture set also requires cases proving that ordinary routing does not imply a foundation audit, consumer work does not target archived foundation code, review-only and planning-only prompts do not authorize edits, unavailable XcodeBuildMCP follows the capability policy, installer conflicts are preserved, user-visible iOS/iPadOS verification uses its UI evidence contract, non-UI verification does not, and verification handoff reports exact checks plus residual risk.
+The fixture set also requires cases proving that ordinary routing does not imply a foundation audit, consumer work does not target archived foundation code, review-only and planning-only prompts do not authorize edits, unavailable XcodeBuildMCP follows the capability policy, installer conflicts are preserved, user-visible iOS/iPadOS verification requires launch smoke, screenshot visual inspection, `snapshot_ui`, and manual-only checks, non-UI verification uses focused code tests only and forbids that UI evidence, and verification handoff reports exact checks plus residual risk.
 
-The current evaluation covers all manifest skills and 8 required framework boundaries. The human-readable table above is a routing summary; the JSON fixtures are the validation source of truth. The principal remaining ambiguity is intentional composition: the master may shortlist tab navigation, component author, accessibility review, and verification in sequence.
+The current evaluation covers all manifest skills and 9 required framework boundaries. The Swift verification skill has at least three positive fixtures, including the UI-inspection contract case. The human-readable table above is a routing summary; the JSON fixtures are the validation source of truth. The principal remaining ambiguity is intentional composition: the master may shortlist tab navigation, component author, accessibility review, and verification in sequence.
 
 ## What still requires model or manual evaluation
 

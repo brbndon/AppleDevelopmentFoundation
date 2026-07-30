@@ -54,6 +54,7 @@ REQUIRED_BOUNDARIES = {
     "planning-only-no-implementation",
     "installer-conflicts-preserved",
     "handoff-exact-checks-and-risk",
+    "user-visible-ui-verification-evidence",
     "non-ui-verification-no-ui-evidence",
 }
 BOUNDARY_REQUIREMENTS = {
@@ -85,6 +86,41 @@ BOUNDARY_REQUIREMENTS = {
         "stop_condition": "none",
     },
 }
+UI_EVIDENCE_ACTIONS = {
+    "focused-code-tests",
+    "launch-smoke",
+    "screenshot",
+    "visual-inspection",
+    "snapshot-ui",
+    "manual-only-checks",
+}
+UI_EVIDENCE_SCOPES = {"ui-inspection-contract", "focused-code-tests-only"}
+UI_EVIDENCE_FIELDS = {"scope", "required_actions", "forbidden_actions"}
+UI_EVIDENCE_FORBIDDEN_ACTIONS = UI_EVIDENCE_ACTIONS - {"focused-code-tests"}
+UI_EVIDENCE_REQUIREMENTS = {
+    "user-visible-ui-verification-evidence": {
+        "scope": "ui-inspection-contract",
+        "required_actions": [
+            "launch-smoke",
+            "screenshot",
+            "visual-inspection",
+            "snapshot-ui",
+            "manual-only-checks",
+        ],
+        "forbidden_actions": [],
+    },
+    "non-ui-verification-no-ui-evidence": {
+        "scope": "focused-code-tests-only",
+        "required_actions": ["focused-code-tests"],
+        "forbidden_actions": [
+            "launch-smoke",
+            "screenshot",
+            "visual-inspection",
+            "snapshot-ui",
+            "manual-only-checks",
+        ],
+    },
+}
 EXPECTED_FIELDS = {
     "skill_ids",
     "workspace_classification",
@@ -107,11 +143,17 @@ def load_json(path: Path, label: str) -> Any:
         raise EvaluationError(f"cannot read {label} {path}: {error}") from error
 
 
-def require_object(value: Any, location: str, fields: set[str]) -> dict[str, Any]:
+def require_object(
+    value: Any,
+    location: str,
+    fields: set[str],
+    optional_fields: set[str] | None = None,
+) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise EvaluationError(f"{location} must be an object")
+    optional_fields = optional_fields or set()
     missing = sorted(fields - value.keys())
-    extra = sorted(value.keys() - fields)
+    extra = sorted(value.keys() - fields - optional_fields)
     if missing or extra:
         raise EvaluationError(
             f"{location} fields differ; missing: {', '.join(missing) or 'none'}; "
@@ -126,8 +168,28 @@ def require_identifier(value: Any, location: str) -> str:
     return value
 
 
+def validate_ui_evidence(value: Any, location: str) -> None:
+    evidence = require_object(
+        value,
+        location,
+        UI_EVIDENCE_FIELDS,
+    )
+    if evidence["scope"] not in UI_EVIDENCE_SCOPES:
+        raise EvaluationError(f"{location}.scope is invalid")
+    for field in ("required_actions", "forbidden_actions"):
+        actions = evidence[field]
+        if not isinstance(actions, list) or not all(
+            isinstance(action, str) for action in actions
+        ):
+            raise EvaluationError(f"{location}.{field} must be a string array")
+        if len(actions) != len(set(actions)):
+            raise EvaluationError(f"{location}.{field} must be a unique array")
+        if not all(action in UI_EVIDENCE_ACTIONS for action in actions):
+            raise EvaluationError(f"{location}.{field} contains an invalid action")
+
+
 def validate_expectation(value: Any, location: str, skill_ids: set[str]) -> None:
-    expectation = require_object(value, location, EXPECTED_FIELDS)
+    expectation = require_object(value, location, EXPECTED_FIELDS, {"ui_evidence"})
     expected_skills = expectation["skill_ids"]
     if not isinstance(expected_skills, list):
         raise EvaluationError(f"{location}.skill_ids must be an array")
@@ -157,6 +219,8 @@ def validate_expectation(value: Any, location: str, skill_ids: set[str]) -> None
     for field, field_value in handoff.items():
         if not isinstance(field_value, bool):
             raise EvaluationError(f"{location}.handoff.{field} must be boolean")
+    if "ui_evidence" in expectation:
+        validate_ui_evidence(expectation["ui_evidence"], f"{location}.ui_evidence")
 
 
 def validate_prompt_case(
@@ -190,9 +254,28 @@ def validate(fixtures_path: Path) -> tuple[int, int]:
         raise EvaluationError("Evaluations/schema.json does not document schema version 1")
     if schema_properties.get("activation_claim", {}).get("const") != ACTIVATION_CLAIM:
         raise EvaluationError("Evaluations/schema.json activation limitation has drifted")
+    if schema_properties.get("framework_boundaries", {}).get("minItems") != len(
+        REQUIRED_BOUNDARIES
+    ):
+        raise EvaluationError("Evaluations/schema.json framework boundary count has drifted")
     if set(schema_expectation.get("required", [])) != EXPECTED_FIELDS:
         raise EvaluationError("Evaluations/schema.json expected fields have drifted")
     schema_expectation_properties = schema_expectation.get("properties", {})
+    schema_ui_evidence = schema_expectation_properties.get("ui_evidence", {})
+    if set(schema_ui_evidence.get("required", [])) != UI_EVIDENCE_FIELDS:
+        raise EvaluationError("Evaluations/schema.json UI evidence fields have drifted")
+    schema_ui_evidence_properties = schema_ui_evidence.get("properties", {})
+    if set(schema_ui_evidence_properties.get("scope", {}).get("enum", [])) != UI_EVIDENCE_SCOPES:
+        raise EvaluationError("Evaluations/schema.json UI evidence scopes have drifted")
+    for field, allowed_actions in {
+        "required_actions": UI_EVIDENCE_ACTIONS,
+        "forbidden_actions": UI_EVIDENCE_FORBIDDEN_ACTIONS,
+    }.items():
+        documented_actions = schema_ui_evidence_properties.get(field, {}).get("items", {}).get(
+            "enum", []
+        )
+        if set(documented_actions) != allowed_actions:
+            raise EvaluationError(f"Evaluations/schema.json {field} values have drifted")
     documented_enums = {
         "workspace_classification": WORKSPACES,
         "verification_category": VERIFICATION_CATEGORIES,
@@ -231,8 +314,9 @@ def validate(fixtures_path: Path) -> tuple[int, int]:
         covered_skills.add(skill_id)
         for kind in ("should_use", "should_not_use"):
             cases = entry[kind]
-            if not isinstance(cases, list) or len(cases) < 2:
-                raise EvaluationError(f"{location}.{kind} must contain at least two cases")
+            minimum = 3 if skill_id == "swift-testing-verification" and kind == "should_use" else 2
+            if not isinstance(cases, list) or len(cases) < minimum:
+                raise EvaluationError(f"{location}.{kind} must contain at least {minimum} cases")
             for case_index, case_value in enumerate(cases):
                 case_location = f"{location}.{kind}[{case_index}]"
                 case = validate_prompt_case(case_value, case_location, skill_ids, seen_case_ids)
@@ -246,6 +330,17 @@ def validate(fixtures_path: Path) -> tuple[int, int]:
                         f"{case_location} must exclude its subject skill {skill_id}"
                     )
                 prompt_count += 1
+        if skill_id == "swift-testing-verification":
+            expected_evidence = UI_EVIDENCE_REQUIREMENTS[
+                "user-visible-ui-verification-evidence"
+            ]
+            if not any(
+                case["expected"].get("ui_evidence") == expected_evidence
+                for case in entry["should_use"]
+            ):
+                raise EvaluationError(
+                    f"{location}.should_use must cover the user-visible UI inspection contract"
+                )
 
     missing_skills = sorted(skill_ids - covered_skills)
     extra_skills = sorted(covered_skills - skill_ids)
@@ -281,6 +376,11 @@ def validate(fixtures_path: Path) -> tuple[int, int]:
         }:
             raise EvaluationError(
                 f"{location}.expected.handoff must require exact checks and residual risk"
+            )
+        expected_ui_evidence = UI_EVIDENCE_REQUIREMENTS.get(boundary_id)
+        if expected_ui_evidence and expectation.get("ui_evidence") != expected_ui_evidence:
+            raise EvaluationError(
+                f"{location}.expected.ui_evidence must define the required UI evidence contract"
             )
         prompt_count += 1
     missing_boundaries = sorted(REQUIRED_BOUNDARIES - seen_boundaries)

@@ -42,6 +42,25 @@ assert_apple_verification_policy() {
 
 assert_apple_verification_policy "$template"
 
+# The website's copyable template must remain an exact mirror of the canonical
+# bootstrap asset. Extract only its markdown fence, not incidental shell fences.
+website_template="$scratch/website-consumer-AGENTS.md"
+if ! awk '
+  $0 == "```markdown" {
+    if (found || inside) exit 1
+    found = 1
+    inside = 1
+    next
+  }
+  inside && $0 == "```" { inside = 0; exit }
+  inside { print }
+  END { if (found != 1 || inside) exit 1 }
+' "$root/docs/workflow/agents-md-template.mdx" > "$website_template"; then
+  fail "could not extract the website AGENTS.md template"
+fi
+cmp -s "$template" "$website_template" \
+  || fail "website AGENTS.md template differs from the canonical asset"
+
 consumer="$scratch/Consumer App With Spaces"
 mkdir -p "$consumer"
 consumer="$(cd "$consumer" && pwd -P)"

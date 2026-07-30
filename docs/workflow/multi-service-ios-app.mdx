@@ -7,12 +7,13 @@ description: Reusable architecture and agent-workflow patterns for device-to-man
 
 Patterns for **device → many independent HTTP APIs** apps (dashboards, admin clients, multi-service workflows). Neutral and reusable: no product branding, no private hosts, and no secrets.
 
-Distilled from production multi-service consumer apps with independent service peers. Apply in the **consumer workspace**, not this foundation’s `archive/`.
+Designed for dashboards, service clients, and independent service peers. Apply in
+the **consumer workspace**, not this foundation’s `archive/`.
 
 ## When to use
 
 - App talks to **2+ services**, each with its own base URL and credential.
-- Prefer **direct device→service** (no hosted BFF) for first release.
+- Prefer **direct device→service** connections for the first release.
 - Secrets must stay **off disk-in-UserDefaults** and out of fixtures/logs.
 - Agents will implement integrations and UI; humans set product phase boundaries.
 
@@ -57,22 +58,40 @@ Do not leak raw JSON or service field names into SwiftUI views.
 | --- | --- |
 | Preferences / registry | Non-secret config, credential **reference** (UUID account id) |
 | Keychain | API keys, tokens, username/password |
-| Memory only | Session cookies / SID (re-login on expiry) |
+| Memory only | Session credentials (re-authenticate on expiry) |
 | Never | Secrets in fixtures, launch args, screenshots, logs, sample data |
 
 **Connection Test:** probe with an **ephemeral** Keychain account so Test never overwrites the live secret on edit. Empty credential field on Save **keeps** the existing Keychain value.
 
 **Auth mapping:** HTTP 401/403 → unauthorized; missing secret → missing credential; transport failure → unavailable. UI recovery: Retry vs Open Settings / re-enter credentials.
 
-Never log tokens, passwords, SID, `apikey`, or full private URLs.
+Never log tokens, passwords, session credentials, or endpoint URLs containing
+sensitive data.
+
+### Credential lifecycle
+
+- Rotate credentials by writing the replacement only after it has been validated;
+  preserve the prior value until the replacement succeeds.
+- Deleting a credential or removing an account must remove its Keychain item,
+  clear in-memory sessions, cancel in-flight work, and purge account-scoped
+  caches and persisted endpoint configuration.
+- Never place credentials in query strings, logs, screenshots, fixtures, sample
+  data, or handoff text. Use request headers or secure session storage instead.
 
 ## Transport policy
 
 - Prefer **HTTPS** for remote endpoints.  
 - Allow **user-explicit plain HTTP** only where product requires LAN (document which endpoint labels allow it).  
 - ATS: narrow exception (`NSAllowsLocalNetworking` or equivalent)—**not** `NSAllowsArbitraryLoads`.  
-- **Never** disable certificate validation to “make it work.”  
-- Timeouts, cancellation, and a mockable `HTTPTransport` protocol are mandatory for tests.
+- **Never** disable certificate validation to “make it work.”
+- Normalize endpoints with URL components before storing or requesting them:
+  trim input, reject malformed URLs, user-info credentials, fragments, and
+  unsupported schemes, and enforce the configured scheme allowlist before and
+  after redirects.
+- Timeouts, cancellation, retry/backoff, and a mockable `HTTPTransport` protocol
+  are mandatory for tests. Document timeouts by request class; cancel work when
+  its feature leaves scope; retry only idempotent transient failures with capped
+  exponential backoff and jitter, never authentication or validation failures.
 
 ## FeatureState (feature-level loading)
 
@@ -85,11 +104,14 @@ loading | content(value, refreshedAt) | empty | stale(value) | unavailable(recov
 - Prefer **one status row per service** (probe OK + content fail must not double-emit connected + failed).  
 - Partial multi-service success: show connected peers + failed peers without blanking the whole app when any sibling works.  
 - Recovery actions are explicit: retry, update credentials, configure endpoint, enable service.
+- Show stale values with their refresh time and recovery action. Define cache
+  expiration per resource, avoid treating expired cache as fresh content, and
+  purge account-scoped cache on credential deletion or account removal.
 
 ## Remote assets
 
-- Prefer absolute **CDN / remote** URLs when the API provides them.  
-- Relative asset paths need **base URL + auth** (header preferred; query key only if URL-based loaders force it).
+- Prefer absolute remote URLs when the API provides them.
+- Relative asset paths need a normalized base URL and header-based authorization.
 - Never log authenticated asset URLs.
 - List rows use **fixed compact frames** + clip; do not let variable-aspect-ratio assets overflow adjacent cards.
 - Cache bytes when scroll causes probe-per-image cost.
@@ -159,7 +181,7 @@ For agent-driven UI verification:
 | Transport | Stub / path-routing mock; assert scheme policy and status mapping |
 | Clients | Decode synthetic fixtures only (`fixture.invalid`, fake ids) |
 | Repository | Multi-service partial failure and status dedupe |
-| Secrets skim | Grep fixtures for token/apikey/password/private IPs before commit |
+| Secrets skim | Grep fixtures for credentials, tokens, and passwords before commit |
 
 XcodeBuildMCP: `session_show_defaults` once per session; `test_sim` with **parallel testing disabled** for scheme stability; `build_run_sim` for smoke when UI changes.
 

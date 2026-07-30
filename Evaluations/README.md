@@ -15,6 +15,12 @@ fixtures. Every prompt records:
 - the required verification category and stop condition; and
 - whether handoff must report exact checks and residual risk.
 
+UI-verification boundaries additionally encode the required and forbidden
+evidence actions. A user-visible iOS/iPadOS change requires its inspection
+contract (launch smoke, screenshot and visual inspection, `snapshot_ui`, and
+manual-only checks); a non-UI change requires focused code tests only and
+forbids that UI evidence.
+
 An empty `skill_ids` array means that no skill in this repository's catalog is
 appropriate for that prompt; it is still an explicit routing expectation.
 

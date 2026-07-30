@@ -46,6 +46,8 @@ Dynamic Type scenario only when that risk changed. For each selected scenario,
 capture a screenshot, visually inspect the rendered image, and capture
 `snapshot_ui` to verify semantic controls, labels, values, and scrollability.
 
-Do not apply this matrix to non-UI changes. Do not repeat discovery, stop/launch,
-or pre-fix captures after the cause is understood; retain post-fix evidence and
-any artifact needed to explain a failure. Report manual-only checks separately.
+For a non-UI change, run focused code tests only; do not require a launch smoke,
+screenshots, visual inspection, or `snapshot_ui`. Do not repeat discovery,
+stop/launch, or pre-fix captures after the cause is understood; retain post-fix
+evidence and any artifact needed to explain a failure. Report manual-only checks
+separately for user-visible changes.
