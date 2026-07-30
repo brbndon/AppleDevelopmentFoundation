@@ -1129,6 +1129,24 @@
               "report_residual_risk": true
             }
           }
+        },
+        {
+          "id": "testing-use-ios-ui-evidence-contract",
+          "prompt": "Verify a completed user-visible iOS/iPadOS UI change with the consumer's UI inspection contract: run a launch smoke, capture and visually inspect a screenshot for the primary affected route, then capture snapshot_ui and report any manual-only checks.",
+          "expected": {
+            "skill_ids": [
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "apple-ui-e2e",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
         }
       ],
       "should_not_use": [
@@ -1450,6 +1468,25 @@
       "boundary_id": "handoff-exact-checks-and-risk",
       "id": "boundary-handoff-exact-checks-and-risk",
       "prompt": "After verifying this completed Swift change, hand off the exact tools or commands and outcomes, every skipped or failed check, and residual risk.",
+      "expected": {
+        "skill_ids": [
+          "swift-testing-verification"
+        ],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "apple-code",
+        "stop_condition": "none",
+        "handoff": {
+          "report_exact_checks": true,
+          "report_residual_risk": true
+        }
+      }
+    },
+    {
+      "boundary_id": "non-ui-verification-no-ui-evidence",
+      "id": "boundary-non-ui-verification-no-ui-evidence",
+      "prompt": "Verify a completed non-UI networking change in a consumer app. Run focused tests and report exact outcomes; do not apply the UI inspection contract or capture screenshot/snapshot_ui evidence.",
       "expected": {
         "skill_ids": [
           "swift-testing-verification"

@@ -54,6 +54,7 @@ REQUIRED_BOUNDARIES = {
     "planning-only-no-implementation",
     "installer-conflicts-preserved",
     "handoff-exact-checks-and-risk",
+    "non-ui-verification-no-ui-evidence",
 }
 BOUNDARY_REQUIREMENTS = {
     "ordinary-routing-no-audit": {
@@ -78,6 +79,10 @@ BOUNDARY_REQUIREMENTS = {
     "installer-conflicts-preserved": {
         "verification_category": "installer-behavior",
         "stop_condition": "preserve-conflict",
+    },
+    "non-ui-verification-no-ui-evidence": {
+        "verification_category": "apple-code",
+        "stop_condition": "none",
     },
 }
 EXPECTED_FIELDS = {

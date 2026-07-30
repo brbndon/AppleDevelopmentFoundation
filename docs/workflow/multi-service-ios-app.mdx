@@ -1,13 +1,13 @@
 ---
 title: Multi-service iOS app patterns
-description: Reusable architecture and agent-workflow patterns for LAN/API mesh apps (Keychain, FeatureState, phased integrations, inspection routes)—distilled from production consumer apps such as Harborlight.
+description: Reusable architecture and agent-workflow patterns for device-to-many HTTP API apps (Keychain, FeatureState, phased integrations, inspection routes).
 ---
 
 # Multi-service iOS app patterns
 
-Patterns for **device → many independent HTTP APIs** apps (home-lab dashboards, ops clients, multi-vendor read-only mesh). Neutral and reusable: no product branding, no private hosts, no secrets.
+Patterns for **device → many independent HTTP APIs** apps (dashboards, admin clients, multi-service workflows). Neutral and reusable: no product branding, no private hosts, and no secrets.
 
-**Provenance:** distilled from Harborlight-style Phase 2–3 work (Sonarr / Radarr / Plex / qBittorrent-class peers). Apply in the **consumer workspace**, not this foundation’s `archive/`.
+Distilled from production multi-service consumer apps with independent service peers. Apply in the **consumer workspace**, not this foundation’s `archive/`.
 
 ## When to use
 
@@ -16,18 +16,18 @@ Patterns for **device → many independent HTTP APIs** apps (home-lab dashboards
 - Secrets must stay **off disk-in-UserDefaults** and out of fixtures/logs.
 - Agents will implement integrations and UI; humans set product phase boundaries.
 
-## Phase slice (product)
+## Phase slice
 
 Ship capability in **read-only slices** before mutations:
 
 | Phase | Goal | Avoid |
 | --- | --- | --- |
 | Foundation | Registry, Keychain refs, transport, probe, one list surface | Writes, search, delete |
-| Enrichment | Detail, calendar, artwork, status aggregation | Title-only “joins” across services |
-| Download client | Separate client for transfer UI | Using the wrong service for media availability |
+| Enrichment | Detail, related resources, remote assets, status aggregation | Display-name “joins” across services |
+| Transfer client | Separate client for transfer UI | Using the wrong service for resource availability |
 | Mutations | Pause/resume, monitor toggles, destructive ops | Shipping controls before read state is trustworthy |
 
-**Rule:** media-associated “downloading” state often belongs to the **orchestrator** API (e.g. *arr queue), not the torrent client. Full transfer lists belong to the download client. Document the join key early (hash / id) and ban title matching.
+**Rule:** resource-associated “in progress” state often belongs to the **orchestrator** API, not the transfer client. Full transfer lists belong to the transfer client. Document the join key early (stable id / hash) and ban display-name matching.
 
 ## Architecture sketch
 
@@ -46,10 +46,10 @@ ServiceClientFactory → per-kind actor clients (DTO in, domain out)
 
 1. **Config** — kind, display name, endpoints (scheme/host/port/path), preference, opaque credential reference.  
 2. **Clients** — private DTOs, auth headers/cookies, path construction including optional `urlBase` / base path.  
-3. **Domain models** — `Movie`, `TVShow`, `DownloadItem`, `ServiceStatus`, … only types UI should see.  
+3. **Domain models** — `Resource`, `CollectionItem`, `TransferItem`, `ServiceStatus`, … only types UI should see.
 4. **Repository** — fan-out enabled services, merge by **stable ids**, map errors to recovery.
 
-Do not leak raw JSON or vendor field names into SwiftUI views.
+Do not leak raw JSON or service field names into SwiftUI views.
 
 ## Secrets and credentials
 
@@ -86,21 +86,21 @@ loading | content(value, refreshedAt) | empty | stale(value) | unavailable(recov
 - Partial multi-service success: show connected peers + failed peers without blanking the whole app when any sibling works.  
 - Recovery actions are explicit: retry, update credentials, configure endpoint, enable service.
 
-## Artwork
+## Remote assets
 
 - Prefer absolute **CDN / remote** URLs when the API provides them.  
-- Relative media paths need **base URL + auth** (header preferred; query key only if URL-based loaders force it).  
-- Never log authenticated image URLs.  
-- List rows use **fixed compact frames** + clip; do not let aspect-ratio posters overflow adjacent cards.  
+- Relative asset paths need **base URL + auth** (header preferred; query key only if URL-based loaders force it).
+- Never log authenticated asset URLs.
+- List rows use **fixed compact frames** + clip; do not let variable-aspect-ratio assets overflow adjacent cards.
 - Cache bytes when scroll causes probe-per-image cost.
 
 ## Cross-service joins
 
 | Do | Don’t |
 | --- | --- |
-| Join on vendor ids / hashes (case-insensitive when required) | Match by title string |
+| Join on service ids / hashes (case-insensitive when required) | Match by display name |
 | Keep private join fields off ordinary UI | Surface raw hashes as primary labels |
-| Document which service owns which badge | Require download-client credentials to show orchestrator queue |
+| Document which service owns each status or badge | Require one service’s credentials to show another service’s private state |
 
 ## System UI first: Liquid Glass
 
@@ -171,12 +171,14 @@ XcodeBuildMCP: `session_show_defaults` once per session; `test_sim` with **paral
 4. DTO → domain mapping.  
 5. Register in factory.  
 6. Fixtures + decode/auth tests.  
-7. Icon asset (template or brand mark per product policy).  
+7. Icon asset (template or app-provided mark per product policy).
 8. No live network in CI.
 
-## App Store / private LAN note
+## Distribution and privacy note
 
-Private LAN tools may ship brand marks for personal use; **public App Store** may require trademark care and clearer privacy copy (local network usage, no account backend). Call that out in the product plan—not in fixtures.
+If this pattern ships publicly, document endpoint security, local-network usage,
+and data handling in the product and privacy plan. Keep product-specific policy
+out of fixtures.
 
 ## Related foundation pages
 
@@ -188,14 +190,14 @@ Private LAN tools may ship brand marks for personal use; **public App Store** ma
 
 ## Anti-patterns
 
-- Global TLS disable or arbitrary ATS loads “for Plex”  
+- Global TLS disable or arbitrary ATS loads for one service
 - Storing API keys next to base URLs in UserDefaults  
-- Sample Downloads data that looks live after real library data exists  
-- Title-based matching between download client and library  
-- Re-researching vendor APIs when a fact-checked agent guide exists  
+- Sample records that look live after real service data exists
+- Display-name matching between services
+- Re-researching service APIs when a fact-checked agent guide exists
 - Expanding this foundation’s `archive/Sources` for app work  
 - One monocommit of P0–P3 without intermediate green tests  
 
 ---
 
-*Keep this page product-neutral. Harborlight-specific severity lists and paste prompts live in that app’s `Documentation/`.*
+*Keep this page product-neutral. App-specific severity lists and paste prompts live in the consumer app’s `Documentation/`.*
