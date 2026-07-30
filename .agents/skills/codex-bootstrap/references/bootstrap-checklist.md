@@ -53,7 +53,9 @@ Use during and after `$codex-bootstrap` in the **consumer workspace**.
       `test_macos` when tests exist; if neither runs, at least `build_macos` —
       not `test_sim` / ui-automation
 - [ ] Tests run serially with parallel testing disabled by default (if present)
-- [ ] Optional iOS-only: screenshot or view hierarchy confirms launch
+- [ ] User-visible iOS/iPadOS work: inspection contract defines the smallest
+      risk-based matrix; every selected scenario has a screenshot that was
+      visually inspected and a `snapshot_ui` capture
 - [ ] macOS: no screenshot/hierarchy required (ui-automation is iOS-only); if no
       tests yet, `test_macos` skip and residual risk reported only after
       `build_run_macos` or `build_macos` succeeds
