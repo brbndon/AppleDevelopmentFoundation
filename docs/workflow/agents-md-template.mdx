@@ -33,7 +33,7 @@ Fill every `<…>` placeholder from checked-in project configuration. Do not inv
 | Destinations | exact `simulatorId`; macOS arch or `n/a` |
 | Formatter / linter / checks | repo-native commands or `not configured` |
 | Targeted and full tests | repo-native or MCP test scope |
-| E2E / Maestro contract | `configured` with real values, or `not configured` / `n/a` for non-iOS or non-Maestro repos |
+| UI E2E contract | `configured` with the selected tool and real values, or `not configured` / `n/a` when UI E2E is not in scope |
 | Apple verification policy | XcodeBuildMCP CLI and raw `xcodebuild`/`xcrun`/`simctl`: keep `require-approval` unless you authorize `allowed` or `denied` |
 
 Scoped `AGENTS.md` files in subdirectories refine this root contract for their trees; keep them when present.
@@ -77,6 +77,22 @@ this contract for files in their scope.
   `<REPOSITORY_NATIVE_CHECK_COMMANDS_OR_NOT_CONFIGURED>`
 - Targeted tests: `<REPOSITORY_NATIVE_TARGETED_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
 - Full tests: `<REPOSITORY_NATIVE_FULL_TEST_COMMANDS_OR_MCP_TEST_SCOPE>`
+
+## UI inspection contract
+
+For user-visible iOS/iPadOS UI, fill this section even when UI E2E is not
+configured. For a project without iOS/iPadOS UI, set each value to `n/a`.
+
+- Deterministic inspection routes or states:
+  `<ROUTES_STATES_DEEP_LINKS_OR_N_A>`
+- UI-only launch arguments/environment (do not include secrets):
+  `<APPEARANCE_DYNAMIC_TYPE_FIXTURE_OR_OTHER_UI_ARGUMENTS_OR_N_A>`
+- Risk-based evidence matrix: `<PRIMARY_ROUTE_AND_CONDITIONAL_SHEET_APPEARANCE_DYNAMIC_TYPE_SCENARIOS_OR_N_A>`
+- Evidence procedure: for every selected scenario, use XcodeBuildMCP to capture
+  a screenshot, visually inspect it, and capture `snapshot_ui`; record manual-only
+  checks separately
+- Artifacts: `<DEBUG_OUTPUT_SCREENSHOT_HIERARCHY_VIDEO_DESTINATION_OR_N_A>`;
+  preserve failure artifacts while redacting secrets and private user data
 
 ## UI E2E test contract
 
