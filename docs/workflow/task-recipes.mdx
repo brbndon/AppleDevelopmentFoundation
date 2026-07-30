@@ -36,11 +36,22 @@ Details: [Bootstrap](/skills/bootstrap).
 | Verify | `$swift-testing-verification` + MCP build/test; reviews if shared UI / async / sensitive paths |
 | Do not | Plan-for-planning on one-off screens; skip a11y on shared components |
 
+### Multi-service LAN / API mesh integration (read-only phase)
+
+| Step | Action |
+| --- | --- |
+| Skills | Security/privacy review mindset (`$apple-security-privacy-review` when touching Keychain/logging); concurrency review if sessions/actors grow; testing verification after clients land |
+| Patterns | [Multi-service iOS app patterns](/workflow/multi-service-ios-app) — phase slice, Keychain refs, transport policy, FeatureState, joins, handoff shape |
+| Tools | XcodeBuildMCP `test_sim` (parallel off); fixtures only—no live secrets |
+| Verify | Decode/auth tests; secrets skim; optional inspection screenshots for UI |
+| Do not | Disable TLS validation; title-only cross-service matching; write APIs before read path is solid; invent endpoints when a fact-checked agent guide exists |
+
 ### Author reusable UI (tabs, tokens, components)
 
 | Step | Action |
 | --- | --- |
 | Skills | `$swiftui-tab-navigation` when the app needs **app-level** peer destinations; `$apple-design-system` for tokens/appearance; `$swiftui-component-author` for reusable components on that system; `$ios-macos-platform-adaptation` only when platforms diverge |
+| Liquid Glass | Treat the request as system chrome adoption first: native tabs, navigation bars, toolbars, and sheets; keep content opaque; use custom glass only for a navigation-plane control the system cannot express |
 | Tools | XcodeBuildMCP for build/preview targets |
 | Verify | MCP build; `$apple-accessibility-review` on shared UI; `$swift-testing-verification` when logic or public component APIs change |
 | Do not | Use tab skill for page-style `TabView` content or segmented controls; put branding-specific tokens into foundation skills; land components in this repo’s `archive/Sources/` |

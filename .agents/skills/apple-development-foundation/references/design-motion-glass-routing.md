@@ -28,10 +28,15 @@ Also see [competing-macos-skills-plan.md](competing-macos-skills-plan.md).
 
 ## Liquid Glass procedure
 
-1. Prefer **system** navigation chrome (`TabView`, toolbars, navigation bars, sheets) — do not imitate with custom glass.
-2. Read `swiftui-tab-navigation/references/liquid-glass-chrome.md` and apply Do/Don’t restraint.
-3. Use custom `glassEffect` / `GlassEffectContainer` **only** when system chrome cannot express a navigation-plane control, and only after restraint.
-4. Host `liquid-glass-design` last — API depth after foundation restraint, never instead of it.
+When a user asks for Liquid Glass, interpret that as a request for the platform's
+navigation and control appearance, not as a request to decorate the whole app.
+
+1. Prefer **system** navigation chrome (`TabView`, toolbars, navigation bars, sheets) — do not imitate it with custom glass.
+2. Keep the content plane opaque: lists, tables, cards, forms, and feature surfaces are content, not chrome.
+3. Read [`liquid-glass-chrome.md`](../../swiftui-tab-navigation/references/liquid-glass-chrome.md) and apply its Do/Don’t restraint.
+4. Use custom `glassEffect` / `GlassEffectContainer` **only** when system chrome cannot express a navigation-plane control, and only after restraint.
+5. Preserve native accessibility, hit targets, interaction, safe-area behavior, and the supported older-OS fallback.
+6. Host `liquid-glass-design` last — API depth after foundation restraint, never instead of it.
 
 ## Animation refactor steps
 

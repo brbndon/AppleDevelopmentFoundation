@@ -36,6 +36,7 @@ Use Swift 6, SwiftUI, SwiftData where appropriate, native observation, initializ
 All SwiftUI components must support Dynamic Type, VoiceOver, keyboard access, contrast, Reduce Motion, Differentiate Without Color, and a descriptive label for an icon-only control. Validate imports before reading them. Never log credentials, tokens, private content, raw imports, complete sensitive paths, or security-scoped URLs.
 
 - For any SwiftUI UI (including feature screens, not only shared components): keep content opaque; reserve glass for system navigation chrome; ~44×44 pt targets; system text styles (no Ultralight/Thin for UI); selective accent; frequency-gated motion (no animation on high-frequency or keyboard paths). Defer deep gesture physics to host-local motion skills.
+- For Liquid Glass requests, interpret “Liquid Glass” as adopting the OS-owned navigation/control appearance: use native `TabView`, navigation bars, toolbars, and sheets; never imitate system chrome with custom materials or safe-area bars. Use custom `glassEffect` only for a navigation-plane control the system cannot express, with a `GlassEffectContainer` when multiple glass elements must coordinate, and preserve accessibility plus older-OS fallback behavior.
 
 ## Verification
 

@@ -10,7 +10,7 @@ Build primary navigation from native SwiftUI containers in the **consumer worksp
 ## Workflow
 
 1. Confirm that the destinations are persistent peers. Use `TabView` for peer app destinations; keep transient actions, onboarding steps, and drill-down destinations out of the tab bar.
-2. Prefer the system tab container. On supported iOS versions, native tab chrome adopts the current system appearance, including Liquid Glass on iOS 26. Do not imitate it with `glassEffect`, materials, overlays, or a custom safe-area bar.
+2. Prefer the system tab container. On supported iOS versions, native tab chrome adopts the current system appearance, including Liquid Glass on iOS 26. Treat a Liquid Glass request as native chrome adoption; do not imitate it with `glassEffect`, materials, overlays, or a custom safe-area bar.
 3. Keep loading, onboarding, unrecoverable failures, and other pre-content routing outside the tab shell. Give each tab its own `NavigationStack` when it owns drill-down navigation.
 4. Add typed selection state only when programmatic tab changes, restoration, inspection destinations, or deep links require it. Preserve existing direct inspection and deep-link routes.
 5. Use concise text plus SF Symbols in each tab label. Keep selection semantics and interaction native; apply only semantic app tinting (one primary accent, not every bar item).

@@ -1,13 +1,30 @@
 # Liquid Glass chrome (restraint)
 
-System navigation chrome owns Liquid Glass. Prefer native `TabView`, toolbars, navigation bars, and sheets.
+Liquid Glass is a system-managed material for navigation and controls, not an
+app-wide surface style. When a user requests Liquid Glass, preserve the
+platform's layer hierarchy:
+
+1. **System chrome:** use native `TabView`, navigation bars, toolbars, and
+   sheets. On iOS 26 and later, these containers adopt the current system
+   appearance automatically; let the OS own their shape, material, selection,
+   safe-area behavior, and interaction.
+2. **Content surfaces:** keep lists, tables, cards, forms, and feature content
+   opaque. Glass should not be used to make ordinary content look like
+   navigation chrome.
+3. **Custom navigation controls:** only when a system container cannot express
+   the control, use `glassEffect` in the navigation plane. Coordinate multiple
+   glass elements with `GlassEffectContainer`; do not use custom glass to fake a
+   tab bar or navigation bar.
+4. **Fallbacks and accessibility:** preserve native behavior on older supported
+   OS versions, Dynamic Type, contrast, VoiceOver, keyboard/pointer access,
+   Reduce Motion, Differentiate Without Color, and usable hit targets.
 
 ## Do
 
 - Put glass on the **navigation / control** layer only.
 - Prefer **system** materials and containers; let the OS adopt Liquid Glass without imitation.
 - Default material: **Regular**. Use **Clear** only over media, with dimming and bold/legible foreground.
-- Custom floating controls in the navigation plane: `glassEffect` **inside** `GlassEffectContainer` only when system chrome cannot express the control.
+- Use `.interactive()` only for controls that actually respond to touch or pointer interaction.
 - Tint **one** primary action (or semantic accent), not every bar item.
 
 ## Don’t
