@@ -31,7 +31,7 @@ Host-local skills such as `apple-design`, `liquid-glass-design`,
 `./Scripts/install-skills.sh` unless later promoted.
 
 Procedure detail (Liquid Glass steps, animation delete-first refactor, host
-paths): [design-motion-glass-routing.md](design-motion-glass-routing.md).
+skill IDs and discovery): [design-motion-glass-routing.md](design-motion-glass-routing.md).
 
 ## Description / discovery levers (done or next)
 

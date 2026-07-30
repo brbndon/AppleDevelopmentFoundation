@@ -18,11 +18,11 @@ Always-on craft for feature screens also lives in root `Agents.md` / `AGENTS.md`
 | Intent | Foundation first | Then | Host depth only if needed |
 | --- | --- | --- | --- |
 | New app / major skeleton | `$apple-development-foundation` → `$codex-bootstrap` → design-system, tabs, a11y | Chained children | — |
-| Liquid Glass / materials | System chrome + `swiftui-tab-navigation` + `liquid-glass-chrome.md` | Custom `glassEffect` only after restraint | `~/.agents/skills/liquid-glass-design/SKILL.md` |
-| Animation polish on a screen/component | `swiftui-component-author` craft defaults + a11y Reduce Motion | Delete high-frequency motion first | `~/.agents/skills/apple-design/SKILL.md` (gesture physics) |
-| “What should animate?” | Craft defaults + frequency gate (no keyboard / high-frequency paths) | — | `~/.agents/skills/find-animation-opportunities/SKILL.md` |
-| Whole-app motion audit | Craft + a11y baselines applied | — | `~/.agents/skills/improve-animations/SKILL.md` (read-only plans) |
-| Motion naming / vocabulary | Prefer plain craft language in foundation skills | — | `~/.agents/skills/animation-vocabulary/SKILL.md` |
+| Liquid Glass / materials | System chrome + `swiftui-tab-navigation` + `liquid-glass-chrome.md` | Custom `glassEffect` only after restraint | Host skill ID `liquid-glass-design` |
+| Animation polish on a screen/component | `swiftui-component-author` craft defaults + a11y Reduce Motion | Delete high-frequency motion first | Host skill ID `apple-design` (gesture physics) |
+| “What should animate?” | Craft defaults + frequency gate (no keyboard / high-frequency paths) | — | Host skill ID `find-animation-opportunities` |
+| Whole-app motion audit | Craft + a11y baselines applied | — | Host skill ID `improve-animations` (read-only plans) |
+| Motion naming / vocabulary | Prefer plain craft language in foundation skills | — | Host skill ID `animation-vocabulary` |
 
 Also see [competing-macos-skills-plan.md](competing-macos-skills-plan.md).
 
@@ -41,12 +41,17 @@ Also see [competing-macos-skills-plan.md](competing-macos-skills-plan.md).
 4. **Keep spatial origin** when presentation origin matters; prefer system transitions over multi-second choreography.
 5. **Stop**, or go host-depth: gesture physics (velocity handoff, projection, rubber-banding) → `apple-design`; whole-app opportunity/audit process → `find-animation-opportunities` / `improve-animations` (read-only plans). Do not import glossaries, spring tables, or duration budgets into foundation skills.
 
-## Host pointers (paths only — not catalog entries)
+## Host depth discovery (IDs only — not catalog entries)
 
-These are **not** installed by `./Scripts/install-skills.sh` and are not in `manifest.json`:
+These skill IDs are **not** installed by `./Scripts/install-skills.sh` and are not in `manifest.json`. Resolve them through the **active host’s discovery path**, not a hard-coded third-party directory:
 
-- `~/.agents/skills/apple-design/SKILL.md`
-- `~/.agents/skills/find-animation-opportunities/SKILL.md`
-- `~/.agents/skills/improve-animations/SKILL.md`
-- `~/.agents/skills/animation-vocabulary/SKILL.md`
-- `~/.agents/skills/liquid-glass-design/SKILL.md`
+| Skill ID | Typical depth role |
+| --- | --- |
+| `apple-design` | Gesture physics, fluid motion depth |
+| `find-animation-opportunities` | Opportunity map for missing motion |
+| `improve-animations` | Read-only whole-app motion audit plans |
+| `animation-vocabulary` | Motion naming / vocabulary |
+| `liquid-glass-design` | Liquid Glass API patterns after foundation restraint |
+
+**Codex (supported):** discover under `${CODEX_HOME:-$HOME/.codex}/skills/<skill-id>/` (or invoke `$skill-id` when the host surfaces installed skills).  
+**Other hosts:** use that host’s documented skill root; do not assume `~/.agents/skills` or any path outside the verified Codex contract. If the skill is not discovered, stay on foundation craft and report the missing host skill instead of inventing a path.

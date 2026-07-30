@@ -33,6 +33,7 @@ Fill every `<…>` placeholder from checked-in project configuration. Do not inv
 | Destinations | exact `simulatorId`; macOS arch or `n/a` |
 | Formatter / linter / checks | repo-native commands or `not configured` |
 | Targeted and full tests | repo-native or MCP test scope |
+| E2E / Maestro contract | `configured` with real values, or `not configured` / `n/a` for non-iOS or non-Maestro repos |
 | Apple verification policy | XcodeBuildMCP CLI and raw `xcodebuild`/`xcrun`/`simctl`: keep `require-approval` unless you authorize `allowed` or `denied` |
 
 Scoped `AGENTS.md` files in subdirectories refine this root contract for their trees; keep them when present.
@@ -79,35 +80,48 @@ this contract for files in their scope.
 
 ## E2E test contract
 
-Document the deterministic app contract before relying on Maestro journeys. Keep
-secrets out of this file, flow files, fixtures, and artifacts.
+Optional. Fill this section only when the project uses Maestro (or another UI
+E2E tool) for iOS simulator journeys. For macOS-only apps, visionOS/watchOS
+targets, Swift packages, or repos without UI E2E, set:
 
-- App identifier (bundle ID): `<BUNDLE_IDENTIFIER>`
-- `.maestro/` location and naming: `<REPOSITORY_ROOT_OR_AGREED_PATH>`; name
-  flows `<JOURNEY>.yaml` and reusable subflows `<SUBFLOW>.yaml` using
-  `<NAMING_OR_TAGGING_CONVENTION>`
-- Exact simulator/configuration: simulator ID `<EXACT_SIMULATOR_ID>`, scheme
-  `<SCHEME>`, and build configuration `<CONFIGURATION>`; use the same
+- Maestro / UI E2E: `not configured` (or `n/a`)
+
+and leave the remaining fields as `n/a`. Do not invent a simulator ID, `.maestro/`
+layout, or onboarding flow when E2E is not in scope. Agents must not treat an
+unconfigured contract as an iOS Maestro destination.
+
+When Maestro/iOS E2E **is** in use, document the deterministic app contract
+before relying on journeys. Keep secrets out of this file, flow files, fixtures,
+and artifacts.
+
+- Maestro / UI E2E: `<CONFIGURED_OR_NOT_CONFIGURED_OR_N_A>`
+- App identifier (bundle ID): `<BUNDLE_IDENTIFIER_OR_N_A>`
+- `.maestro/` location and naming: `<REPOSITORY_ROOT_OR_AGREED_PATH_OR_N_A>`;
+  name flows `<JOURNEY>.yaml` and reusable subflows `<SUBFLOW>.yaml` using
+  `<NAMING_OR_TAGGING_CONVENTION_OR_N_A>`
+- Exact simulator/configuration: simulator ID
+  `<EXACT_SIMULATOR_ID_OR_N_A>`, scheme `<SCHEME_OR_N_A>`, and build
+  configuration `<CONFIGURATION_OR_N_A>`; when configured, use the same
   destination and configuration for XcodeBuildMCP, Maestro MCP, and CLI runs
-- Launch arguments/environment: `<LAUNCH_ARGUMENTS>` and
-  `<ENVIRONMENT_VARIABLES_OR_CONFIG_SOURCE>`; inject secrets locally or in CI
-  rather than committing them
-- Reset and seed strategy: `<RESET_OR_FRESH_INSTALL_PROCEDURE>` and
-  `<SEED_COMMAND_OR_FIXTURE>`; state what persists across relaunch and when app
-  data, keychain, permissions, or backend state must be reset
-- Onboarding state: `<FIRST_RUN_AND_COMPLETED_STATE>`; specify how tests enter
-  each state and whether onboarding is required, conditional, or a dedicated
-  subflow
-- Fixtures and test accounts: `<DETERMINISTIC_FIXTURE_SOURCE>` and
-  `<NON_PRODUCTION_TEST_ACCOUNT_NAMES>`; define ownership, cleanup, and
+- Launch arguments/environment: `<LAUNCH_ARGUMENTS_OR_N_A>` and
+  `<ENVIRONMENT_VARIABLES_OR_CONFIG_SOURCE_OR_N_A>`; inject secrets locally or
+  in CI rather than committing them
+- Reset and seed strategy: `<RESET_OR_FRESH_INSTALL_PROCEDURE_OR_N_A>` and
+  `<SEED_COMMAND_OR_FIXTURE_OR_N_A>`; state what persists across relaunch and
+  when app data, keychain, permissions, or backend state must be reset
+- Onboarding state: `<FIRST_RUN_AND_COMPLETED_STATE_OR_N_A>`; specify how tests
+  enter each state and whether onboarding is required, conditional, or a
+  dedicated subflow
+- Fixtures and test accounts: `<DETERMINISTIC_FIXTURE_SOURCE_OR_N_A>` and
+  `<NON_PRODUCTION_TEST_ACCOUNT_NAMES_OR_N_A>`; define ownership, cleanup, and
   account reset behavior
-- Deep links: `<SUPPORTED_DEEP_LINKS_AND_INVOCATION>`
-- Artifacts: `<DEBUG_OUTPUT_SCREENSHOT_HIERARCHY_VIDEO_DESTINATION>`; preserve
-  failure artifacts while redacting secrets and private user data
-- Accessibility-ID conventions: use stable
+- Deep links: `<SUPPORTED_DEEP_LINKS_AND_INVOCATION_OR_N_A>`
+- Artifacts: `<DEBUG_OUTPUT_SCREENSHOT_HIERARCHY_VIDEO_DESTINATION_OR_N_A>`;
+  preserve failure artifacts while redacting secrets and private user data
+- Accessibility-ID conventions: when E2E is configured, use stable
   `<ACCESSIBILITY_ID_PREFIX>.<SEMANTIC_NAME>` selectors on actionable elements,
   keep human-readable accessibility labels, and document any native-control
-  exception
+  exception; otherwise `n/a`
 
 ## Apple verification policy
 
