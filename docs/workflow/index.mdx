@@ -46,6 +46,10 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
    - Active project/workspace, scheme, configuration, exact simulator/device, what ran, and residual risk; report blocked when no authorized verification path exists.
    - Which skills were applied and which to run next.
 
+## Multi-service / LAN API mesh apps
+
+For apps that talk to several independent HTTP APIs (Keychain secrets, local/remote endpoints, phased read-only clients, `FeatureState`, inspection routes), follow the reusable patterns in [Multi-service iOS app patterns](/workflow/multi-service-ios-app). Keep product-specific severity lists and paste prompts in the consumer app’s `Documentation/`.
+
 ## Do not
 
 | Anti-pattern | Instead |

@@ -10,6 +10,6 @@ export default defineMeta({
     "skill-routing",
     "consumer-workspace",
     "agents-md-template",
+    "multi-service-ios-app",
   ],
 });
-
