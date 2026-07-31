@@ -45,7 +45,10 @@ configured. For a project without iOS/iPadOS UI, set each value to `n/a`.
 
 Optional. Fill this section only when the project uses a UI E2E tool for user
 journeys. This may be Maestro, XCUITest, Appium, or another configured tool.
-For a consumer without UI E2E—whether it is macOS-only, visionOS/watchOS, a
+The contract is either `configured with the selected tool and real values` or
+`not configured / n/a when UI E2E is not in scope`.
+
+For a project without UI E2E—whether it is macOS-only, visionOS/watchOS, a
 Swift package, or another target—set:
 
 - UI E2E tool: `not configured` (or `n/a`)
@@ -56,20 +59,25 @@ Agents must not treat an unconfigured contract as an executable UI E2E
 destination.
 
 When UI E2E **is** in use, document the deterministic app contract before
-relying on journeys. Keep secrets out of this file, flow files, fixtures, and
-artifacts.
+relying on journeys. Use fields that match the selected runner; do not assume a
+specific directory, protocol, device type, identifier format, or onboarding
+mechanism. Keep secrets out of this file, flow files, fixtures, and artifacts.
 
 - UI E2E tool: `<E2E_TOOL_NAME_OR_NOT_CONFIGURED_OR_N_A>`
-- App identifier (bundle ID): `<BUNDLE_IDENTIFIER_OR_N_A>`
+- UI E2E commands: `<E2E_RUNNER_COMMANDS_OR_N_A>`
+- Application identifier (bundle ID, package ID, or other runner identifier):
+  `<APPLICATION_IDENTIFIER_OR_N_A>`
 - Test location and naming: `<TOOL_SPECIFIC_ROOT_OR_AGREED_PATH_OR_N_A>`;
   document journeys/tests `<JOURNEY_OR_TEST_NAME>` and reusable
   subflows/helpers `<SUBFLOW_OR_HELPER_NAME>` using
   `<NAMING_OR_TAGGING_CONVENTION_OR_N_A>`
-- Exact destination/configuration: destination ID
-  `<EXACT_DEVICE_OR_SIMULATOR_ID_OR_N_A>`, scheme `<SCHEME_OR_N_A>`, and build
-  configuration `<CONFIGURATION_OR_N_A>`; when configured, use the same
-  destination and configuration for XcodeBuildMCP and the configured UI E2E
-  runner
+- Deterministic routes or states/deep links: `<E2E_ROUTES_STATES_DEEP_LINKS_OR_N_A>`
+- Risk-based evidence matrix: `<E2E_EVIDENCE_MATRIX_OR_N_A>`; align it with the
+  UI inspection contract when the selected runner supports the same scenarios
+- Exact destination/configuration when required by the selected runner:
+  `<E2E_DESTINATION_OR_N_A>`, scheme `<SCHEME_OR_N_A>`, and build
+  configuration `<CONFIGURATION_OR_N_A>`; reuse project-defined values across
+  build, launch, and E2E commands when applicable
 - E2E-only launch arguments/environment beyond the UI inspection contract:
   `<LAUNCH_ARGUMENTS_OR_N_A>` and `<ENVIRONMENT_VARIABLES_OR_CONFIG_SOURCE_OR_N_A>`;
   inject secrets locally or in CI rather than committing them
@@ -82,8 +90,7 @@ artifacts.
 - Fixtures and test accounts: `<DETERMINISTIC_FIXTURE_SOURCE_OR_N_A>` and
   `<NON_PRODUCTION_TEST_ACCOUNT_NAMES_OR_N_A>`; define ownership, cleanup, and
   account reset behavior
-- Deep links: `<SUPPORTED_DEEP_LINKS_AND_INVOCATION_OR_N_A>`
-- E2E artifacts: use the UI inspection contract location and preserve failure
+- E2E artifact location: `<E2E_ARTIFACT_LOCATION_OR_N_A>`; preserve failure
   artifacts while redacting secrets and private user data
 - Accessibility-ID conventions: when E2E is configured, use stable
   `<ACCESSIBILITY_ID_PREFIX>.<SEMANTIC_NAME>` selectors on actionable elements,

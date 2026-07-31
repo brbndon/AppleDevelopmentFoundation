@@ -5,17 +5,19 @@ description: Reusable architecture and agent-workflow patterns for device-to-man
 
 # Multi-service iOS app patterns
 
-Patterns for **device → many independent HTTP APIs** apps (dashboards, admin clients, multi-service workflows). Neutral and reusable: no product branding, no private hosts, and no secrets.
+Patterns for **device → many independent HTTP APIs** apps (dashboards, service
+clients, and multi-service workflows). Keep examples neutral and reusable:
+no branded or environment-specific references, and no secrets.
 
 Designed for dashboards, service clients, and independent service peers. Apply in
-the **consumer workspace**, not this foundation’s `archive/`.
+the active application workspace, not this foundation’s `archive/`.
 
 ## When to use
 
 - App talks to **2+ services**, each with its own base URL and credential.
 - Prefer **direct device→service** connections for the first release.
 - Secrets must stay **off disk-in-UserDefaults** and out of fixtures/logs.
-- Agents will implement integrations and UI; humans set product phase boundaries.
+- Agents will implement integrations and UI; teams set phase boundaries.
 
 ## Phase slice
 
@@ -81,7 +83,8 @@ sensitive data.
 ## Transport policy
 
 - Prefer **HTTPS** for remote endpoints.  
-- Allow **user-explicit plain HTTP** only where product requires LAN (document which endpoint labels allow it).  
+- Allow **user-explicit plain HTTP** only where a documented local-network
+  requirement exists (document which endpoint labels allow it).
 - ATS: narrow exception (`NSAllowsLocalNetworking` or equivalent)—**not** `NSAllowsArbitraryLoads`.  
 - **Never** disable certificate validation to “make it work.”
 - Normalize endpoints with URL components before storing or requesting them:
@@ -160,7 +163,8 @@ Every multi-step integration handoff should include:
 1. **Do not redo** — already-fixed items (regression surface only).  
 2. **Severity / priority bands** — P0 trust → P1 next client → P2 auth → P3 peers.  
 3. **File map** — exact paths.  
-4. **API truth doc** — prefer a fact-checked agent guide over marketing product specs for endpoints.  
+4. **API truth doc** — prefer a fact-checked agent guide over marketing copy or
+   unstable public specs for endpoints.
 5. **Non-goals** — no push, no secrets in fixtures, no write APIs this phase.  
 6. **Paste prompt** — zero-context instruction for a fresh agent.  
 7. **Verification gate** — scheme, `test_sim` parallel off, inspection screenshots when UI changes.
@@ -193,20 +197,20 @@ XcodeBuildMCP: `session_show_defaults` once per session; `test_sim` with **paral
 4. DTO → domain mapping.  
 5. Register in factory.  
 6. Fixtures + decode/auth tests.  
-7. Icon asset (template or app-provided mark per product policy).
+7. Icon asset (template or app-provided mark per application policy).
 8. No live network in CI.
 
 ## Distribution and privacy note
 
 If this pattern ships publicly, document endpoint security, local-network usage,
-and data handling in the product and privacy plan. Keep product-specific policy
-out of fixtures.
+and data handling in the application and privacy plan. Keep
+application-specific policy out of fixtures.
 
 ## Related foundation pages
 
 - [Session workflow](/workflow) — full agent loop  
 - [Task recipes](/workflow/task-recipes) — scenario shortcuts  
-- [AGENTS.md template](/workflow/agents-md-template) — consumer always-on rules  
+- [AGENTS.md template](/workflow/agents-md-template) — project-local always-on rules
 - [XcodeBuildMCP](/tools/xcodebuildmcp) — verification ladder  
 - [Security defaults](/) — never log secrets (see always-on `AGENTS.md` in this repo)
 
@@ -222,4 +226,5 @@ out of fixtures.
 
 ---
 
-*Keep this page product-neutral. App-specific severity lists and paste prompts live in the consumer app’s `Documentation/`.*
+*Keep this page application-neutral. Application-specific severity lists and
+paste prompts live in the active workspace’s `Documentation/`.*

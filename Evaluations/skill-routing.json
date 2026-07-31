@@ -1132,7 +1132,7 @@
         },
         {
           "id": "testing-use-ios-ui-evidence-contract",
-          "prompt": "Verify a completed user-visible iOS/iPadOS UI change with the consumer's UI inspection contract: run a launch smoke, capture and visually inspect a screenshot for the primary affected route, then capture snapshot_ui and report any manual-only checks.",
+          "prompt": "Verify a completed user-visible iOS/iPadOS UI change with the consumer's UI inspection contract: run a launch smoke, capture and visually inspect a screenshot for the affected route, then capture snapshot_ui and report any manual-only checks.",
           "expected": {
             "skill_ids": [
               "swift-testing-verification"

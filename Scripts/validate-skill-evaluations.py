@@ -81,6 +81,10 @@ BOUNDARY_REQUIREMENTS = {
         "verification_category": "installer-behavior",
         "stop_condition": "preserve-conflict",
     },
+    "user-visible-ui-verification-evidence": {
+        "verification_category": "apple-ui-e2e",
+        "stop_condition": "none",
+    },
     "non-ui-verification-no-ui-evidence": {
         "verification_category": "apple-code",
         "stop_condition": "none",
@@ -186,6 +190,31 @@ def validate_ui_evidence(value: Any, location: str) -> None:
             raise EvaluationError(f"{location}.{field} must be a unique array")
         if not all(action in UI_EVIDENCE_ACTIONS for action in actions):
             raise EvaluationError(f"{location}.{field} contains an invalid action")
+    required = set(evidence["required_actions"])
+    forbidden = set(evidence["forbidden_actions"])
+    if required & forbidden:
+        raise EvaluationError(f"{location} cannot require and forbid the same action")
+    if evidence["scope"] == "ui-inspection-contract":
+        missing = sorted(
+            {
+                "launch-smoke",
+                "screenshot",
+                "visual-inspection",
+                "snapshot-ui",
+                "manual-only-checks",
+            }
+            - required
+        )
+        if missing:
+            raise EvaluationError(
+                f"{location} is missing UI inspection actions: {', '.join(missing)}"
+            )
+    elif evidence["scope"] == "focused-code-tests-only":
+        if required != {"focused-code-tests"} or forbidden != UI_EVIDENCE_FORBIDDEN_ACTIONS:
+            raise EvaluationError(
+                f"{location} focused-code-tests-only must require focused code tests "
+                "and forbid all UI evidence actions"
+            )
 
 
 def validate_expectation(value: Any, location: str, skill_ids: set[str]) -> None:
