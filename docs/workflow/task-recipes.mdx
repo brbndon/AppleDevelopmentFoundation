@@ -58,21 +58,23 @@ Details: [Bootstrap](/skills/bootstrap).
 
 Read each skill’s `SKILL.md` for checklists. Bootstrap chain context: [Bootstrap](/skills/bootstrap).
 
-### Liquid orb full-surface loading mark
+### Liquid orb loading mark (full-surface + inline)
 
-Proven pattern (Harborlight). Continuous 3×3 ring + liquid-glass **orb** center (no brand glyph). Prefer harmonics over keyframe holds so the mark never “pauses.”
+Proven pattern (Harborlight). Continuous 3×3 ring + liquid-glass **orb** (no brand glyph). Harmonics, not keyframe holds. Soft glow must **not** clip to a hard square.
 
 | Step | Action |
 | --- | --- |
-| Template | Copy from repo `Templates/LiquidOrbLoader/` (`README.md` + drop-in `DotMatrixLoader.swift`) |
-| Integrate | Drop into consumer `Components/`; map `tint` / spacing to app tokens; use `FeatureLoadingView` for screen-level `loading`, `DotMatrixLoader.compact` for cards |
-| Replace | Stock `ContentUnavailableView` / `ProgressView()` **full-screen** loading only — keep determinate `ProgressView(value:)` and poster-tile spinners |
-| A11y | Reduce Motion freezes via `TimelineView`; label `"Loading"` on the mark; combined title+detail on the surface |
-| Tools | XcodeBuildMCP build + optional inspection screenshot of the loading route |
-| Verify | Light/dark contrast; no ring/orb overlap at peak scale; Reduce Motion freeze; VoiceOver not treating canvas as an image |
-| Do not | Animate keyboard chrome; put private hostnames in detail copy; expand foundation `archive/Sources/` for this drop-in |
+| Template | `Templates/LiquidOrbLoader/` — `README.md` (wiring + anti-box checklist) + drop-in `DotMatrixLoader.swift` |
+| Full-screen | `FeatureLoadingView` for `FeatureState.loading`; put loader **outside** `ScrollView` so it fills the viewport |
+| Inline | `InlineLoadingRow` / `DotMatrixLoader.compact` / `.micro` for forms, detail panels, poster tiles |
+| Replace | Indeterminate `ProgressView()` busy chrome only — keep determinate `ProgressView(value:)` |
+| Glow | Oversized canvas (`layoutScale` ≈ 2.6); bake squash into path; no `scaleEffect` + tight frame; radial mask + transparent gradient stops |
+| A11y | Reduce Motion freezes via `TimelineView`; mark label `"Loading"`; surface combines title+detail |
+| Tools | XcodeBuildMCP build + optional loading inspection screenshot |
+| Verify | No rectangular glow box; light/dark; ring/orb clearance; Reduce Motion freeze; loader not collapsed in scroll |
+| Do not | Keyboard chrome; private hostnames in detail; expand foundation `archive/Sources/` for this drop-in |
 
-Proven consumer wiring: Harborlight `FeatureStateView` + Services first load + Settings developer preview.
+Proven consumer: Harborlight Home/Library/Calendar/Downloads/Services + forms/details/posters. Full notes: `Templates/LiquidOrbLoader/README.md`.
 
 ### Fix a bug
 

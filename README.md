@@ -37,7 +37,7 @@ See [Agent host support](docs/reference/host-support.mdx).
 | `.agents/skills/` | Live reusable skills |
 | `Scripts/` | Live catalog, installer, consumer-guidance, and verification tools |
 | `docs/`, `MCP.md` | Live agent playbook and command reference |
-| `Templates/` | Skill and consumer-project templates (includes `AppMarketingSite/`) |
+| `Templates/` | Skill and consumer-project templates (includes `AppMarketingSite/`, `LiquidOrbLoader/`) |
 | `archive/` | Preserved exploratory package, demos, old website, historical documentation, and package tooling |
 
 ## Install skills

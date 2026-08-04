@@ -2,21 +2,23 @@ import SwiftUI
 
 // MARK: - Drop-in template (portable)
 //
-// Source of truth for the pattern: Harborlight DotMatrixLoader + FeatureLoadingView.
-// Defaults use system colors so this file has no app-specific design-system dependency.
-// Map `tint` / `idleTint` to your tokens when integrating.
+// Source of truth: Harborlight DotMatrixLoader + FeatureLoadingView + InlineLoadingRow.
+// Soft-glow orb (no hard square clip). Defaults use system colors — map tint to app tokens.
+// See Templates/LiquidOrbLoader/README.md for layout, anti-box checklist, and wiring.
+//
 
 /// 3×3 dot-matrix loading animation.
 ///
-/// Eight dots sweep a smooth highlight around the ring. The orb center is a
-/// continuous liquid-glass morph driven by overlapping harmonics (no keyframe holds).
-public struct DotMatrixLoader: View {
-    public enum Center {
+/// Eight dots sweep a smooth highlight around the ring while the center plays
+/// a distinct role. The ring highlight is a continuous cosine wave; the orb
+/// center is a continuous liquid-glass morph (no discrete keyframe holds).
+struct DotMatrixLoader: View {
+    enum Center {
         case plain
         case pulse
         case symbol(String)
         case emoji(String)
-        /// Continuous liquid-glass orb (recommended full-surface loading mark).
+        /// Continuous liquid-glass orb (primary Harborlight loading mark).
         case orb
     }
 
@@ -27,16 +29,16 @@ public struct DotMatrixLoader: View {
         .init(-1, 0)
     ]
 
-    public let center: Center
-    public var dotSize: CGFloat
-    public var spacing: CGFloat
-    public var period: TimeInterval
-    public var tint: Color
-    public var idleTint: Color
+    let center: Center
+    var dotSize: CGFloat
+    var spacing: CGFloat
+    var period: TimeInterval
+    var tint: Color
+    var idleTint: Color
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    public init(
+    init(
         center: Center = .pulse,
         dotSize: CGFloat = 12,
         spacing: CGFloat = 10,
@@ -52,16 +54,22 @@ public struct DotMatrixLoader: View {
         self.idleTint = idleTint
     }
 
-    /// Full-surface loading mark (generous air around the orb).
-    public static var feature: DotMatrixLoader {
+    /// Recommended full-surface loading mark (generous air around the orb).
+    static var feature: DotMatrixLoader {
         DotMatrixLoader(center: .orb, dotSize: 11, spacing: 28, period: 2.8)
     }
 
-    /// Compact mark for cards and inline chrome.
-    public static var compact: DotMatrixLoader {
-        DotMatrixLoader(center: .orb, dotSize: 8, spacing: 16, period: 2.8)
+    /// Compact mark for cards, forms, and detail sections.
+    static var compact: DotMatrixLoader {
+        DotMatrixLoader(center: .orb, dotSize: 7, spacing: 14, period: 2.8)
     }
 
+    /// Tiny mark for poster tiles and dense chrome.
+    static var micro: DotMatrixLoader {
+        DotMatrixLoader(center: .orb, dotSize: 5, spacing: 9, period: 2.8)
+    }
+
+    /// Ring step. Orb mode pushes the ring out so the liquid mark has room.
     private var step: CGFloat {
         switch center {
         case .orb: max(dotSize + spacing, orbSize * 0.82)
@@ -69,9 +77,10 @@ public struct DotMatrixLoader: View {
         }
     }
 
+    /// Scales with `dotSize` so `.feature` / `.compact` / `.micro` stay proportional.
     private var orbSize: CGFloat {
         switch center {
-        case .orb: max(dotSize * 4.4, 58)
+        case .orb: max(dotSize * 5.2, 24)
         default: dotSize
         }
     }
@@ -86,12 +95,13 @@ public struct DotMatrixLoader: View {
     private var bounds: CGFloat {
         let ringExtent = step * 2 + ringDotSize
         switch center {
-        case .orb: return max(ringExtent, orbSize * 1.35)
+        // Canvas is oversized for soft glow falloff — must not clip to a square.
+        case .orb: return max(ringExtent, orbSize * LiquidOrbMorph.layoutScale)
         default: return ringExtent
         }
     }
 
-    public var body: some View {
+    var body: some View {
         TimelineView(.animation(minimumInterval: 1 / 60, paused: reduceMotion)) { context in
             let time = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate / period
             ZStack {
@@ -157,23 +167,13 @@ public struct DotMatrixLoader: View {
 
 // MARK: - Feature loading surface
 
-/// Full-surface loading chrome: liquid orb + title + detail.
-public struct FeatureLoadingView: View {
-    public var title: String
-    public var detail: String
-    public var compact: Bool
+/// Full-surface loading chrome used by `FeatureStateView` and the developer preview.
+struct FeatureLoadingView: View {
+    var title: String = "Loading"
+    var detail: String = "Refreshing your services."
+    var compact: Bool = false
 
-    public init(
-        title: String = "Loading",
-        detail: String = "Refreshing…",
-        compact: Bool = false
-    ) {
-        self.title = title
-        self.detail = detail
-        self.compact = compact
-    }
-
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 24) {
             if compact {
                 DotMatrixLoader.compact
@@ -185,73 +185,124 @@ public struct FeatureLoadingView: View {
                     .font(.title3.weight(.semibold))
                 Text(detail)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondary)
                     .multilineTextAlignment(.center)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title). \(detail)")
+        .accessibilityIdentifier("feature.loading")
+    }
+}
+
+/// Inline loading row for forms, detail panels, and banners (compact orb + message).
+struct InlineLoadingRow: View {
+    var message: String
+    var micro: Bool = false
+
+    var body: some View {
+        HStack(spacing: 16) {
+            if micro {
+                DotMatrixLoader.micro
+            } else {
+                DotMatrixLoader.compact
+            }
+            Text(message)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(Color.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(message)
     }
 }
 
 // MARK: - Continuous liquid orb
 
+/// Always-moving liquid-glass orb driven by overlapping harmonics.
+///
+/// Glow is drawn on an oversized canvas and never forced through a tight
+/// square frame (that was the hard box edge). Stretch is baked into the path
+/// instead of `scaleEffect`, which also clips.
 private struct LiquidOrbMorph: View {
     let time: Double
     let size: CGFloat
 
-    private var canvasSize: CGFloat { size * 1.55 }
+    /// Layout size / visual body size — room for blur falloff past the orb edge.
+    static let layoutScale: CGFloat = 2.6
+
+    private var canvasSize: CGFloat { size * Self.layoutScale }
 
     var body: some View {
         let field = LiquidField.sample(at: time)
+        let side = canvasSize
         Canvas { context, canvasSize in
             let center = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
-            let logical = min(canvasSize.width, canvasSize.height) / 1.55
-            let baseR = logical * 0.36 * field.scale
+            // Body radius relative to the *logical* orb, not the padded canvas.
+            let baseR = size * 0.36 * field.scale
             let blob = softBlobPath(center: center, baseRadius: baseR, field: field)
 
+            // Soft ambient halo — large radial fill that fades to clear (no hard edge).
+            let haloR = baseR * 2.25
+            let halo = Path(ellipseIn: CGRect(
+                x: center.x - haloR,
+                y: center.y - haloR,
+                width: haloR * 2,
+                height: haloR * 2
+            ))
+            context.fill(
+                halo,
+                with: .radialGradient(
+                    Gradient(stops: [
+                        .init(color: Color(red: 0.45, green: 0.75, blue: 1.0).opacity(0.20 + 0.16 * field.glow), location: 0),
+                        .init(color: Color(red: 0.40, green: 0.70, blue: 1.0).opacity(0.08), location: 0.42),
+                        .init(color: .clear, location: 1)
+                    ]),
+                    center: center,
+                    startRadius: 0,
+                    endRadius: haloR
+                )
+            )
+
+            // Blurred body glow — kept moderate so it dies out before the canvas edge.
             var glow = context
-            glow.opacity = 0.28 + 0.36 * field.glow
-            glow.addFilter(.blur(radius: baseR * (0.55 + 0.15 * field.glow)))
-            glow.fill(blob, with: .color(Color(red: 0.40, green: 0.72, blue: 1.0)))
+            glow.opacity = 0.28 + 0.30 * field.glow
+            glow.addFilter(.blur(radius: baseR * 0.55))
+            glow.fill(blob, with: .color(Color(red: 0.42, green: 0.74, blue: 1.0)))
 
             var bloom = context
-            bloom.opacity = 0.16 + 0.20 * field.glow
-            bloom.addFilter(.blur(radius: baseR * 0.85))
-            bloom.fill(blob, with: .color(Color(red: 0.55, green: 0.85, blue: 1.0)))
+            bloom.opacity = 0.12 + 0.16 * field.glow
+            bloom.addFilter(.blur(radius: baseR * 0.9))
+            bloom.fill(blob, with: .color(Color(red: 0.55, green: 0.86, blue: 1.0)))
 
+            // Liquid body — gradient ends transparent so the rim doesn't print a hard cut.
             context.fill(
                 blob,
                 with: .radialGradient(
                     Gradient(stops: [
                         .init(color: Color(red: 0.97, green: 0.99, blue: 1.0).opacity(0.96), location: 0),
-                        .init(color: Color(red: 0.62, green: 0.86, blue: 1.0).opacity(0.78), location: 0.34),
-                        .init(color: Color(red: 0.36, green: 0.62, blue: 0.98).opacity(0.52), location: 0.74),
-                        .init(color: Color(red: 0.28, green: 0.50, blue: 0.96).opacity(0.22), location: 1)
+                        .init(color: Color(red: 0.62, green: 0.86, blue: 1.0).opacity(0.78), location: 0.32),
+                        .init(color: Color(red: 0.36, green: 0.62, blue: 0.98).opacity(0.45), location: 0.66),
+                        .init(color: Color(red: 0.30, green: 0.55, blue: 0.96).opacity(0.10), location: 0.88),
+                        .init(color: .clear, location: 1)
                     ]),
                     center: center,
                     startRadius: 0,
-                    endRadius: baseR * 1.5
+                    endRadius: baseR * 1.12
                 )
             )
 
+            // Very soft rim
             context.stroke(
                 blob,
-                with: .linearGradient(
-                    Gradient(colors: [
-                        Color.white.opacity(0.65),
-                        Color.white.opacity(0.12),
-                        Color(red: 0.55, green: 0.82, blue: 1.0).opacity(0.40)
-                    ]),
-                    startPoint: CGPoint(x: center.x - baseR, y: center.y - baseR),
-                    endPoint: CGPoint(x: center.x + baseR, y: center.y + baseR)
-                ),
-                lineWidth: max(0.9, baseR * 0.05)
+                with: .color(Color.white.opacity(0.22 + 0.14 * field.glow)),
+                lineWidth: max(0.7, baseR * 0.035)
             )
 
-            let hx = center.x + CGFloat(cos(field.highlightAngle)) * baseR * 0.24
-            let hy = center.y + CGFloat(sin(field.highlightAngle)) * baseR * 0.18
+            let hx = center.x + CGFloat(cos(field.highlightAngle)) * baseR * 0.24 * field.squashX
+            let hy = center.y + CGFloat(sin(field.highlightAngle)) * baseR * 0.18 * field.squashY
             let highlightR = baseR * (0.30 + 0.08 * field.glow)
             let highlight = Path(ellipseIn: CGRect(
                 x: hx - highlightR,
@@ -295,9 +346,23 @@ private struct LiquidOrbMorph: View {
                 )
             )
         }
-        .frame(width: canvasSize, height: canvasSize)
-        .scaleEffect(x: field.squashX, y: field.squashY)
-        .frame(width: size, height: size)
+        .frame(width: side, height: side)
+        // Feather any residual canvas-edge hardness so glow never reads as a box.
+        .mask(
+            RadialGradient(
+                colors: [
+                    .white,
+                    .white,
+                    .white.opacity(0.85),
+                    .white.opacity(0.35),
+                    .clear
+                ],
+                center: .center,
+                startRadius: 0,
+                endRadius: side * 0.50
+            )
+        )
+        .allowsHitTesting(false)
     }
 
     private func softBlobPath(center: CGPoint, baseRadius: CGFloat, field: LiquidField) -> Path {
@@ -307,9 +372,10 @@ private struct LiquidOrbMorph: View {
             let t = Double(i) / Double(steps)
             let theta = t * 2 * Double.pi
             let r = baseRadius * CGFloat(field.radius(at: theta))
+            // Bake squash into the path (avoids scaleEffect clipping).
             let point = CGPoint(
-                x: center.x + r * CGFloat(cos(theta)),
-                y: center.y + r * CGFloat(sin(theta))
+                x: center.x + r * CGFloat(cos(theta)) * field.squashX,
+                y: center.y + r * CGFloat(sin(theta)) * field.squashY
             )
             if i == 0 {
                 path.move(to: point)
@@ -322,6 +388,7 @@ private struct LiquidOrbMorph: View {
     }
 }
 
+/// Continuous liquid field — every channel is a sum of sines, so nothing holds.
 private struct LiquidField {
     var lobe: Double
     var lobePhase: Double
@@ -384,4 +451,13 @@ private struct LiquidField {
 #Preview("Orb mark") {
     DotMatrixLoader.feature
         .padding()
+}
+
+#Preview("Compact + inline") {
+    VStack(spacing: 24) {
+        DotMatrixLoader.compact
+        InlineLoadingRow(message: "Searching…")
+        InlineLoadingRow(message: "Loading posters…", micro: true)
+    }
+    .padding()
 }
