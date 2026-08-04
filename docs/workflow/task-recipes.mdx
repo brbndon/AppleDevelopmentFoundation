@@ -58,6 +58,22 @@ Details: [Bootstrap](/skills/bootstrap).
 
 Read each skill’s `SKILL.md` for checklists. Bootstrap chain context: [Bootstrap](/skills/bootstrap).
 
+### Liquid orb full-surface loading mark
+
+Proven pattern (Harborlight). Continuous 3×3 ring + liquid-glass **orb** center (no brand glyph). Prefer harmonics over keyframe holds so the mark never “pauses.”
+
+| Step | Action |
+| --- | --- |
+| Template | Copy from repo `Templates/LiquidOrbLoader/` (`README.md` + drop-in `DotMatrixLoader.swift`) |
+| Integrate | Drop into consumer `Components/`; map `tint` / spacing to app tokens; use `FeatureLoadingView` for screen-level `loading`, `DotMatrixLoader.compact` for cards |
+| Replace | Stock `ContentUnavailableView` / `ProgressView()` **full-screen** loading only — keep determinate `ProgressView(value:)` and poster-tile spinners |
+| A11y | Reduce Motion freezes via `TimelineView`; label `"Loading"` on the mark; combined title+detail on the surface |
+| Tools | XcodeBuildMCP build + optional inspection screenshot of the loading route |
+| Verify | Light/dark contrast; no ring/orb overlap at peak scale; Reduce Motion freeze; VoiceOver not treating canvas as an image |
+| Do not | Animate keyboard chrome; put private hostnames in detail copy; expand foundation `archive/Sources/` for this drop-in |
+
+Proven consumer wiring: Harborlight `FeatureStateView` + Services first load + Settings developer preview.
+
 ### Fix a bug
 
 | Step | Action |
