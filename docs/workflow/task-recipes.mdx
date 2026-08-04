@@ -65,10 +65,11 @@ Proven pattern (Harborlight). Continuous 3×3 ring + liquid-glass **orb** (no br
 | Step | Action |
 | --- | --- |
 | Template | `Templates/LiquidOrbLoader/` — `README.md` (wiring + anti-box checklist) + drop-in `DotMatrixLoader.swift` |
-| Full-screen | `FeatureLoadingView` for `FeatureState.loading`; put loader **outside** `ScrollView` so it fills the viewport |
+| Full-screen | `FeatureLoadingView` for `FeatureState.loading` with **screen-specific** detail; put loader **outside** `ScrollView` (tabs, Services, release sheets) |
 | Inline | `InlineLoadingRow` / `DotMatrixLoader.compact` / `.micro` for forms, detail panels, poster tiles |
 | Replace | Indeterminate `ProgressView()` busy chrome only — keep determinate `ProgressView(value:)` |
-| Glow | Oversized canvas (`layoutScale` ≈ 2.6); bake squash into path; no `scaleEffect` + tight frame; radial mask + transparent gradient stops |
+| Glow | Oversized canvas (`layoutScale` ≈ 2.6; micro ≈ 2.0); bake squash into path; no `scaleEffect` + tight frame; radial mask + transparent gradient stops |
+| Micro cost | Economy path (30 Hz, fewer path steps, single blur) when many tiles can load together |
 | A11y | Reduce Motion freezes via `TimelineView`; mark label `"Loading"`; surface combines title+detail |
 | Tools | XcodeBuildMCP build + optional loading inspection screenshot |
 | Verify | No rectangular glow box; light/dark; ring/orb clearance; Reduce Motion freeze; loader not collapsed in scroll |

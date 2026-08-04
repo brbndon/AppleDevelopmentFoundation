@@ -3,7 +3,8 @@ import SwiftUI
 // MARK: - Drop-in template (portable)
 //
 // Source of truth: Harborlight DotMatrixLoader + FeatureLoadingView + InlineLoadingRow.
-// Soft-glow orb (no hard square clip). Defaults use system colors — map tint to app tokens.
+// Soft-glow orb (no hard square clip). Micro uses economy draw (30 Hz, fewer path steps).
+// Defaults use system colors — map tint to app tokens.
 // See Templates/LiquidOrbLoader/README.md for layout, anti-box checklist, and wiring.
 //
 
@@ -39,12 +40,12 @@ struct DotMatrixLoader: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(
-        center: Center = .pulse,
+        center: Center = .orb,
         dotSize: CGFloat = 12,
         spacing: CGFloat = 10,
         period: TimeInterval = 1.8,
         tint: Color = .accentColor,
-        idleTint: Color = .secondary
+        idleTint: Color = Color.secondary
     ) {
         self.center = center
         self.dotSize = dotSize
@@ -64,9 +65,15 @@ struct DotMatrixLoader: View {
         DotMatrixLoader(center: .orb, dotSize: 7, spacing: 14, period: 2.8)
     }
 
-    /// Tiny mark for poster tiles and dense chrome.
+    /// Tiny mark for poster tiles and dense chrome (fits ~52pt compact posters).
     static var micro: DotMatrixLoader {
-        DotMatrixLoader(center: .orb, dotSize: 5, spacing: 9, period: 2.8)
+        DotMatrixLoader(center: .orb, dotSize: 4, spacing: 6, period: 2.8)
+    }
+
+    /// True for dense tile marks — cheaper timeline + simpler orb draw.
+    private var isMicroOrb: Bool {
+        if case .orb = center { return dotSize <= 4.5 }
+        return false
     }
 
     /// Ring step. Orb mode pushes the ring out so the liquid mark has room.
@@ -80,7 +87,7 @@ struct DotMatrixLoader: View {
     /// Scales with `dotSize` so `.feature` / `.compact` / `.micro` stay proportional.
     private var orbSize: CGFloat {
         switch center {
-        case .orb: max(dotSize * 5.2, 24)
+        case .orb: isMicroOrb ? max(dotSize * 4.5, 18) : max(dotSize * 5.2, 24)
         default: dotSize
         }
     }
@@ -92,17 +99,26 @@ struct DotMatrixLoader: View {
         }
     }
 
+    private var layoutScale: CGFloat {
+        isMicroOrb ? LiquidOrbMorph.microLayoutScale : LiquidOrbMorph.layoutScale
+    }
+
     private var bounds: CGFloat {
         let ringExtent = step * 2 + ringDotSize
         switch center {
         // Canvas is oversized for soft glow falloff — must not clip to a square.
-        case .orb: return max(ringExtent, orbSize * LiquidOrbMorph.layoutScale)
+        case .orb: return max(ringExtent, orbSize * layoutScale)
         default: return ringExtent
         }
     }
 
+    private var timelineInterval: TimeInterval {
+        // Many micros can appear during progressive poster load; 30 Hz is enough there.
+        isMicroOrb ? 1 / 30 : 1 / 60
+    }
+
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1 / 60, paused: reduceMotion)) { context in
+        TimelineView(.animation(minimumInterval: timelineInterval, paused: reduceMotion)) { context in
             let time = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate / period
             ZStack {
                 ForEach(Array(Self.ring.enumerated()), id: \.offset) { index, coord in
@@ -154,7 +170,7 @@ struct DotMatrixLoader: View {
                 .scaleEffect(breath)
                 .rotationEffect(.degrees(tilt))
         case .orb:
-            LiquidOrbMorph(time: time, size: orbSize)
+            LiquidOrbMorph(time: time, size: orbSize, economy: isMicroOrb)
         }
     }
 
@@ -170,7 +186,7 @@ struct DotMatrixLoader: View {
 /// Full-surface loading chrome used by `FeatureStateView` and the developer preview.
 struct FeatureLoadingView: View {
     var title: String = "Loading"
-    var detail: String = "Refreshing your services."
+    var detail: String = "Just a moment."
     var compact: Bool = false
 
     var body: some View {
@@ -229,11 +245,17 @@ struct InlineLoadingRow: View {
 private struct LiquidOrbMorph: View {
     let time: Double
     let size: CGFloat
+    /// Fewer path samples + single blur for dense tile marks (multi-poster load).
+    var economy: Bool = false
 
     /// Layout size / visual body size — room for blur falloff past the orb edge.
     static let layoutScale: CGFloat = 2.6
+    /// Tighter pad for micro so the mark fits compact poster tiles (~52pt).
+    static let microLayoutScale: CGFloat = 2.0
 
-    private var canvasSize: CGFloat { size * Self.layoutScale }
+    private var canvasSize: CGFloat {
+        size * (economy ? Self.microLayoutScale : Self.layoutScale)
+    }
 
     var body: some View {
         let field = LiquidField.sample(at: time)
@@ -245,7 +267,7 @@ private struct LiquidOrbMorph: View {
             let blob = softBlobPath(center: center, baseRadius: baseR, field: field)
 
             // Soft ambient halo — large radial fill that fades to clear (no hard edge).
-            let haloR = baseR * 2.25
+            let haloR = baseR * (economy ? 1.85 : 2.25)
             let halo = Path(ellipseIn: CGRect(
                 x: center.x - haloR,
                 y: center.y - haloR,
@@ -269,13 +291,15 @@ private struct LiquidOrbMorph: View {
             // Blurred body glow — kept moderate so it dies out before the canvas edge.
             var glow = context
             glow.opacity = 0.28 + 0.30 * field.glow
-            glow.addFilter(.blur(radius: baseR * 0.55))
+            glow.addFilter(.blur(radius: baseR * (economy ? 0.40 : 0.55)))
             glow.fill(blob, with: .color(Color(red: 0.42, green: 0.74, blue: 1.0)))
 
-            var bloom = context
-            bloom.opacity = 0.12 + 0.16 * field.glow
-            bloom.addFilter(.blur(radius: baseR * 0.9))
-            bloom.fill(blob, with: .color(Color(red: 0.55, green: 0.86, blue: 1.0)))
+            if !economy {
+                var bloom = context
+                bloom.opacity = 0.12 + 0.16 * field.glow
+                bloom.addFilter(.blur(radius: baseR * 0.9))
+                bloom.fill(blob, with: .color(Color(red: 0.55, green: 0.86, blue: 1.0)))
+            }
 
             // Liquid body — gradient ends transparent so the rim doesn't print a hard cut.
             context.fill(
@@ -367,7 +391,7 @@ private struct LiquidOrbMorph: View {
 
     private func softBlobPath(center: CGPoint, baseRadius: CGFloat, field: LiquidField) -> Path {
         var path = Path()
-        let steps = 160
+        let steps = economy ? 64 : 160
         for i in 0...steps {
             let t = Double(i) / Double(steps)
             let theta = t * 2 * Double.pi
@@ -444,8 +468,9 @@ private struct LiquidField {
     }
 }
 
+
 #Preview("Feature loading") {
-    FeatureLoadingView()
+    FeatureLoadingView(detail: "Refreshing your library.")
 }
 
 #Preview("Orb mark") {

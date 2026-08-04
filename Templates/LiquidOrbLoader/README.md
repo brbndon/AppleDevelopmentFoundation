@@ -3,7 +3,7 @@
 Portable SwiftUI loading chrome proven in **Harborlight** (iOS 26). Use this for **indeterminate** full-surface and inline loading that feels continuous and liquid—not a discrete spinner or keyframed “pose” loop.
 
 **Proven consumer:** Harborlight · `Harborlight/Components/DotMatrixLoader.swift`  
-**Last synced:** soft-glow orb (no hard square clip), no brand glyph, app-wide wiring patterns.
+**Last synced:** soft-glow orb, per-surface loading copy, micro economy path, loader outside `ScrollView` (incl. Services + release sheets).
 
 ## What you get
 
@@ -12,8 +12,8 @@ Portable SwiftUI loading chrome proven in **Harborlight** (iOS 26). Use this for
 | `DotMatrixLoader` | 3×3 ring with a continuous highlight sweep; center cases: plain / pulse / symbol / emoji / **orb** |
 | `DotMatrixLoader.feature` | Hero full-surface mark (generous ring air) |
 | `DotMatrixLoader.compact` | Cards, forms, detail sections |
-| `DotMatrixLoader.micro` | Poster tiles, dense banners |
-| `FeatureLoadingView` | Full-surface title + detail + hero orb |
+| `DotMatrixLoader.micro` | Poster tiles (~52pt-safe), dense banners; 30 Hz + lighter Canvas |
+| `FeatureLoadingView` | Full-surface title + detail + hero orb (pass **screen-specific** detail) |
 | `InlineLoadingRow` | Compact/micro orb + message for forms and panels |
 | Continuous harmonics | REST → MERGE → REBOUND → RELAX emerge from sines—not keyframe holds |
 | Reduce Motion | `TimelineView` pauses; orb freezes on the first frame |
@@ -59,19 +59,23 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
    InlineLoadingRow(message: "Loading posters…", micro: true)
    ```
 
-4. Wire full-screen `FeatureState` loading:
+4. Wire full-screen `FeatureState` loading with **surface-specific** copy:
 
    ```swift
    switch state {
    case .loading:
-       FeatureLoadingView()
+       FeatureLoadingView(title: "Loading", detail: "Refreshing your library.")
            .frame(maxWidth: .infinity, minHeight: 360)
    // ...
    }
+
+   // If you wrap FeatureState in a reusable view, pass loadingDetail per screen
+   // (do not reuse a generic “services” string on Library/Calendar/Downloads).
    ```
 
 5. **Layout critical:** put `FeatureStateView` (or the loading branch) **outside** `ScrollView`.  
-   If the loader sits inside a scroll view, `maxHeight: .infinity` collapses and the mark looks wrong.
+   If the loader sits inside a scroll view, `maxHeight: .infinity` collapses and the mark looks wrong.  
+   Same rule for **Services first load** and **release sheets**—not only tab roots.
 
    ```swift
    // Preferred structure
@@ -80,6 +84,7 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
    }
 
    // Avoid: ScrollView { FeatureStateView { … } }  // loader collapses
+   // Avoid: ScrollView { if isLoading { FeatureLoadingView() } … }
    ```
 
 6. Accessibility:
@@ -97,7 +102,8 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
 | Ring step from orb size | Liquid body must not overlap ring dots. |
 | No brand glyph in the orb | Glyphs read as a frozen logo on a morphing blob; pure liquid reads cleaner. |
 | `TimelineView(.animation)` | No `Timer`; pauses under Reduce Motion. |
-| Presets scale with `dotSize` | `.feature` / `.compact` / `.micro` stay proportional (orb size ≈ `dotSize * 5.2`). |
+| Presets scale with `dotSize` | `.feature` / `.compact` proportional (orb ≈ `dotSize * 5.2`); `.micro` tighter (≈4.5×, layoutScale 2.0) for compact posters. |
+| Micro economy path | 30 Hz timeline, 64 path steps, single blur — safe when many tiles load at once. |
 
 ### Soft-glow anti-box checklist (when re-tuning visuals)
 
@@ -111,11 +117,11 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
 
 | Surface | Pattern |
 | --- | --- |
-| Home / Library / Calendar / Downloads | `FeatureStateView` → `FeatureLoadingView` (loader outside `ScrollView`) |
-| Services first load | `FeatureLoadingView(detail: "Checking configured services…")` |
+| Home / Library / Calendar / Downloads | `FeatureStateView` → `FeatureLoadingView` with **per-screen** `loadingDetail` (loader outside `ScrollView`) |
+| Services first load | `FeatureLoadingView` **outside** `ScrollView` (`detail: "Checking configured services…"`) |
 | Settings developer preview | Sheet with `FeatureLoadingView` (~3s auto-dismiss) |
-| Release sheets | Via `FeatureStateView` |
-| Poster tiles | `DotMatrixLoader.micro` |
+| Release sheets | `FeatureStateView` **outside** `ScrollView` (`loadingDetail: "Looking up releases."`) |
+| Poster tiles | `DotMatrixLoader.micro` (economy path) |
 | Poster progress banner | `InlineLoadingRow(..., micro: true)` |
 | Add media search / defaults | `InlineLoadingRow` in form sections |
 | Detail: episodes / *arr submit / qBit check | `InlineLoadingRow` |
