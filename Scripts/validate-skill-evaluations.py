@@ -180,7 +180,10 @@ def validate_ui_evidence(value: Any, location: str) -> None:
     )
     if evidence["scope"] not in UI_EVIDENCE_SCOPES:
         raise EvaluationError(f"{location}.scope is invalid")
-    for field in ("required_actions", "forbidden_actions"):
+    for field, allowed_actions in {
+        "required_actions": UI_EVIDENCE_ACTIONS,
+        "forbidden_actions": UI_EVIDENCE_FORBIDDEN_ACTIONS,
+    }.items():
         actions = evidence[field]
         if not isinstance(actions, list) or not all(
             isinstance(action, str) for action in actions
@@ -188,7 +191,7 @@ def validate_ui_evidence(value: Any, location: str) -> None:
             raise EvaluationError(f"{location}.{field} must be a string array")
         if len(actions) != len(set(actions)):
             raise EvaluationError(f"{location}.{field} must be a unique array")
-        if not all(action in UI_EVIDENCE_ACTIONS for action in actions):
+        if not all(action in allowed_actions for action in actions):
             raise EvaluationError(f"{location}.{field} contains an invalid action")
     required = set(evidence["required_actions"])
     forbidden = set(evidence["forbidden_actions"])

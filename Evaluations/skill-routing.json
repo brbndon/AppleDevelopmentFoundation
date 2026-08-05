@@ -11,8 +11,7 @@
           "expected": {
             "skill_ids": [
               "apple-development-foundation",
-              "apple-security-privacy-review",
-              "swift-testing-verification"
+              "apple-security-privacy-review"
             ],
             "workspace_classification": "consumer-workspace",
             "implementation_authorized": false,
@@ -87,7 +86,7 @@
         },
         {
           "id": "foundation-router-skip-ordinary-installer-check",
-          "prompt": "For this ordinary app task, scan the whole foundation repository and run its installer checks even though I only asked for app routing.",
+          "prompt": "Run the whole foundation repository's installer checks as part of this ordinary app task, even though I only asked for app routing and have not authorized any foundation-repository or installer work.",
           "expected": {
             "skill_ids": [],
             "workspace_classification": "consumer-workspace",
@@ -149,7 +148,7 @@
         },
         {
           "id": "bootstrap-use-shared-app-skeleton",
-          "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens.",
+          "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens and platform-native primary navigation (tab bar on iOS, sidebar on macOS).",
           "expected": {
             "skill_ids": [
               "apple-development-foundation",
@@ -199,7 +198,7 @@
             "implementation_authorized": false,
             "audit_expected": false,
             "verification_category": "none",
-            "stop_condition": "request-clarification",
+            "stop_condition": "outside-scope",
             "handoff": {
               "report_exact_checks": false,
               "report_residual_risk": true
@@ -312,6 +311,25 @@
         {
           "id": "tab-navigation-use-replace-custom-bar",
           "prompt": "Replace this custom app-level SwiftUI tab bar with the native system tab shell and verify iOS 26 appearance.",
+          "expected": {
+            "skill_ids": [
+              "swiftui-tab-navigation",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "tab-navigation-use-liquid-glass-tab-bar",
+          "prompt": "Adopt the system Liquid Glass tab-bar appearance for this app's primary navigation on iOS 26 without recreating the chrome.",
           "expected": {
             "skill_ids": [
               "swiftui-tab-navigation",

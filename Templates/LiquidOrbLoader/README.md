@@ -113,18 +113,18 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
 4. Optional: mask the canvas with a soft radial white→clear gradient.
 5. Parent bounds must include `orbSize * layoutScale` so the ring layout does not clip the glow.
 
-## Proven Harborlight wiring
+## Proven wiring patterns
 
 | Surface | Pattern |
 | --- | --- |
-| Home / Library / Calendar / Downloads | `FeatureStateView` → `FeatureLoadingView` with **per-screen** `loadingDetail` (loader outside `ScrollView`) |
-| Services first load | `FeatureLoadingView` **outside** `ScrollView` (`detail: "Checking configured services…"`) |
-| Settings developer preview | Sheet with `FeatureLoadingView` (~3s auto-dismiss) |
-| Release sheets | `FeatureStateView` **outside** `ScrollView` (`loadingDetail: "Looking up releases."`) |
-| Poster tiles | `DotMatrixLoader.micro` (economy path) |
-| Poster progress banner | `InlineLoadingRow(..., micro: true)` |
-| Add media search / defaults | `InlineLoadingRow` in form sections |
-| Detail: episodes / *arr submit / qBit check | `InlineLoadingRow` |
+| Tab-root list screens (library, calendar, downloads) | `FeatureStateView` → `FeatureLoadingView` with **per-screen** `loadingDetail` (loader outside `ScrollView`) |
+| Integrations / services first load | `FeatureLoadingView` **outside** `ScrollView` with a **per-screen** `detail` |
+| Developer preview sheet | Sheet with `FeatureLoadingView` (~3s auto-dismiss) |
+| Detail sheets that fetch remote data | `FeatureStateView` **outside** `ScrollView` (per-screen `loadingDetail`) |
+| Thumbnail grids | `DotMatrixLoader.micro` (economy path) |
+| Thumbnail progress banner | `InlineLoadingRow(..., micro: true)` |
+| Form sections with async search / defaults | `InlineLoadingRow` in form sections |
+| Detail panels and async submission checks | `InlineLoadingRow` |
 | Transfer / download / completion bars | Keep **determinate** `ProgressView(value:)` |
 
 ## Verification checklist

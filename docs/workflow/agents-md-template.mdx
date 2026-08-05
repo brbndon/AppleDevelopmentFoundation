@@ -189,8 +189,8 @@ Use an inspect → implement → verify → handoff lifecycle, scaled to the tas
 
 - Make the smallest cohesive change that satisfies the request. Avoid unrelated
   cleanup and preserve established architecture unless the task changes it.
-- Use Swift 6 for new Swift code. If an existing target is not configured for
-  Swift 6, report the compatibility constraint and request authorization before
+- Use Swift 6.2 or later for new Swift code. If an existing target is not configured for
+  Swift 6.2, report the compatibility constraint and request authorization before
   changing project-wide language settings. Prefer structured concurrency,
   explicit state ownership, native observation, and initializer or environment
   dependency injection. Do not introduce a view model without a state-ownership

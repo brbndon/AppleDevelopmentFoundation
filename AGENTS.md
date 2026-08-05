@@ -31,7 +31,7 @@ Skills target the **active workspace** (the app or package the user is building)
 
 ## Apple development defaults (when writing Swift in any workspace)
 
-Use Swift 6, SwiftUI, SwiftData where appropriate, native observation, initializer or environment injection, structured concurrency, and focused views. Do not add a view model without a state-ownership or testability reason.
+Use Swift 6.2 or later, SwiftUI, SwiftData where appropriate, native observation, initializer or environment injection, structured concurrency, and focused views. Do not add a view model without a state-ownership or testability reason.
 
 All SwiftUI components must support Dynamic Type, VoiceOver, keyboard access, contrast, Reduce Motion, Differentiate Without Color, and a descriptive label for an icon-only control. Validate imports before reading them. Never log credentials, tokens, private content, raw imports, complete sensitive paths, or security-scoped URLs.
 

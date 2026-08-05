@@ -1,6 +1,6 @@
 # Landing page recipe
 
-The proven homepage pattern from the Group Trip Money marketing site.
+Self-contained homepage recipe — no external example repo required.
 Structure, tokens, and workflow stay identical across products — only the
 frontmatter content changes.
 
@@ -14,12 +14,11 @@ The next product is a data swap, not a redesign.
    device mockup. CTAs: "Coming soon" status pill (`role="status"` +
    microcopy note), "See it in action" → `#screens`, "Explore Help Center".
 2. **Trust strip** — three privacy/product promises that match the real app.
-3. **Screenshot gallery** (`id="screens"`) — 4 real captures (Overview,
-   Expenses, Itinerary, Trips). Mobile: horizontal snap-scroll, ~72vw cards;
+3. **Screenshot gallery** (`id="screens"`) — 4 real captures, one per
+   main screen. Mobile: horizontal snap-scroll, ~72vw cards;
    desktop: 4-column grid. Every image needs `alt`, `width`/`height`, lazy
    loading. Real screenshots only — the CSS mockup belongs in the hero.
-4. **Benefits** — 6 cards on a light band: splitting, budgets, settlements,
-   itinerary, offline, trust. One card per real capability.
+4. **Benefits** — 6 cards on a light band, one per real capability.
 5. **Clarity / product visual** — calm diagram card + copy + short bullets.
 6. **Social proof** — quote cards (initials avatar, name, context). Before
    launch these are placeholders, marked in code — never invented customers.
@@ -47,8 +46,8 @@ Section rhythm: `py-24 md:py-32`, canvas `#f5f5f7` alternating with full-bleed
    XcodeBuildMCP `build_run_sim`.
 2. Drive navigation with a throwaway Maestro flow in `/tmp` — do NOT
    `launchApp` inside it (restarts the app without fixtures). Tap by text;
-   tab bars by percentage points (Overview 17% / Itinerary 50% / Expenses
-   83% at 94% height). Assert on-screen text before each `takeScreenshot`.
+   tab bars by percentage points (17% / 50% / 83% across a three-tab bar at
+   ~94% height). Assert on-screen text before each `takeScreenshot`.
 3. Downscale to 640px wide into `web/public/screenshots/`:
    `sips --resampleWidth 640 in.png --out web/public/screenshots/name.png`.
 4. Regenerate whenever the app UI changes.

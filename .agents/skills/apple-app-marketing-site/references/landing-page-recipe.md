@@ -1,9 +1,10 @@
 # Homepage recipe — anatomy, real screenshots, verification
 
-The proven homepage pattern from **Group Trip Money** (`GroupTripMoney/web/`).
-Everything is data-driven: structure, tokens, and workflow stay identical
-across products; only frontmatter content changes. Read the example repo
-before building; keep this reference as the spec.
+This reference is the complete homepage spec — self-contained, with no
+external checkout required before building. Structure, tokens, and workflow
+stay identical across products; only frontmatter content changes. A consumer
+example may exist at `GroupTripMoney/web/` where that checkout is available;
+it is optional and illustrative only, never the source of truth.
 
 ## Homepage anatomy (section order)
 
@@ -11,15 +12,15 @@ All copy lives in frontmatter `as const` arrays at the top of
 `src/pages/index.astro` (`screens`, `benefits`, `testimonialPlaceholders`,
 `pricingPoints`, `faqs`) so the next product swap only edits data.
 
-1. **Hero** — eyebrow, `h1.display-title` (two short lines, e.g. "Plan
-   together. Split fairly."), `.lede`, CTA trio, CSS device mockup right.
+1. **Hero** — eyebrow, `h1.display-title` (two short lines), `.lede`, CTA
+   trio, CSS device mockup right.
    CTA trio: status pill (`span.btn.btn-coming-soon`, `role="status"`,
    `aria-describedby` → microcopy note), `a.btn.btn-secondary[href="#screens"]`
    "See it in action", text link to `/help/`.
 2. **Trust strip** — thin divider + centered row of three privacy/product
    promises that match the app's real behavior.
-3. **Screenshot gallery** (`id="screens"`) — exactly 4 real captures
-   (Overview, Expenses, Itinerary, Trips). Mobile: horizontal
+3. **Screenshot gallery** (`id="screens"`) — exactly 4 real captures, one
+   per main app screen. Mobile: horizontal
    `snap-x snap-mandatory` scroll, `w-[72vw] max-w-[16.5rem]` cards; `sm+`:
    `grid sm:grid-cols-2 lg:grid-cols-4`. Each item: `figure` → rounded frame
    (`rounded-[1.4rem] ring-1 ring-black/10 shadow-soft`) → `img`
@@ -47,8 +48,8 @@ All copy lives in frontmatter `as const` arrays at the top of
    indicators), plus a muted line linking `/help/`. Answers describe the
    app's real behavior (accounts? money movement? storage? launch timing).
 9. **Final CTA / privacy band** — dark `bg-night rounded-[1.5rem]` panel:
-   eyebrow + `h2` ("Your next trip will thank you."), body combining privacy
-   posture + launch status (`#a1a1a6`), right column with `a.btn.btn-on-dark`
+   eyebrow + `h2` (product promise), body combining privacy posture + launch
+   status (`#a1a1a6`), right column with `a.btn.btn-on-dark`
    → `#screens` and underline link → `/privacy/`.
 
 Section rhythm: page canvas (`#f5f5f7`) alternating with full-bleed
@@ -76,9 +77,10 @@ Maestro flow in `/tmp` — never the repo's committed `.maestro/` suite:
   app relaunches without fixtures. Drive the already-running app.
 - `assertVisible` only text guaranteed on screen (below-fold assertions
   fail); scroll first (`swipe: {direction: UP}`) for below-fold shots.
-- Tap rows/buttons by text; tap tab bars by percentage points
-  (Overview 17% / Itinerary 50% / Expenses 83% at 94% height). Toolbar
-  buttons like "New trip" exist only on the library screen.
+- Tap rows/buttons by text; tap tab bars by percentage points across the
+  bar at ~94% height (e.g. 17% / 50% / 83% for a three-tab bar). Toolbar
+  buttons exist only on the screen that owns them — inspect the current
+  screen before tapping.
 - Maestro terminates the app between runs: one flow covering every screen,
   or relaunch with fixtures before each flow.
 - Assert distinctive text on every screen before screenshotting; names on
