@@ -11,6 +11,7 @@ This pack documents the polish language proven on consumer apps (light-first, mo
 | [README.md](./README.md) | This overview |
 | [RETHEME.md](./RETHEME.md) | Colors, fonts, assets, strings — edit checklist |
 | [STRUCTURE.md](./STRUCTURE.md) | Folder layout, components, routes |
+| [LANDING_RECIPE.md](./LANDING_RECIPE.md) | Homepage anatomy, real-screenshot capture, ship checklist |
 | [CHECKLIST.md](./CHECKLIST.md) | Ship checklist (a11y, perf, Vercel, content) |
 | [TOKEN_REFERENCE.css](./TOKEN_REFERENCE.css) | Copy-paste `@theme` starter |
 

@@ -7,6 +7,10 @@
 - [ ] Support email works
 - [ ] Help deep links (`#ids`) match support suggestion slugs
 - [ ] No placeholder lorem
+- [ ] Screenshots are real captures of the current build, 640px wide, with descriptive alt text
+- [ ] Placeholder testimonials marked in code (pre-launch)
+- [ ] Every link and form tested at desktop (1440px) and mobile (390px)
+- [ ] No horizontal page overflow at 320px (gallery scrolls internally)
 
 ## Visual / UX
 

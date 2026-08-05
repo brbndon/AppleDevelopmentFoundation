@@ -76,14 +76,15 @@ Full token tables, component inventory, and page patterns:
 
 - [references/retheme-guide.md](references/retheme-guide.md)
 - [references/structure-and-pages.md](references/structure-and-pages.md)
+- [references/landing-page-recipe.md](references/landing-page-recipe.md) — proven homepage anatomy (screens, benefits, social proof, pricing, FAQ), real-screenshot capture, and the mandatory link/form/width verification pass
 
-Human-facing template pack (copy into consumer projects): repository path `Templates/AppMarketingSite/` (`README.md`, `RETHEME.md`, `STRUCTURE.md`, `CHECKLIST.md`, `TOKEN_REFERENCE.css`).
+Human-facing template pack (copy into consumer projects): repository path `Templates/AppMarketingSite/` (`README.md`, `RETHEME.md`, `STRUCTURE.md`, `CHECKLIST.md`, `LANDING_RECIPE.md`, `TOKEN_REFERENCE.css`).
 
 ## Implementation order
 
 1. Scaffold Astro + Tailwind in `web/`; configure `site` + trailing slashes.
 2. Tokens + `BaseLayout` / `Header` / `Footer` (static).
-3. Homepage (hero, mockup, trust, story, feature, privacy band).
+3. Homepage (hero, trust, screenshot gallery, benefits, clarity visual, social proof, pricing, FAQ, final CTA band — anatomy in `references/landing-page-recipe.md`).
 4. Secondary pages with shared `PageIntro` + `LegalProse`.
 5. Minimal islands only where needed.
 6. `npm run build`; responsive pass; Vercel config.
@@ -94,7 +95,7 @@ Human-facing template pack (copy into consumer projects): repository path `Templ
 cd web && npm run build
 ```
 
-Confirm routes emit under `dist/` with trailing-slash directories, header/footer present **without** client JS, and no third-party script tags. Optional: `npm run preview` and check mobile hero + mockup.
+Confirm routes emit under `dist/` with trailing-slash directories, header/footer present **without** client JS, and no third-party script tags. Then run the full verification pass (every link, forms, desktop + mobile widths, a11y spot-checks) described in `references/landing-page-recipe.md`.
 
 ## Reference implementation
 
