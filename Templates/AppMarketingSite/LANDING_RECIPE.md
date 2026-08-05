@@ -57,6 +57,6 @@ Section rhythm: `py-24 md:py-32`, canvas `#f5f5f7` alternating with full-bleed
 
 - [ ] Screenshots are real captures of the current build, 640px wide, with descriptive alt text
 - [ ] Every link and form tested at desktop (1440px) and mobile (390px)
-- [ ] No horizontal page overflow at 320px (gallery scrolls internally)
+- [ ] No horizontal page overflow at 320px and 390px (gallery scrolls internally)
 - [ ] Placeholder testimonials marked in code (pre-launch)
 - [ ] Full verification pass ran: build → preview → 200s → links/forms → widths → error sweep

@@ -23,7 +23,7 @@ All copy lives in frontmatter `as const` arrays at the top of
    `snap-x snap-mandatory` scroll, `w-[72vw] max-w-[16.5rem]` cards; `sm+`:
    `grid sm:grid-cols-2 lg:grid-cols-4`. Each item: `figure` → rounded frame
    (`rounded-[1.4rem] ring-1 ring-black/10 shadow-soft`) → `img`
-   (`width="640" height="1392"`, `loading="lazy"`, descriptive `alt`) →
+   (`width="640" height="1391"`, `loading="lazy"`, descriptive `alt`) →
    `figcaption` (bold title + muted caption). Never CSS illustrations here —
    only captures of the real app.
 4. **Benefits** — full-bleed `#efeff1` band, `ul.grid sm:grid-cols-2
@@ -104,7 +104,8 @@ Delete unused captures; register each in the `screens` array.
    empty state; FAQ `<details>` toggles; skip link (Tab → Enter → `#main`);
    `img` naturalWidth > 0 with non-empty `alt`; heading order h1→h2→h3
    without jumps; `role="status"` pills present.
-4. Mobile 390×844: overflow still false (gallery scrolls internally); menu
+4. Mobile 390×844 (plus the 320px minimum width): overflow still false
+   (gallery scrolls internally); menu
    toggle sets `aria-expanded` and a nav link closes it.
 5. Full-page screenshots at both widths; if the model cannot view images,
    pixel-sample the PNGs (canvas `#f5f5f7`, bands `#efeff1`, night
