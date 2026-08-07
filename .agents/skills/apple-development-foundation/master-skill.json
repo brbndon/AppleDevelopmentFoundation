@@ -62,6 +62,12 @@
       "purpose": "Add or change reusable semantic design-system tokens and components"
     },
     {
+      "id": "apple-error-states",
+      "path": ".agents/skills/apple-error-states/SKILL.md",
+      "role": "ui-foundation",
+      "purpose": "Design, implement, or review user-facing error handling and error states"
+    },
+    {
       "id": "apple-app-marketing-site",
       "path": ".agents/skills/apple-app-marketing-site/SKILL.md",
       "role": "web-marketing",

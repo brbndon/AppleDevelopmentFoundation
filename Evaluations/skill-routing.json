@@ -549,6 +549,88 @@
       ]
     },
     {
+      "skill_id": "apple-error-states",
+      "should_use": [
+        {
+          "id": "error-states-use-copy-details",
+          "prompt": "Add a copy-details button and expandable error details to the app's sync-failure alert so users can paste the error into a support ticket.",
+          "expected": {
+            "skill_ids": [
+              "apple-error-states",
+              "apple-accessibility-review",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "error-states-use-load-failure-state",
+          "prompt": "Build the error state for the document list when loading fails: a retry action in the content area instead of an alert, with user-facing copy and diagnostics hidden behind a disclosure.",
+          "expected": {
+            "skill_ids": [
+              "apple-error-states",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "error-states-skip-propagation-review",
+          "prompt": "Review error propagation and cancellation in the app's networking layer; there is no user-facing UI involved.",
+          "expected": {
+            "skill_ids": [
+              "swift-concurrency-review"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": {
+              "report_exact_checks": false,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "error-states-skip-token-work",
+          "prompt": "Add semantic error colors to the shared design-system token set.",
+          "expected": {
+            "skill_ids": [
+              "apple-design-system"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        }
+      ]
+    },
+    {
       "skill_id": "apple-app-marketing-site",
       "should_use": [
         {
