@@ -35,6 +35,10 @@ From the repository root:
 ./Scripts/verify-skills.sh
 ```
 
+Before trusting any routing decision, confirm the installed set matches this
+repository's HEAD with `./Scripts/install-skills.sh --status` (read-only, exits
+nonzero on divergence) — see [Skill sync](/reference/skill-sync).
+
 | Fact | Detail |
 | --- | --- |
 | Default target | `${CODEX_HOME:-$HOME/.codex}/skills` |
@@ -147,6 +151,7 @@ Scenario paths: [Task recipes](/workflow/task-recipes).
 | Check | Pass looks like |
 | --- | --- |
 | Skills | Codex can resolve `$codex-bootstrap` / foundation skills, or its repository path load works |
+| Skill sync | `./Scripts/install-skills.sh --status` exits 0 after a clean install or re-sync |
 | Consumer contract | Project-local `AGENTS.md` exists or approved rules were merged without replacing existing instructions |
 | Verify script | `./Scripts/verify-skills.sh` exits 0 after install or skill edits |
 | MCP | `session_show_defaults` returns usable project/scheme/simulator (or clear missing fields you then fix) |
@@ -167,9 +172,11 @@ Requires Node.js ≥ 22.12. App/skill work does **not** require the docs site.
 
 1. [Task recipes](/workflow/task-recipes) — pick the matching scenario  
 2. [Session workflow](/workflow) — full loop when the task spans multiple steps  
-3. [Skill routing](/workflow/skill-routing) — `$apple-development-foundation` shortlist  
-4. [Bootstrap a new app](/skills/bootstrap) — new consumer SwiftUI project  
-5. [Agent host support](/reference/host-support) — verified vs manual compatibility
-6. [Troubleshooting](/reference/troubleshooting) — install / MCP / Maestro blockers
+3. [Autonomous session](/workflow/autonomous-session) — required contract when no human is present
+4. [Skill routing](/workflow/skill-routing) — `$apple-development-foundation` shortlist  
+5. [Bootstrap a new app](/skills/bootstrap) — new consumer SwiftUI project  
+6. [Agent host support](/reference/host-support) — verified vs manual compatibility
+7. [Skill sync](/reference/skill-sync) — reconcile installed skills before routing
+8. [Troubleshooting](/reference/troubleshooting) — install / MCP / Maestro blockers
 
 Agent feed (after deploy): site-root `llms.txt`. Skills source of truth: `.agents/skills/manifest.json` + each `SKILL.md`.

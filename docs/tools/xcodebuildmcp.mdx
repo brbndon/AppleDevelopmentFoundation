@@ -63,6 +63,11 @@ commands. Every handoff reports those values, the exact tools or commands, outco
 and residual risk. None of these tiers weakens approvals for destructive actions,
 deployment, publishing, credentials, or user data.
 
+"Report blocked" is a fail-closed contract: when no authorized capability remains,
+refusal is mandatory and must leave an auditable blocked report. Exceptions require
+an explicit user authorization naming the specific action and scope; tool
+availability never authorizes fallback. See [Refusability contract](/reference/refusability-contract).
+
 ## Install and configure
 
 1. Register XcodeBuildMCP in the agent host’s MCP server list (host-specific). Server entrypoint is typically `xcodebuildmcp mcp` (stdio).
@@ -231,4 +236,5 @@ Verification: Prefer build_run_sim for launch; never claim pass without running 
 - [Maestro](/tools/maestro) — pair for UI regression (same simulator ID)
 - [Verification matrix](/reference/verification-matrix)
 - [Task recipes](/workflow/task-recipes)
+- [Refusability contract](/reference/refusability-contract)
 - [Troubleshooting](/reference/troubleshooting)

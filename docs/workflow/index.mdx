@@ -5,7 +5,7 @@ description: End-to-end loop for agent sessions using foundation skills and Xcod
 
 # Session workflow
 
-A reliable agent session follows a fixed loop. Skip steps only when the task is clearly narrower than the loop.
+A reliable agent session follows a fixed loop. Skip steps only when the task is clearly narrower than the loop. An **unattended** run follows the stricter [Autonomous session](/workflow/autonomous-session) contract, including the installed-vs-HEAD reconciliation check and a leave-behind receipt.
 
 ## Loop
 
@@ -62,6 +62,7 @@ For apps that talk to several independent HTTP APIs (Keychain secrets, local/rem
 
 ## Related
 
+- [Autonomous session](/workflow/autonomous-session)
 - [Task recipes](/workflow/task-recipes) — scenario → skills → verify (start here for a concrete task)
 - [Skill routing](/workflow/skill-routing)
 - [Consumer workspace](/workflow/consumer-workspace)

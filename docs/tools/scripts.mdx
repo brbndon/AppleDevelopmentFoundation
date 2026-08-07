@@ -17,6 +17,7 @@ Run from the **Apple Development Foundation** repository root. These scripts mai
 ./Scripts/verify-skills.sh       # validate manifest and skill contracts
 ./Scripts/test-install-skills.sh # test installer behavior
 ./Scripts/install-skills.sh --dry-run
+./Scripts/install-skills.sh --status      # read-only installed-vs-HEAD reconciliation
 ./Scripts/install-skills.sh --uninstall   # safe: only matching installer symlinks
 ./Scripts/init-consumer-guidance.sh --target /path/to/consumer --dry-run
 ./Scripts/test-consumer-guidance.sh
@@ -32,6 +33,7 @@ Run from the **Apple Development Foundation** repository root. These scripts mai
 | Installer behavior | also `./Scripts/test-install-skills.sh` |
 | Local agent wants skills in user scope | `./Scripts/install-skills.sh` |
 | Preview install without writing | `./Scripts/install-skills.sh --dry-run` |
+| Reconcile installed skills vs HEAD (read-only) | `./Scripts/install-skills.sh --status` — exits nonzero on any dangling, wrong-target, content-drift, missing, or stale link; see [Skill sync](/reference/skill-sync) |
 | Preview/create a consumer operating contract | `./Scripts/init-consumer-guidance.sh --target <consumer> [--dry-run]` |
 | Consumer initializer behavior | `./Scripts/test-consumer-guidance.sh` |
 
@@ -55,6 +57,8 @@ compatibility requirements are documented under [Agent host support](/reference/
 | `Existing identical symlink is not installer-owned; leaving untouched` | Correct destination already; not claimed into state as newly owned |
 | `Already installed (installer-owned)` | Prior install still valid |
 | `Skip … (not the recorded installer-owned link)` | During `--uninstall`, path was not safe to remove |
+| `ok: … (matches manifest and HEAD)` | During `--status`, link is correct and content matches HEAD |
+| `missing` / `dangling` / `wrong-target` / `drift` / `stale: …` | During `--status`, a divergence was found; `--status` exits nonzero |
 
 Required tools: `awk`, `python3`, `readlink`. Missing `manifest.json` fails the install.
 

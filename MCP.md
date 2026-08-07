@@ -34,6 +34,8 @@ Apply this order to every Apple build, run, test, simulator, or UI-inspection ta
 
 Every result or blocker must report the project/workspace, scheme, configuration, exact simulator/device when applicable, tool or command used, outcome, and residual risk. This ladder does not relax approval requirements for destructive actions, deployment, publishing, credentials, or user data.
 
+"Report blocked" is a fail-closed contract, not a phrase: refusal is mandatory when no authorized path exists, exceptions require an explicit user authorization naming the specific action and scope, and every refusal leaves a blocked report. See the [refusability contract](docs/reference/refusability-contract.mdx).
+
 ### Key tools by task (MCP names)
 
 | Task | MCP tools (representative) | CLI sketch |

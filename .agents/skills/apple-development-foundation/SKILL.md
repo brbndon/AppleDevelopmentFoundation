@@ -11,6 +11,11 @@ or comparison is explicitly requested.
 
 ## Procedure
 
+Read [skill sync](../../../docs/reference/skill-sync.mdx) before trusting this
+repository's installed skills for any routing decision. In an autonomous session
+with no human present, first reconcile installed skills against HEAD with
+`./Scripts/install-skills.sh --status` and re-sync before routing on divergence.
+
 1. Read [master-skill.json](master-skill.json) as the machine-readable catalog.
 2. Use its IDs, roles, and purposes to shortlist only the children relevant to
    the request. Do not scan the repository, audit inventories, install skills,

@@ -1,0 +1,95 @@
+---
+title: Skill sync
+description: How an agent reconciles installed skills against this repository before trusting any routing decision.
+---
+
+# Skill sync
+
+Skills are installed as **symlinks** into `${CODEX_HOME:-$HOME/.codex}/skills` by
+`./Scripts/install-skills.sh`, so the installed set normally mirrors the checked-out
+repository. After a merge or a clone move, that mirror can silently diverge: an
+agent may run installed skills that no longer match `.agents/skills/manifest.json`
+and misroute with no error and no human present to notice. Reconciliation is the
+pre-routing check that eliminates that silence.
+
+## The check
+
+Before trusting any routing decision, an agent runs the installer's read-only
+reconciliation mode:
+
+- `./Scripts/install-skills.sh --status`
+
+The mode resolves every installed link, compares its target to the manifest's
+expected path, and compares resolved skill content against the source work tree's
+HEAD. It mutates nothing. It exits zero when the installed set matches the
+manifest, and nonzero when any divergence exists, printing one line per affected
+skill so the agent can name the exact problems.
+
+Content-drift detection uses git and is reported only when the resolved source
+lives in a git work tree. In a non-git checkout the mode reports the link state and
+states that content drift is not verifiable.
+
+## The three staleness modes
+
+| Mode | What it looks like | Why it matters |
+| --- | --- | --- |
+| Dangling link | An installed link whose target no longer exists, typically after the repository was moved or removed | The installed skill resolves to nothing; routing can silently fail or fall back to an old cache |
+| Wrong-target link | An installed link pointing somewhere other than the manifest's expected source path, typically a different checkout or a path replaced by hand | The agent would run skills from an unknown or stale location while believing they are this repository's |
+| Content drift | A correct link whose resolved content differs from the work tree's HEAD, typically uncommitted edits masked by the symlink | The agent would run content the manifest and HEAD do not describe |
+
+A missing link and a stale link are reported as well: a missing link means the
+manifest expects a skill that is not installed, and a stale link means a skill is
+installed but no longer in the manifest. Any of these invalidates a routing
+decision that assumes the installed set equals this repository.
+
+The wrong-target comparison is strict string equality of the link's recorded
+target against the manifest's expected absolute path. A link that differs only in
+spelling — a different-case checkout path, or `/var` versus `/private/var` — is
+therefore still reported even though it resolves to the same files. Installer-
+created links always use the physical path, so this only affects hand-made links.
+
+## The re-sync sequence
+
+When the status check reports divergence, re-sync in two steps, never by force:
+
+1. Uninstall the recorded installer-owned links with `./Scripts/install-skills.sh --uninstall`. This removes only links whose target still matches the recorded installer state and never touches unrelated paths.
+2. Reinstall from the current checkout with `./Scripts/install-skills.sh`.
+
+This two-step sequence repairs **missing**, **dangling**, **content-drift**, and
+**stale** links. A moved checkout leaves the old target inside the link, which
+still matches the recorded state, so `--uninstall` removes it and reinstall
+recreates it pointing at the reconciled checkout; content drift is resolved
+because the symlinks now point at the reconciled working tree.
+
+**Wrong-target links are not replaced by force.** A link whose target no longer
+matches the recorded installer state — typically replaced by hand or repointed at
+a different checkout — is deliberately left untouched by both steps: `--uninstall`
+skips it as no longer installer-owned, and install reports
+`Conflict; leaving untouched`. Resolve the specific link explicitly before
+reinstalling:
+
+- when it is safe to do so, remove that single link (`rm <skills-target>/<name>`)
+  and re-run the installer, which recreates it from the current checkout;
+- when removal needs approval or the replacement was intentional, do not force it
+  and report blocked under the [refusability contract](/reference/refusability-contract).
+
+After re-syncing, confirm with `./Scripts/install-skills.sh --status` that the set
+matches, then run `./Scripts/verify-skills.sh` to validate the manifest and skill
+contracts before trusting the skills. The full sequence is covered by
+`./Scripts/test-install-skills.sh`, which exercises every staleness mode.
+
+## When to check
+
+Run the reconciliation check before any routing decision that depends on this
+repository's installed skills, and again after any pull, merge, checkout, or
+clone move. The [autonomous session](/workflow/autonomous-session) contract makes
+it a required pre-routing command, and the [refusability contract](/reference/refusability-contract)
+covers what to do when the check reveals a divergence the agent cannot repair.
+
+## Related
+
+- [Scripts](/tools/scripts)
+- [Verification matrix](/reference/verification-matrix)
+- [Troubleshooting](/reference/troubleshooting)
+- [Autonomous session](/workflow/autonomous-session)
+- [Refusability contract](/reference/refusability-contract)
