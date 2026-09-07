@@ -65,7 +65,7 @@ Proven pattern (consumer iOS app). Continuous 3×3 ring + liquid-glass **orb** (
 | Step | Action |
 | --- | --- |
 | Template | `Templates/LiquidOrbLoader/` — `README.md` (wiring + anti-box checklist) + drop-in `DotMatrixLoader.swift` |
-| Full-screen | `FeatureLoadingView` for `FeatureState.loading` with **screen-specific** detail; put loader **outside** `ScrollView` (tabs, Services, release sheets) |
+| Full-screen | `FeatureLoadingView` for `FeatureState.loading` with **screen-specific** detail; put loader **outside** `ScrollView` (tabs, service screens, release sheets) |
 | Inline | `InlineLoadingRow` / `DotMatrixLoader.compact` / `.micro` for forms, detail panels, poster tiles |
 | Replace | Indeterminate `ProgressView()` busy chrome only — keep determinate `ProgressView(value:)` |
 | Glow | Oversized canvas (`layoutScale` ≈ 2.6; micro ≈ 2.0); bake squash into path; no `scaleEffect` + tight frame; radial mask + transparent gradient stops |
