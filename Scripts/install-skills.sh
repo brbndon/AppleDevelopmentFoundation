@@ -183,4 +183,8 @@ if ! "$dry_run"; then
   awk -F '\t' '!seen[$1 FS $2]++' "$combined_records" > "$state_tmp"
   mv "$state_tmp" "$state"
   echo "Recorded installer-owned links in $state"
+  total="$(awk 'END { print NR+0 }' "$manifest_names")"
+  echo "Installed $total skills to $target."
+  echo "Next: in Codex, invoke \$apple-development-foundation to start (for example: bootstrap a new app, add error states, or improve tab navigation)."
+  echo "Full path: docs/quickstart.mdx and https://brbndon.github.io/AppleDevelopmentFoundation/."
 fi

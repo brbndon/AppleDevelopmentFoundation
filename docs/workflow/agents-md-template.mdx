@@ -243,8 +243,8 @@ macOS-only app, and do not skip the `macos` workflow when macOS is in scope.
    - Run simulator tests serially with
      `extraArgs: ["-parallel-testing-enabled", "NO"]` unless the project
      explicitly requires and has verified parallel workers.
-   - Optional: `screenshot` / `snapshot_ui` when the `ui-automation` workflow is
-     enabled (iOS simulator only).
+    - Optional: `screenshot` / `snapshot_ui` within test workflows when the `ui-automation` workflow is
+      enabled (iOS simulator only). This does not relax the UI inspection contract above, which still requires per-scenario captures for user-visible iOS/iPadOS work.
 4. **macOS targets:**
    - Enable and use the XcodeBuildMCP `macos` workflow.
    - Prefer `build_run_macos` for a launch smoke.

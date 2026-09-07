@@ -21,13 +21,16 @@ All copy lives in frontmatter `as const` arrays at the top of
    promises that match the app's real behavior.
 3. **Screenshot gallery** (`id="screens"`) — one real capture per main
    app screen (typically 3–5; adjust the grid columns to the capture
-   count). Mobile: horizontal
+   count). iOS portrait cards, mobile: horizontal
    `snap-x snap-mandatory` scroll, `w-[72vw] max-w-[16.5rem]` cards; `sm+`:
    `grid sm:grid-cols-2 lg:grid-cols-4`. Each item: `figure` → rounded frame
    (`rounded-[1.4rem] ring-1 ring-black/10 shadow-soft`) → `img`
-   (`width="640" height="1391"`, `loading="lazy"`, descriptive `alt`) →
-   `figcaption` (bold title + muted caption). Never CSS illustrations here —
-   only captures of the real app.
+   (`loading="lazy"`, descriptive `alt`) →
+   `figcaption` (bold title + muted caption). iOS captures use portrait
+   `width="640" height="1391"`; macOS captures keep the native window aspect
+   with matching `width`/`height` (never stretch a landscape capture into
+   portrait geometry; use wider framing for macOS cards). Never CSS
+   illustrations here — only captures of the real app.
 4. **Benefits** — full-bleed `#efeff1` band, `ul.grid sm:grid-cols-2
    lg:grid-cols-3` of 4–6 cards (`rounded-[1.25rem] border border-line
    bg-surface p-6 shadow-soft`) with uppercase kicker, `h3`, muted body.
@@ -37,9 +40,11 @@ All copy lives in frontmatter `as const` arrays at the top of
    list with 5px ink dot markers.
 6. **Social proof placeholders** — full-bleed band, `md:grid-cols-3` quote
    cards: `blockquote` in curly quotes + `footer` with 36px initials avatar
-   (soft pastel bg), name, context line. Pre-launch: array is
-   `testimonialPlaceholders` with a `// PLACEHOLDER` comment — never present
-   invented people as real customers.
+   (soft pastel bg), name, context line. Pre-launch: hide this section until
+   genuine proof exists. If placeholders ship for layout review, label them
+   visibly on the page (e.g. "Sample quotes — real testimonials coming
+   soon"): a `testimonialPlaceholders` array with a `// PLACEHOLDER` comment
+   is invisible to visitors. Never present invented people as real customers.
 7. **Pricing** — centered; one card (`max-w-md`, `rounded-[1.5rem]`,
    `p-8 md:p-10`) with app name + "Free" (or real price), border-t bullet
    list with ink dots, full-width coming-soon status pill, microcopy. Only
@@ -62,7 +67,7 @@ Section rhythm: page canvas (`#f5f5f7`) alternating with full-bleed
 - Pre-launch CTAs are **status controls**, not fake buttons: `role="status"`
   + `aria-describedby` + microcopy ("The App Store listing is not available
   yet."). No dead App Store links.
-- Social proof is placeholder data until real users exist, marked in code.
+- Social proof renders only real testimonials. Pre-launch, hide the section or label placeholders visibly on the page — a code comment alone does not satisfy this.
 - Every claim traces to something the app actually does — read the app
   source first; never invent features, pricing, or privacy posture.
 

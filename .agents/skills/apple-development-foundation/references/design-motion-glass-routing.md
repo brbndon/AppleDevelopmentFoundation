@@ -19,7 +19,8 @@ Always-on craft for feature screens also lives in root `Agents.md` / `AGENTS.md`
 | --- | --- | --- | --- |
 | New app / major skeleton | `$apple-development-foundation` → `$codex-bootstrap` → design-system, tabs, a11y | Chained children | — |
 | Liquid Glass / materials | System chrome + `swiftui-tab-navigation` + `liquid-glass-chrome.md` | Custom `glassEffect` only after restraint | Host skill ID `liquid-glass-design` |
-| Animation polish on a screen/component | `swiftui-component-author` craft defaults + a11y Reduce Motion | Delete high-frequency motion first | Host skill ID `apple-design` (gesture physics) |
+| Animation polish on a reusable component | `swiftui-component-author` craft defaults + a11y Reduce Motion | Delete high-frequency motion first | Host skill ID `apple-design` (gesture physics) |
+| Animation polish on a business-specific screen | AGENTS.md always-on craft (opaque content, frequency-gated motion) applied in the feature workflow | Delete high-frequency motion first | Host skill ID `apple-design` (gesture physics) |
 | “What should animate?” | Craft defaults + frequency gate (no keyboard / high-frequency paths) | — | Host skill ID `find-animation-opportunities` |
 | Whole-app motion audit | Craft + a11y baselines applied | — | Host skill ID `improve-animations` (read-only plans) |
 | Motion naming / vocabulary | Prefer plain craft language in foundation skills | — | Host skill ID `animation-vocabulary` |

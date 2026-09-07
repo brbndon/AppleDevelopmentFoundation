@@ -22,7 +22,7 @@ The next product is a data swap, not a redesign.
 4. **Benefits** — 4–6 cards on a light band, one per real capability.
 5. **Clarity / product visual** — calm diagram card + copy + short bullets.
 6. **Social proof** — quote cards (initials avatar, name, context). Before
-   launch these are placeholders, marked in code — never invented customers.
+   launch, hide this section or label placeholders visibly on the page — never present invented people as real customers.
 7. **Pricing** — one centered card; only real pricing facts ("Free" works
    for local-first apps). Full-width status pill when pre-launch.
 8. **FAQ** — 4–6 native `<details>` rows + link to the Help Center. Answers
@@ -39,7 +39,7 @@ Section rhythm: `py-24 md:py-32`, canvas `#f5f5f7` alternating with full-bleed
   buttons or dead links.
 - Every claim traces to something the app actually does — read the app
   source first.
-- Placeholder testimonials are labeled `PLACEHOLDER` in the frontmatter.
+- Pre-launch, the social-proof section is hidden or its placeholders are visibly labeled on the page; a `PLACEHOLDER` code comment alone is not enough.
 
 ## Real screenshots (not mockups)
 
@@ -50,8 +50,9 @@ Section rhythm: `py-24 md:py-32`, canvas `#f5f5f7` alternating with full-bleed
    tab bars by percentage points (17% / 50% / 83% across a three-tab bar at
    ~94% height). Assert on-screen text before each `takeScreenshot`.
    macOS: capture macOS screenshots of the running app instead of an iOS Maestro flow.
-3. Downscale to 640px wide into `web/public/screenshots/`:
+3. Downscale iOS captures to 640px wide into `web/public/screenshots/`:
    `sips --resampleWidth 640 in.png --out web/public/screenshots/name.png`.
+   Keep macOS captures at their native window aspect (do not force portrait geometry).
 4. Regenerate whenever the app UI changes.
 
 ## Ship checklist (additions to CHECKLIST.md)

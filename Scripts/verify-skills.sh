@@ -55,5 +55,10 @@ if missing or extra:
         details.append(f'extra skill directories: {", ".join(extra)}')
     raise SystemExit('; '.join(details))
 
+readme_text = pathlib.Path('README.md').read_text(encoding='utf-8')
+unlisted = sorted(item['name'] for item in manifest['skills'] if item['name'] not in readme_text)
+if unlisted:
+    raise SystemExit(f'skills missing from README.md inventory: {", ".join(unlisted)}')
+
 print(f'validated {len(manifest_paths)} skills')
 PY

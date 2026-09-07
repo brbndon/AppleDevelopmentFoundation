@@ -49,8 +49,8 @@ export default defineConfig({
 
 1. **Hero** — eyebrow, display title, lede, CTA trio (coming-soon status pill, "See it in action" → `#screens`, help link), device mockup
 2. **Trust strip** — three short privacy / product promises
-3. **Screenshot gallery** — 4 real app captures, one per main screen; snap-scroll on mobile, 4-col grid on desktop
-4. **Benefits** — six cards, one per real capability
+3. **Screenshot gallery** — one real capture per main screen (typically 3–5; adjust the grid columns to the capture count); snap-scroll on mobile, responsive grid on desktop
+4. **Benefits** — 4–6 cards, one per real capability
 5. **Clarity / feature** — diagram or simple visual + bullets
 6. **Social proof** — quote cards; placeholder data until real users exist
 7. **Pricing** — single centered card; only real pricing facts
