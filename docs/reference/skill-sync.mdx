@@ -55,11 +55,16 @@ When the status check reports divergence, re-sync in two steps, never by force:
 1. Uninstall the recorded installer-owned links with `./Scripts/install-skills.sh --uninstall`. This removes only links whose target still matches the recorded installer state and never touches unrelated paths.
 2. Reinstall from the current checkout with `./Scripts/install-skills.sh`.
 
-This two-step sequence repairs **missing**, **dangling**, **content-drift**, and
-**stale** links. A moved checkout leaves the old target inside the link, which
+This two-step sequence repairs **missing**, **dangling**, and **stale**
+links. A moved checkout leaves the old target inside the link, which
 still matches the recorded state, so `--uninstall` removes it and reinstall
-recreates it pointing at the reconciled checkout; content drift is resolved
-because the symlinks now point at the reconciled working tree.
+recreates it pointing at the reconciled checkout.
+
+**Content drift is not repaired by reinstalling symlinks.** Drift means
+uncommitted edits in the source work tree, so new symlinks still point at
+the same dirty content and `--status` still fails. Clear it first — commit,
+restore (e.g. `git checkout -- <path>`), or select a clean checkout — then
+re-run `--status` to confirm.
 
 **Wrong-target links are not replaced by force.** A link whose target no longer
 matches the recorded installer state — typically replaced by hand or repointed at

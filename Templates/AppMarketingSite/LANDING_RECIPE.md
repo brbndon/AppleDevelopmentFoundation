@@ -14,18 +14,19 @@ The next product is a data swap, not a redesign.
    device mockup. CTAs: "Coming soon" status pill (`role="status"` +
    microcopy note), "See it in action" → `#screens`, "Explore Help Center".
 2. **Trust strip** — three privacy/product promises that match the real app.
-3. **Screenshot gallery** (`id="screens"`) — 4 real captures, one per
-   main screen. Mobile: horizontal snap-scroll, ~72vw cards;
-   desktop: 4-column grid. Every image needs `alt`, `width`/`height`, lazy
+3. **Screenshot gallery** (`id="screens"`) — one real capture per
+   main screen (typically 3–5; adjust the grid columns to the capture
+   count). Mobile: horizontal snap-scroll, ~72vw cards;
+   desktop: grid (e.g. 4-column for 4 captures). Every image needs `alt`, `width`/`height`, lazy
    loading. Real screenshots only — the CSS mockup belongs in the hero.
-4. **Benefits** — 6 cards on a light band, one per real capability.
+4. **Benefits** — 4–6 cards on a light band, one per real capability.
 5. **Clarity / product visual** — calm diagram card + copy + short bullets.
 6. **Social proof** — quote cards (initials avatar, name, context). Before
    launch these are placeholders, marked in code — never invented customers.
 7. **Pricing** — one centered card; only real pricing facts ("Free" works
    for local-first apps). Full-width status pill when pre-launch.
-8. **FAQ** — 5 native `<details>` rows + link to the Help Center. Answers
-   describe real behavior: accounts, money movement, storage, launch timing.
+8. **FAQ** — 4–6 native `<details>` rows + link to the Help Center. Answers
+   describe real behavior: accounts, data handling, storage, launch timing.
 9. **Final CTA / privacy band** — dark rounded panel: privacy posture +
    launch status, "See it in action" and "Read privacy details" links.
 
@@ -43,11 +44,12 @@ Section rhythm: `py-24 md:py-32`, canvas `#f5f5f7` alternating with full-bleed
 ## Real screenshots (not mockups)
 
 1. Launch the app with its fixture argument (e.g. `-useFixtureData`) via
-   XcodeBuildMCP `build_run_sim`.
-2. Drive navigation with a throwaway Maestro flow in `/tmp` — do NOT
+   XcodeBuildMCP (`build_run_sim` for iOS; `build_run_macos` for macOS).
+2. iOS: drive navigation with a throwaway Maestro flow in `/tmp` — do NOT
    `launchApp` inside it (restarts the app without fixtures). Tap by text;
    tab bars by percentage points (17% / 50% / 83% across a three-tab bar at
    ~94% height). Assert on-screen text before each `takeScreenshot`.
+   macOS: capture macOS screenshots of the running app instead of an iOS Maestro flow.
 3. Downscale to 640px wide into `web/public/screenshots/`:
    `sips --resampleWidth 640 in.png --out web/public/screenshots/name.png`.
 4. Regenerate whenever the app UI changes.

@@ -13,7 +13,10 @@ or comparison is explicitly requested.
 
 Read [skill sync](../../../docs/reference/skill-sync.mdx) before trusting this
 repository's installed skills for any routing decision. In an autonomous session
-with no human present, first reconcile installed skills against HEAD with
+with no human present, first resolve the foundation checkout root (follow this
+skill's install symlink to its source repository; do not resolve
+`./Scripts/install-skills.sh` against the consumer app cwd), then from that
+root reconcile installed skills against HEAD with
 `./Scripts/install-skills.sh --status` and re-sync before routing on divergence.
 
 1. Read [master-skill.json](master-skill.json) as the machine-readable catalog.

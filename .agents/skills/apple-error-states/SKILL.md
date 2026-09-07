@@ -14,7 +14,7 @@ Match the error's severity and context to a presentation; do not default everyth
 | Failure context | Presentation | Notes |
 | --- | --- | --- |
 | Blocking, single-context failure that stops the current action | System alert (`.alert`) | One alert at a time; never stack alerts. Human reason plus one primary action (Retry or OK); Cancel where dismissal is safe. |
-| Transient, non-blocking failure the user can ignore | Inline status on iOS; banner alert (`.banner` presentation style) or inline status on macOS | Short message; recover automatically when possible; never block the interface. |
+| Transient, non-blocking failure the user can ignore | Inline status on iOS; custom inline banner view or inline status on macOS (no system `.banner` API) | Short message; recover automatically when possible; never block the interface. |
 | Field or form validation | Inline next to the control | Keep the message next to the invalid field; a separate alert is only for a first invalid submission. |
 | Content that failed to load | Dedicated retry state in the content area, not an alert | `ContentUnavailableView` (iOS 17+/macOS 14+) with a Retry action; the rest of the screen stays usable. |
 | Feature or data permanently unavailable | Full-screen error state | `ContentUnavailableView` with an explanation and a way forward (contact support, reopen document) when relevant. |
@@ -41,7 +41,7 @@ Users hit errors the app cannot fix; give them a way to send you the useful part
 
 ## Platform differences
 
-- **macOS:** prefer banner alerts or inline status for non-blocking errors; windowed alerts for blocking ones. Alerts must be keyboard-reachable with standard key equivalents (Esc to dismiss, Return for the primary action where the system provides it). Document-level errors can surface in the window's status area.
+- **macOS:** prefer a custom inline banner view or inline status for non-blocking errors; windowed alerts for blocking ones. Alerts must be keyboard-reachable with standard key equivalents (Esc to dismiss, Return for the primary action where the system provides it). Document-level errors can surface in the window's status area.
 - **iOS:** alerts are modal and interruptive — reserve them for blocking failures; inline or retry states elsewhere. Confirmation dialogs are for destructive choices only, never for error reporting. Non-alert errors rely on VoiceOver announcements.
 - Both: verify the error state at large Dynamic Type sizes and with keyboard access where the platform has it; never present an error with motion or color alone as the only signal.
 
@@ -67,6 +67,6 @@ For each finding: control/view, problem, user impact, recommended fix, and sever
 
 ## Verification
 
-After implementing error states: build the host target and run focused tests for retry/copy logic via `swift-testing-verification`; follow with `apple-accessibility-review` for shared error UI; cover at least one error journey (for example an airplane-mode load failure) with `maestro-apple-app-testing`. List manual checks the environment cannot automate (VoiceOver announcement timing, banner dismissal, platform-specific alert styling). Report residual risk for untested platforms.
+After implementing error states: build the host target and run focused tests for retry/copy logic via `swift-testing-verification`; follow with `apple-accessibility-review` for shared error UI; cover at least one error journey (for example an airplane-mode load failure) with `maestro-apple-app-testing` for iOS journeys (or the project's configured UI E2E tool on other platforms); on macOS without E2E, record the manual journey plus residual risk. List manual checks the environment cannot automate (VoiceOver announcement timing, banner dismissal, platform-specific alert styling). Report residual risk for untested platforms.
 
 Inputs: error-handling requirement or existing error UI in the consumer workspace. Output: presentation decision, user-facing copy plus structured diagnostics, safe retry behavior, copy/report affordances, and the relevant build/test evidence. Do not claim accessibility or platform behavior passed without evidence.

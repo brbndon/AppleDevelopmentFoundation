@@ -3,7 +3,7 @@
 This reference is the complete homepage spec — self-contained, with no
 external checkout required before building. Structure, tokens, and workflow
 stay identical across products; only frontmatter content changes. A consumer
-example may exist at `GroupTripMoney/web/` where that checkout is available;
+checkout may exist at `<App>/web/` where that checkout is available;
 it is optional and illustrative only, never the source of truth.
 
 ## Homepage anatomy (section order)
@@ -19,8 +19,9 @@ All copy lives in frontmatter `as const` arrays at the top of
    "See it in action", text link to `/help/`.
 2. **Trust strip** — thin divider + centered row of three privacy/product
    promises that match the app's real behavior.
-3. **Screenshot gallery** (`id="screens"`) — exactly 4 real captures, one
-   per main app screen. Mobile: horizontal
+3. **Screenshot gallery** (`id="screens"`) — one real capture per main
+   app screen (typically 3–5; adjust the grid columns to the capture
+   count). Mobile: horizontal
    `snap-x snap-mandatory` scroll, `w-[72vw] max-w-[16.5rem]` cards; `sm+`:
    `grid sm:grid-cols-2 lg:grid-cols-4`. Each item: `figure` → rounded frame
    (`rounded-[1.4rem] ring-1 ring-black/10 shadow-soft`) → `img`
@@ -28,7 +29,7 @@ All copy lives in frontmatter `as const` arrays at the top of
    `figcaption` (bold title + muted caption). Never CSS illustrations here —
    only captures of the real app.
 4. **Benefits** — full-bleed `#efeff1` band, `ul.grid sm:grid-cols-2
-   lg:grid-cols-3` of 6 cards (`rounded-[1.25rem] border border-line
+   lg:grid-cols-3` of 4–6 cards (`rounded-[1.25rem] border border-line
    bg-surface p-6 shadow-soft`) with uppercase kicker, `h3`, muted body.
    One benefit per real capability.
 5. **Clarity / product visual** — two-column grid; calm diagram card
@@ -43,10 +44,10 @@ All copy lives in frontmatter `as const` arrays at the top of
    `p-8 md:p-10`) with app name + "Free" (or real price), border-t bullet
    list with ink dots, full-width coming-soon status pill, microcopy. Only
    state pricing facts the product really has.
-8. **FAQ** — `max-w-3xl border-t border-line` list of 5 native
+8. **FAQ** — `max-w-3xl border-t border-line` list of 4–6 native
    `details.faq-item` rows (`border-b border-line`, `+`/`−` circle
    indicators), plus a muted line linking `/help/`. Answers describe the
-   app's real behavior (accounts? money movement? storage? launch timing).
+   app's real behavior (accounts? data handling? storage? launch timing).
 9. **Final CTA / privacy band** — dark `bg-night rounded-[1.5rem]` panel:
    eyebrow + `h2` (product promise), body combining privacy posture + launch
    status (`#a1a1a6`), right column with `a.btn.btn-on-dark`
@@ -69,8 +70,11 @@ Section rhythm: page canvas (`#f5f5f7`) alternating with full-bleed
 
 Fixture mode first: launch the app with its fixture launch argument (e.g.
 `-useFixtureData` seeding an in-memory container) via XcodeBuildMCP
-(`build_run_sim` with `launchArgs`). Then drive navigation with a throwaway
-Maestro flow in `/tmp` — never the repo's committed `.maestro/` suite:
+(`build_run_sim` with `launchArgs` for iOS; `build_run_macos` for macOS).
+Then drive navigation:
+
+- iOS: a throwaway Maestro flow in `/tmp` — never the repo's committed `.maestro/` suite.
+- macOS: macOS screenshots of the running app — no iOS-simulator Maestro flow.
 
 - Do **not** include `launchApp` in the flow: Maestro restarts the app and
   its `arguments:` map does not reproduce `-useFixtureData` on iOS, so the
@@ -88,7 +92,7 @@ Maestro flow in `/tmp` — never the repo's committed `.maestro/` suite:
 
 Downscale to 640px wide into `web/public/screenshots/`:
 `sips --resampleWidth 640 shot.png --out web/public/screenshots/name.png`
-(optionally `xcrun simctl io booted screenshot /tmp/x.png` for full-res).
+(raw `xcrun simctl io booted screenshot` only when the active project/user policy explicitly permits raw Xcode tooling per the capability ladder; otherwise stay on XcodeBuildMCP).
 Delete unused captures; register each in the `screens` array.
 
 ## Verification pass (mandatory)

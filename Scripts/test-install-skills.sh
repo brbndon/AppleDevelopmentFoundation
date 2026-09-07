@@ -116,5 +116,20 @@ printf 'ghost-skill\t%s/.agents/skills/apple-accessibility-review\n' "$status_ro
 status_output="$(CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status || true)"
 [[ "$status_output" == *'stale: ghost-skill'* ]] \
   || fail "stale link was not detected"
+rm "$status_home/skills/ghost-skill"
+# Keep state file consistent for the remaining status checks.
+grep -v '^ghost-skill' "$status_home/skills/.apple-development-foundation-links" > "$scratch/links-tmp"
+mv "$scratch/links-tmp" "$status_home/skills/.apple-development-foundation-links"
+
+rm "$status_home/skills/apple-design-system"
+touch "$status_home/skills/apple-design-system"
+status_output="$(CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status || true)"
+[[ "$status_output" == *'wrong-target: apple-design-system (path exists but is not a symlink)'* ]] \
+  || fail "non-symlink collision was not detected"
+rm "$status_home/skills/apple-design-system"
+ln -s "$status_root/.agents/skills/apple-design-system" "$status_home/skills/apple-design-system"
+
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status --uninstall >/dev/null \
+  && fail "combined --status --uninstall was not rejected"
 
 echo "skills installer tests passed"

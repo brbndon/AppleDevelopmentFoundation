@@ -18,6 +18,12 @@ for arg in "$@"; do
   esac
 done
 
+if "$status" && "$uninstall"; then
+  echo "error: --status and --uninstall are mutually exclusive" >&2
+  exit 2
+fi
+# Note: --status is read-only; --dry-run is a no-op when combined with --status.
+
 require_command() {
   command -v "$1" >/dev/null 2>&1 || {
     echo "Required command is unavailable: $1" >&2

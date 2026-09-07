@@ -60,6 +60,8 @@ compatibility requirements are documented under [Agent host support](/reference/
 | `ok: … (matches manifest and HEAD)` | During `--status`, link is correct and content matches HEAD |
 | `missing` / `dangling` / `wrong-target` / `drift` / `stale: …` | During `--status`, a divergence was found; `--status` exits nonzero |
 
+`--status` and `--uninstall` are mutually exclusive (combining them exits 2). `--status` is read-only, so `--dry-run` is a no-op with it.
+
 Required tools: `awk`, `python3`, `readlink`. Missing `manifest.json` fails the install.
 
 ## Consumer guidance initializer

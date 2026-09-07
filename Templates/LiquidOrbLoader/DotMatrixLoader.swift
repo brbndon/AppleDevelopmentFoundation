@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Drop-in template (portable)
 //
-// Source of truth: Harborlight DotMatrixLoader + FeatureLoadingView + InlineLoadingRow.
+// Source of truth: Templates/LiquidOrbLoader/DotMatrixLoader.swift (drop-in template).
 // Soft-glow orb (no hard square clip). Micro uses economy draw (30 Hz, fewer path steps).
 // Defaults use system colors — map tint to app tokens.
 // See Templates/LiquidOrbLoader/README.md for layout, anti-box checklist, and wiring.
@@ -19,7 +19,7 @@ struct DotMatrixLoader: View {
         case pulse
         case symbol(String)
         case emoji(String)
-        /// Continuous liquid-glass orb (primary Harborlight loading mark).
+        /// Continuous liquid-glass orb (primary loading mark).
         case orb
     }
 

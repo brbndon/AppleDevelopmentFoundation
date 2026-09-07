@@ -99,4 +99,4 @@ Confirm routes emit under `dist/` with trailing-slash directories, header/footer
 
 ## Reference implementation
 
-Consumer example of this polish language: **Group Trip Money** marketing site (`GroupTripMoney/web/`) — monochrome light-first Astro + Tailwind. Do not copy product-specific legal text; copy structure, tokens, and components.
+Consumer example of this polish language: a consumer app marketing site (`<App>/web/`) — monochrome light-first Astro + Tailwind. Do not copy product-specific legal text; copy structure, tokens, and components.

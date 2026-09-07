@@ -1,9 +1,9 @@
 # Liquid orb loading mark (DotMatrixLoader)
 
-Portable SwiftUI loading chrome proven in **Harborlight** (iOS 26). Use this for **indeterminate** full-surface and inline loading that feels continuous and liquid—not a discrete spinner or keyframed “pose” loop.
+Portable SwiftUI loading chrome proven in a consumer iOS 26 app. Use this for **indeterminate** full-surface and inline loading that feels continuous and liquid—not a discrete spinner or keyframed “pose” loop.
 
-**Proven consumer:** Harborlight · `Harborlight/Components/DotMatrixLoader.swift`  
-**Last synced:** soft-glow orb, per-surface loading copy, micro economy path, loader outside `ScrollView` (incl. Services + release sheets).
+**Proven in:** a consumer iOS 26 app (`Components/DotMatrixLoader.swift`)
+**Last synced:** soft-glow orb, per-surface loading copy, micro economy path, loader outside `ScrollView` (incl. full-surface screens + release sheets).
 
 ## What you get
 
@@ -70,12 +70,12 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
    }
 
    // If you wrap FeatureState in a reusable view, pass loadingDetail per screen
-   // (do not reuse a generic “services” string on Library/Calendar/Downloads).
+   // (do not reuse one generic string across unrelated screens).
    ```
 
 5. **Layout critical:** put `FeatureStateView` (or the loading branch) **outside** `ScrollView`.  
    If the loader sits inside a scroll view, `maxHeight: .infinity` collapses and the mark looks wrong.  
-   Same rule for **Services first load** and **release sheets**—not only tab roots.
+   Same rule for **service/integration first loads** and **release sheets**—not only tab roots.
 
    ```swift
    // Preferred structure
@@ -117,8 +117,8 @@ Frequency note: loading chrome is occasional → motion is appropriate. Always h
 
 | Surface | Pattern |
 | --- | --- |
-| Tab-root list screens (library, calendar, downloads) | `FeatureStateView` → `FeatureLoadingView` with **per-screen** `loadingDetail` (loader outside `ScrollView`) |
-| Integrations / services first load | `FeatureLoadingView` **outside** `ScrollView` with a **per-screen** `detail` |
+| Tab-root list screens | `FeatureStateView` → `FeatureLoadingView` with **per-screen** `loadingDetail` (loader outside `ScrollView`) |
+| Service/integration first loads | `FeatureLoadingView` **outside** `ScrollView` with a **per-screen** `detail` |
 | Developer preview sheet | Sheet with `FeatureLoadingView` (~3s auto-dismiss) |
 | Detail sheets that fetch remote data | `FeatureStateView` **outside** `ScrollView` (per-screen `loadingDetail`) |
 | Thumbnail grids | `DotMatrixLoader.micro` (economy path) |
