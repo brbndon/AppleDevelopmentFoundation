@@ -12,6 +12,8 @@ Pick the row that matches the change. **Never claim a check passed without runni
 | Behavioral routing fixture change | `./Scripts/validate-skill-evaluations.py` |
 | Skill `SKILL.md` or `manifest.json` change | `./Scripts/verify-skills.sh` |
 | Installer behavior change | `./Scripts/verify-skills.sh` + `./Scripts/test-install-skills.sh` |
+| Reconciliation mode (`--status`) change | `./Scripts/verify-skills.sh` + `./Scripts/test-install-skills.sh` |
+| Installed-vs-HEAD check before routing | `./Scripts/install-skills.sh --status`; re-sync with `--uninstall` then install on divergence — see [Skill sync](/reference/skill-sync) |
 | Consumer app feature / bug fix | XcodeBuildMCP build + tests; `$swift-testing-verification` |
 | Shared SwiftUI components | `$apple-accessibility-review` (+ design/component skills as needed) |
 | Async / actors / Sendable | `$swift-concurrency-review` (+ strict concurrency build when practical) |
@@ -46,6 +48,7 @@ Stop and ask (or report blocked) when:
 ## Related
 
 - [Task recipes](/workflow/task-recipes)
+- [Skill sync](/reference/skill-sync)
 - [Troubleshooting](/reference/troubleshooting)
 - [Testing](/skills/testing)
 - [XcodeBuildMCP](/tools/xcodebuildmcp)

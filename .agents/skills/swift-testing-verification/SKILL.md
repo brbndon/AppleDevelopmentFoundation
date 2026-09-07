@@ -36,3 +36,18 @@ Never infer authorization from shell access or installed binaries. Preserve the
 same target context and test scope in an authorized fallback. Handoff must include
 the project/workspace, scheme, configuration, exact destination, commands or tools,
 outcomes, skipped checks, and residual risk.
+
+## User-interface evidence
+
+For a user-visible iOS/iPadOS change, use the consumer's UI inspection contract
+after a launch smoke. Choose the smallest risk-based evidence matrix: the primary
+affected route by default, plus an affected sheet, appearance variant, or large
+Dynamic Type scenario only when that risk changed. For each selected scenario,
+capture a screenshot, visually inspect the rendered image, and capture
+`snapshot_ui` to verify semantic controls, labels, values, and scrollability.
+
+For a non-UI change, run focused code tests only; do not require a launch smoke,
+screenshots, visual inspection, or `snapshot_ui`. Do not repeat discovery,
+stop/launch, or pre-fix captures after the cause is understood; retain post-fix
+evidence and any artifact needed to explain a failure. Report manual-only checks
+separately for user-visible changes.

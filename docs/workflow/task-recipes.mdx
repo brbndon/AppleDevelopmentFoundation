@@ -36,16 +36,46 @@ Details: [Bootstrap](/skills/bootstrap).
 | Verify | `$swift-testing-verification` + MCP build/test; reviews if shared UI / async / sensitive paths |
 | Do not | Plan-for-planning on one-off screens; skip a11y on shared components |
 
+### Multi-service LAN / API mesh integration (read-only phase)
+
+| Step | Action |
+| --- | --- |
+| Skills | Security/privacy review mindset (`$apple-security-privacy-review` when touching Keychain/logging); concurrency review if sessions/actors grow; testing verification after clients land |
+| Patterns | [Multi-service iOS app patterns](/workflow/multi-service-ios-app) — phase slice, Keychain refs, transport policy, FeatureState, joins, handoff shape |
+| Tools | XcodeBuildMCP `test_sim` (parallel off); fixtures only—no live secrets |
+| Verify | Decode/auth tests; secrets skim; optional inspection screenshots for UI |
+| Do not | Disable TLS validation; title-only cross-service matching; write APIs before read path is solid; invent endpoints when a fact-checked agent guide exists |
+
 ### Author reusable UI (tabs, tokens, components)
 
 | Step | Action |
 | --- | --- |
 | Skills | `$swiftui-tab-navigation` when the app needs **app-level** peer destinations; `$apple-design-system` for tokens/appearance; `$swiftui-component-author` for reusable components on that system; `$ios-macos-platform-adaptation` only when platforms diverge |
+| Liquid Glass | Treat the request as system chrome adoption first: native tabs, navigation bars, toolbars, and sheets; keep content opaque; use custom glass only for a navigation-plane control the system cannot express |
 | Tools | XcodeBuildMCP for build/preview targets |
 | Verify | MCP build; `$apple-accessibility-review` on shared UI; `$swift-testing-verification` when logic or public component APIs change |
 | Do not | Use tab skill for page-style `TabView` content or segmented controls; put branding-specific tokens into foundation skills; land components in this repo’s `archive/Sources/` |
 
 Read each skill’s `SKILL.md` for checklists. Bootstrap chain context: [Bootstrap](/skills/bootstrap).
+
+### Liquid orb loading mark (full-surface + inline)
+
+Proven pattern (consumer iOS app). Continuous 3×3 ring + liquid-glass **orb** (no brand glyph). Harmonics, not keyframe holds. Soft glow must **not** clip to a hard square.
+
+| Step | Action |
+| --- | --- |
+| Template | `Templates/LiquidOrbLoader/` — `README.md` (wiring + anti-box checklist) + drop-in `DotMatrixLoader.swift` |
+| Full-screen | `FeatureLoadingView` for `FeatureState.loading` with **screen-specific** detail; put loader **outside** `ScrollView` (tabs, service screens, release sheets) |
+| Inline | `InlineLoadingRow` / `DotMatrixLoader.compact` / `.micro` for forms, detail panels, poster tiles |
+| Replace | Indeterminate `ProgressView()` busy chrome only — keep determinate `ProgressView(value:)` |
+| Glow | Oversized canvas (`layoutScale` ≈ 2.6; micro ≈ 2.0); bake squash into path; no `scaleEffect` + tight frame; radial mask + transparent gradient stops |
+| Micro cost | Economy path (30 Hz, fewer path steps, single blur) when many tiles can load together |
+| A11y | Reduce Motion freezes via `TimelineView`; mark label `"Loading"`; surface combines title+detail |
+| Tools | XcodeBuildMCP build + optional loading inspection screenshot |
+| Verify | No rectangular glow box; light/dark; ring/orb clearance; Reduce Motion freeze; loader not collapsed in scroll |
+| Do not | Keyboard chrome; private hostnames in detail; expand foundation `archive/Sources/` for this drop-in |
+
+Proven in: tab-root lists + forms/details/posters + release sheets. Full notes: `Templates/LiquidOrbLoader/README.md`.
 
 ### Fix a bug
 

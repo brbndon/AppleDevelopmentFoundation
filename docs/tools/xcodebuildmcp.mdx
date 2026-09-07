@@ -13,7 +13,7 @@ Prefer **XcodeBuildMCP MCP tools** for iOS/macOS build, test, simulator, and UI 
 | **Do not use as** | A substitute for reading skill workflows; product implementation still goes through foundation skills |
 | **Canonical in-repo** | `MCP.md` |
 | **Upstream** | [xcodebuildmcp.com](https://xcodebuildmcp.com) · [CLI](https://xcodebuildmcp.com/docs/cli) · [Tools](https://xcodebuildmcp.com/docs/tools) · [Workflows](https://xcodebuildmcp.com/docs/workflows) |
-| **Verified against** | XcodeBuildMCP **2.6.2** tool catalog (`npx xcodebuildmcp tools`) + official docs |
+| **Verified against** | XcodeBuildMCP **2.7.0** tool catalog (`npx xcodebuildmcp tools`) + official docs |
 
 ## Naming: MCP vs CLI
 
@@ -63,6 +63,11 @@ commands. Every handoff reports those values, the exact tools or commands, outco
 and residual risk. None of these tiers weakens approvals for destructive actions,
 deployment, publishing, credentials, or user data.
 
+"Report blocked" is a fail-closed contract: when no authorized capability remains,
+refusal is mandatory and must leave an auditable blocked report. Exceptions require
+an explicit user authorization naming the specific action and scope; tool
+availability never authorizes fallback. See [Refusability contract](/reference/refusability-contract).
+
 ## Install and configure
 
 1. Register XcodeBuildMCP in the agent host’s MCP server list (host-specific). Server entrypoint is typically `xcodebuildmcp mcp` (stdio).
@@ -96,11 +101,15 @@ By default the MCP server advertises **`simulator`** tools. **Session-management
 | Physical device | `device` | Needs signing in Xcode |
 | macOS app build/run/test | `macos` | Prefer `build_run_macos` / `test_macos`; no UI automation tools |
 | SwiftPM packages | `swift-package` | |
-| Debug attach / breakpoints | `debugging` | Stateful (daemon in CLI mode) |
+| Debug attach / breakpoints | `debugging` | Stateful (daemon in CLI mode); iOS/tvOS/watchOS/visionOS only — not macOS |
 | Scaffold new projects | `project-scaffolding` | |
 | Project/scheme discovery tools | `project-discovery` | `discover_projs` also appears under other workflows |
 | Env / dependency diagnostics | `doctor` | |
 | Xcode IDE bridge | `xcode-ide` | Opt-in |
+
+The table above lists the workflows referenced by this repository and is not
+exhaustive; newer upstream workflows (for example `coverage`, `utilities`,
+`workflow-discovery`) can be enabled on demand.
 
 After changing config: **reload or restart** the MCP session.
 
@@ -119,7 +128,7 @@ For multiple apps in one repo, use `sessionDefaultsProfiles` + `activeSessionDef
 
 ## Tool map (MCP name → CLI)
 
-Exact advertised set depends on `enabledWorkflows` and XcodeBuildMCP version. Prefer the host’s live tool list. Mapping verified against **2.6.2** + official docs:
+Exact advertised set depends on `enabledWorkflows` and XcodeBuildMCP version. Prefer the host’s live tool list. Mapping verified against **2.7.0** + official docs:
 
 | Intent | MCP tool(s) | CLI equivalent |
 | --- | --- | --- |
@@ -133,7 +142,7 @@ Exact advertised set depends on `enabledWorkflows` and XcodeBuildMCP version. Pr
 | Simulator install / launch / stop | `install_app_sim`, `launch_app_sim`, `stop_app_sim` | `simulator install`, `launch-app`, `stop` |
 | Simulator test | `test_sim` | `xcodebuildmcp simulator test` |
 | Simulator boot / open | `boot_sim`, `open_sim` | `simulator boot`, `open` |
-| Screenshot / UI snapshot | `screenshot`, `snapshot_ui` | `simulator screenshot`, `snapshot-ui` |
+| Screenshot / UI snapshot | `screenshot`, `snapshot_ui` | `ui-automation screenshot`, `snapshot-ui` |
 | Record video | `record_sim_video` | `xcodebuildmcp simulator record-video` (daemon/stateful) |
 | Device build + run | `build_run_device` | `xcodebuildmcp device build-and-run` |
 | Device build / test / install / launch | `build_device`, `test_device`, `install_app_device`, `launch_app_device` | `device build`, `test`, `install`, `launch` |
@@ -227,4 +236,5 @@ Verification: Prefer build_run_sim for launch; never claim pass without running 
 - [Maestro](/tools/maestro) — pair for UI regression (same simulator ID)
 - [Verification matrix](/reference/verification-matrix)
 - [Task recipes](/workflow/task-recipes)
+- [Refusability contract](/reference/refusability-contract)
 - [Troubleshooting](/reference/troubleshooting)

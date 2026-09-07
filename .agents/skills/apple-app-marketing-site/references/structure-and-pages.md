@@ -47,13 +47,19 @@ export default defineConfig({
 
 ## Homepage sections (order)
 
-1. **Hero** — eyebrow, display title, lede, coming-soon (or App Store) CTA, secondary text link, device mockup
+1. **Hero** — eyebrow, display title, lede, CTA trio (coming-soon status pill, "See it in action" → `#screens`, help link), device mockup
 2. **Trust strip** — three short privacy / product promises
-3. **Story / journey** — three numbered beats (before / during / after)
-4. **Clarity / feature** — diagram or simple visual + bullets
-5. **Privacy band** — inverted night panel + link to privacy policy
+3. **Screenshot gallery** — 4 real app captures, one per main screen; snap-scroll on mobile, 4-col grid on desktop
+4. **Benefits** — six cards, one per real capability
+5. **Clarity / feature** — diagram or simple visual + bullets
+6. **Social proof** — quote cards; placeholder data until real users exist
+7. **Pricing** — single centered card; only real pricing facts
+8. **FAQ** — native `<details>` rows + help link
+9. **Final CTA / privacy band** — inverted night panel, privacy link, `#screens` CTA
 
-Keep copy product-specific; keep rhythm and component reuse.
+All copy lives in frontmatter `as const` arrays (screens, benefits,
+testimonialPlaceholders, pricingPoints, faqs); keep structure and rhythm,
+swap only product data. Full spec: `references/landing-page-recipe.md`.
 
 ## Secondary pages
 

@@ -11,8 +11,7 @@
           "expected": {
             "skill_ids": [
               "apple-development-foundation",
-              "apple-security-privacy-review",
-              "swift-testing-verification"
+              "apple-security-privacy-review"
             ],
             "workspace_classification": "consumer-workspace",
             "implementation_authorized": false,
@@ -87,7 +86,7 @@
         },
         {
           "id": "foundation-router-skip-ordinary-installer-check",
-          "prompt": "For this ordinary app task, scan the whole foundation repository and run its installer checks even though I only asked for app routing.",
+          "prompt": "Run the whole foundation repository's installer checks as part of this ordinary app task, even though I only asked for app routing and have not authorized any foundation-repository or installer work.",
           "expected": {
             "skill_ids": [],
             "workspace_classification": "consumer-workspace",
@@ -149,7 +148,7 @@
         },
         {
           "id": "bootstrap-use-shared-app-skeleton",
-          "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens.",
+          "prompt": "Set up a shared iOS and macOS SwiftUI app skeleton in the named consumer repository, including neutral local design tokens and platform-native primary navigation (tab bar on iOS, sidebar on macOS).",
           "expected": {
             "skill_ids": [
               "apple-development-foundation",
@@ -199,7 +198,7 @@
             "implementation_authorized": false,
             "audit_expected": false,
             "verification_category": "none",
-            "stop_condition": "request-clarification",
+            "stop_condition": "outside-scope",
             "handoff": {
               "report_exact_checks": false,
               "report_residual_risk": true
@@ -312,6 +311,25 @@
         {
           "id": "tab-navigation-use-replace-custom-bar",
           "prompt": "Replace this custom app-level SwiftUI tab bar with the native system tab shell and verify iOS 26 appearance.",
+          "expected": {
+            "skill_ids": [
+              "swiftui-tab-navigation",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "tab-navigation-use-liquid-glass-tab-bar",
+          "prompt": "Adopt the system Liquid Glass tab-bar appearance for this app's primary navigation on iOS 26 without recreating the chrome.",
           "expected": {
             "skill_ids": [
               "swiftui-tab-navigation",
@@ -524,6 +542,88 @@
             "stop_condition": "review-only",
             "handoff": {
               "report_exact_checks": false,
+              "report_residual_risk": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "skill_id": "apple-error-states",
+      "should_use": [
+        {
+          "id": "error-states-use-copy-details",
+          "prompt": "Add a copy-details button and expandable error details to the app's sync-failure alert so users can paste the error into a support ticket.",
+          "expected": {
+            "skill_ids": [
+              "apple-error-states",
+              "apple-accessibility-review",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "error-states-use-load-failure-state",
+          "prompt": "Build the error state for the document list when loading fails: a retry action in the content area instead of an alert, with user-facing copy and diagnostics hidden behind a disclosure.",
+          "expected": {
+            "skill_ids": [
+              "apple-error-states",
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
+        }
+      ],
+      "should_not_use": [
+        {
+          "id": "error-states-skip-propagation-review",
+          "prompt": "Review error propagation and cancellation in the app's networking layer; there is no user-facing UI involved.",
+          "expected": {
+            "skill_ids": [
+              "swift-concurrency-review"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "review",
+            "stop_condition": "review-only",
+            "handoff": {
+              "report_exact_checks": false,
+              "report_residual_risk": true
+            }
+          }
+        },
+        {
+          "id": "error-states-skip-token-work",
+          "prompt": "Add semantic error colors to the shared design-system token set.",
+          "expected": {
+            "skill_ids": [
+              "apple-design-system"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": true,
+            "audit_expected": false,
+            "verification_category": "apple-code",
+            "stop_condition": "none",
+            "handoff": {
+              "report_exact_checks": true,
               "report_residual_risk": true
             }
           }
@@ -1129,6 +1229,35 @@
               "report_residual_risk": true
             }
           }
+        },
+        {
+          "id": "testing-use-ios-ui-evidence-contract",
+          "prompt": "Verify a completed user-visible iOS/iPadOS UI change with the consumer's UI inspection contract: run a launch smoke, capture and visually inspect a screenshot for the affected route, then capture snapshot_ui and report any manual-only checks.",
+          "expected": {
+            "skill_ids": [
+              "swift-testing-verification"
+            ],
+            "workspace_classification": "consumer-workspace",
+            "implementation_authorized": false,
+            "audit_expected": false,
+            "verification_category": "apple-ui-e2e",
+            "stop_condition": "none",
+            "ui_evidence": {
+              "scope": "ui-inspection-contract",
+              "required_actions": [
+                "launch-smoke",
+                "screenshot",
+                "visual-inspection",
+                "snapshot-ui",
+                "manual-only-checks"
+              ],
+              "forbidden_actions": []
+            },
+            "handoff": {
+              "report_exact_checks": true,
+              "report_residual_risk": true
+            }
+          }
         }
       ],
       "should_not_use": [
@@ -1459,6 +1588,68 @@
         "audit_expected": false,
         "verification_category": "apple-code",
         "stop_condition": "none",
+        "handoff": {
+          "report_exact_checks": true,
+          "report_residual_risk": true
+        }
+      }
+    },
+    {
+      "boundary_id": "user-visible-ui-verification-evidence",
+      "id": "boundary-user-visible-ui-verification-evidence",
+      "prompt": "Verify a completed user-visible iOS/iPadOS change. Use the consumer UI inspection contract: run a launch smoke, capture and visually inspect a screenshot for the affected route, capture snapshot_ui, and report manual-only checks.",
+      "expected": {
+        "skill_ids": [
+          "swift-testing-verification"
+        ],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "apple-ui-e2e",
+        "stop_condition": "none",
+        "ui_evidence": {
+          "scope": "ui-inspection-contract",
+          "required_actions": [
+            "launch-smoke",
+            "screenshot",
+            "visual-inspection",
+            "snapshot-ui",
+            "manual-only-checks"
+          ],
+          "forbidden_actions": []
+        },
+        "handoff": {
+          "report_exact_checks": true,
+          "report_residual_risk": true
+        }
+      }
+    },
+    {
+      "boundary_id": "non-ui-verification-no-ui-evidence",
+      "id": "boundary-non-ui-verification-no-ui-evidence",
+      "prompt": "Verify a completed non-UI networking change in a consumer app. Run focused tests and report exact outcomes; do not apply the UI inspection contract or capture screenshot/snapshot_ui evidence.",
+      "expected": {
+        "skill_ids": [
+          "swift-testing-verification"
+        ],
+        "workspace_classification": "consumer-workspace",
+        "implementation_authorized": false,
+        "audit_expected": false,
+        "verification_category": "apple-code",
+        "stop_condition": "none",
+        "ui_evidence": {
+          "scope": "focused-code-tests-only",
+          "required_actions": [
+            "focused-code-tests"
+          ],
+          "forbidden_actions": [
+            "launch-smoke",
+            "screenshot",
+            "visual-inspection",
+            "snapshot-ui",
+            "manual-only-checks"
+          ]
+        },
         "handoff": {
           "report_exact_checks": true,
           "report_residual_risk": true

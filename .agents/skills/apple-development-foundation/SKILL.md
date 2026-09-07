@@ -11,6 +11,14 @@ or comparison is explicitly requested.
 
 ## Procedure
 
+Read [skill sync](../../../docs/reference/skill-sync.mdx) before trusting this
+repository's installed skills for any routing decision. In an autonomous session
+with no human present, first resolve the foundation checkout root (follow this
+skill's install symlink to its source repository; do not resolve
+`./Scripts/install-skills.sh` against the consumer app cwd), then from that
+root reconcile installed skills against HEAD with
+`./Scripts/install-skills.sh --status` and re-sync before routing on divergence.
+
 1. Read [master-skill.json](master-skill.json) as the machine-readable catalog.
 2. Use its IDs, roles, and purposes to shortlist only the children relevant to
    the request. Do not scan the repository, audit inventories, install skills,
@@ -39,3 +47,6 @@ override their exclusions, install global files, or claim automatic activation.
 For host-local skills that compete with this catalog (generic macOS development
 guides, design-only skills, and similar), see
 [references/competing-macos-skills-plan.md](references/competing-macos-skills-plan.md).
+For Liquid Glass, animation polish, and motion-audit routing (foundation first,
+host depth only if needed), see
+[references/design-motion-glass-routing.md](references/design-motion-glass-routing.md).

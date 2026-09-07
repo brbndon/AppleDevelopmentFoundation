@@ -141,6 +141,20 @@
       "modules": []
     },
     {
+      "name": "apple-error-states",
+      "path": "apple-error-states",
+      "description": "Use when designing, implementing, or reviewing user-facing error handling and error states in a consumer iOS or macOS app. Do not use for pure error propagation without presentation, token-only design work, or non-UI services.",
+      "role": "ui-foundation",
+      "scope": "repository-or-user",
+      "purpose": "Design, implement, or review user-facing error handling and error states",
+      "use_for": "error-state UX and error handling",
+      "do_not_use_for": "error propagation without UI, token-only work",
+      "installable": true,
+      "router_included": true,
+      "scripts": false,
+      "modules": []
+    },
+    {
       "name": "apple-app-marketing-site",
       "path": "apple-app-marketing-site",
       "description": "Use when creating, re-theming, polishing, or migrating a static Astro + Tailwind marketing site for an iOS or macOS app (landing, help, support, privacy, terms). Do not use for SwiftUI app UI, App Store screenshot sets, or general web apps unrelated to Apple product marketing.",

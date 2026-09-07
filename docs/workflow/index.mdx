@@ -5,7 +5,7 @@ description: End-to-end loop for agent sessions using foundation skills and Xcod
 
 # Session workflow
 
-A reliable agent session follows a fixed loop. Skip steps only when the task is clearly narrower than the loop.
+A reliable agent session follows a fixed loop. Skip steps only when the task is clearly narrower than the loop. An **unattended** run follows the stricter [Autonomous session](/workflow/autonomous-session) contract, including the installed-vs-HEAD reconciliation check and a leave-behind receipt.
 
 ## Loop
 
@@ -24,7 +24,7 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
    - Do not plan-for-planning on one-off screens.
 
 4. **Implement in the consumer workspace**
-   - Prefer Swift 6, SwiftUI, native observation, structured concurrency, focused views.
+   - Prefer Swift 6.2 or later, SwiftUI, native observation, structured concurrency, focused views.
    - Chain authoring skills (tabs → design system → components → platform adaptation) as the bootstrap skill describes.
 
 5. **Establish MCP session context**
@@ -46,6 +46,10 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
    - Active project/workspace, scheme, configuration, exact simulator/device, what ran, and residual risk; report blocked when no authorized verification path exists.
    - Which skills were applied and which to run next.
 
+## Multi-service / LAN API mesh apps
+
+For apps that talk to several independent HTTP APIs (Keychain secrets, local/remote endpoints, phased read-only clients, `FeatureState`, inspection routes), follow the reusable patterns in [Multi-service iOS app patterns](/workflow/multi-service-ios-app). Keep product-specific severity lists and paste prompts in the consumer app’s `Documentation/`.
+
 ## Do not
 
 | Anti-pattern | Instead |
@@ -58,6 +62,7 @@ A reliable agent session follows a fixed loop. Skip steps only when the task is 
 
 ## Related
 
+- [Autonomous session](/workflow/autonomous-session)
 - [Task recipes](/workflow/task-recipes) — scenario → skills → verify (start here for a concrete task)
 - [Skill routing](/workflow/skill-routing)
 - [Consumer workspace](/workflow/consumer-workspace)

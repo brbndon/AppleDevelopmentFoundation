@@ -47,6 +47,14 @@ If Maestro or its MCP server is unavailable, **stop and report** the exact block
 7. On failure: preserve debug output, screenshots, hierarchy, video when useful; classify; reproduce once; fix; re-run the same focused flow.
 8. Run a complete suite only when the user explicitly requests it or a documented release/CI gate requires it.
 
+## Onboarding E2E guidance
+
+- Make first-run state explicit: document whether each flow starts from a fresh install, reset data, or an already-completed onboarding state.
+- Define reset and persistence behavior. Reset app data, keychain, permissions, and backend fixtures only through the project’s agreed strategy; verify relaunch behavior instead of assuming state is cleared.
+- Handle system permissions conditionally because a prompt may appear only on first run or after a reset. Keep permission setup deterministic and never depend on a prior simulator state.
+- If onboarding may appear in a feature flow, use a conditional check to complete it; do not hide an unexpected onboarding screen with arbitrary sleeps.
+- Keep the complete first-run journey in a dedicated onboarding flow or reusable subflow under `.maestro/`, then invoke it from other flows only when their contract requires it.
+
 ## Authoring rules (distilled from the skill)
 
 - Prefer stable `testID` / accessibility selectors and explicit assertions.

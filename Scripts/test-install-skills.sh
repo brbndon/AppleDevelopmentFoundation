@@ -69,4 +69,67 @@ mv "$moved_root" "$scratch/source after move"
 CODEX_HOME="$moved_home" "$scratch/source after move/Scripts/install-skills.sh" --uninstall >/dev/null
 assert_missing "$moved_home/skills/apple-platform-planner"
 
+# --status: installed-vs-HEAD reconciliation
+status_root="$scratch/status repo"
+mkdir -p "$status_root/Scripts"
+cp -R "$root/.agents" "$status_root/.agents"
+cp "$installer" "$status_root/Scripts/install-skills.sh"
+if command -v git >/dev/null 2>&1; then
+  git init -q "$status_root"
+  git -C "$status_root" -c user.email=test@example.com -c user.name=test add -A
+  git -C "$status_root" -c user.email=test@example.com -c user.name=test commit -qm init
+fi
+status_home="$scratch/status home"
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" >/dev/null
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status >/dev/null \
+  || fail "clean install did not report synced"
+status_output="$(CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status || true)"
+[[ "$status_output" == *'ok: apple-platform-planner'* ]] \
+  || fail "status did not report ok for installed skill"
+
+rm "$status_home/skills/apple-platform-planner"
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status >/dev/null \
+  && fail "missing link was not detected"
+
+ln -s "$status_root/.agents/skills/apple-design-system" "$status_home/skills/apple-platform-planner"
+status_output="$(CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status || true)"
+[[ "$status_output" == *'wrong-target: apple-platform-planner'* ]] \
+  || fail "wrong-target link was not detected"
+rm "$status_home/skills/apple-platform-planner"
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" >/dev/null
+
+mv "$status_root/.agents/skills/swiftui-tab-navigation" "$scratch/tab-nav-keep"
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status >/dev/null \
+  && fail "dangling link was not detected"
+mv "$scratch/tab-nav-keep" "$status_root/.agents/skills/swiftui-tab-navigation"
+
+if command -v git >/dev/null 2>&1; then
+  echo "drift marker" >> "$status_root/.agents/skills/apple-design-system/SKILL.md"
+  CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status >/dev/null \
+    && fail "content drift was not detected"
+  git -C "$status_root" checkout -q -- .agents/skills/apple-design-system/SKILL.md
+fi
+
+ln -s "$status_root/.agents/skills/apple-accessibility-review" "$status_home/skills/ghost-skill"
+printf 'ghost-skill\t%s/.agents/skills/apple-accessibility-review\n' "$status_root" \
+  >> "$status_home/skills/.apple-development-foundation-links"
+status_output="$(CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status || true)"
+[[ "$status_output" == *'stale: ghost-skill'* ]] \
+  || fail "stale link was not detected"
+rm "$status_home/skills/ghost-skill"
+# Keep state file consistent for the remaining status checks.
+grep -v '^ghost-skill' "$status_home/skills/.apple-development-foundation-links" > "$scratch/links-tmp"
+mv "$scratch/links-tmp" "$status_home/skills/.apple-development-foundation-links"
+
+rm "$status_home/skills/apple-design-system"
+touch "$status_home/skills/apple-design-system"
+status_output="$(CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status || true)"
+[[ "$status_output" == *'wrong-target: apple-design-system (path exists but is not a symlink)'* ]] \
+  || fail "non-symlink collision was not detected"
+rm "$status_home/skills/apple-design-system"
+ln -s "$status_root/.agents/skills/apple-design-system" "$status_home/skills/apple-design-system"
+
+CODEX_HOME="$status_home" "$status_root/Scripts/install-skills.sh" --status --uninstall >/dev/null \
+  && fail "combined --status --uninstall was not rejected"
+
 echo "skills installer tests passed"

@@ -42,6 +42,45 @@ assert_apple_verification_policy() {
 
 assert_apple_verification_policy "$template"
 
+assert_tool_neutral_e2e_contract() {
+  local file="$1"
+  grep -q 'configured with the selected tool and real values' "$file" \
+    || fail "missing selected-tool configuration guidance in $file"
+  grep -q 'not configured / n/a when UI E2E is not in scope' "$file" \
+    || fail "missing explicit out-of-scope UI E2E form in $file"
+  grep -q 'UI E2E commands:' "$file" \
+    || fail "missing configurable UI E2E commands field in $file"
+  grep -q 'Deterministic routes or states/deep links:' "$file" \
+    || fail "missing configurable deterministic route field in $file"
+  grep -q 'Risk-based evidence matrix:' "$file" \
+    || fail "missing configurable evidence matrix field in $file"
+  grep -q 'E2E artifact location:' "$file" \
+    || fail "missing configurable E2E artifact location field in $file"
+  ! grep -q '\.maestro/\|Maestro MCP' "$file" \
+    || fail "canonical E2E contract prescribes Maestro-specific setup in $file"
+}
+
+assert_tool_neutral_e2e_contract "$template"
+
+# The website's copyable template must remain an exact mirror of the canonical
+# bootstrap asset. Extract only its markdown fence, not incidental shell fences.
+website_template="$scratch/website-consumer-AGENTS.md"
+if ! awk '
+  $0 == "```markdown" {
+    if (found || inside) exit 1
+    found = 1
+    inside = 1
+    next
+  }
+  inside && $0 == "```" { inside = 0; exit }
+  inside { print }
+  END { if (found != 1 || inside) exit 1 }
+' "$root/docs/workflow/agents-md-template.mdx" > "$website_template"; then
+  fail "could not extract the website AGENTS.md template"
+fi
+cmp -s "$template" "$website_template" \
+  || fail "website AGENTS.md template differs from the canonical asset"
+
 consumer="$scratch/Consumer App With Spaces"
 mkdir -p "$consumer"
 consumer="$(cd "$consumer" && pwd -P)"

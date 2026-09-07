@@ -6,10 +6,11 @@ export default defineMeta({
   order: 2,
   pages: [
     "index",
+    "autonomous-session",
     "task-recipes",
     "skill-routing",
     "consumer-workspace",
     "agents-md-template",
+    "multi-service-ios-app",
   ],
 });
-

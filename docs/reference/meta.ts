@@ -7,6 +7,9 @@ export default defineMeta({
   pages: [
     "host-support",
     "prompts",
+    "refusability-contract",
+    "adversarial-input",
+    "skill-sync",
     "verification-matrix",
     "troubleshooting",
     "external-skills",

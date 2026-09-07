@@ -34,6 +34,8 @@ Apply this order to every Apple build, run, test, simulator, or UI-inspection ta
 
 Every result or blocker must report the project/workspace, scheme, configuration, exact simulator/device when applicable, tool or command used, outcome, and residual risk. This ladder does not relax approval requirements for destructive actions, deployment, publishing, credentials, or user data.
 
+"Report blocked" is a fail-closed contract, not a phrase: refusal is mandatory when no authorized path exists, exceptions require an explicit user authorization naming the specific action and scope, and every refusal leaves a blocked report. See the [refusability contract](docs/reference/refusability-contract.mdx).
+
 ### Key tools by task (MCP names)
 
 | Task | MCP tools (representative) | CLI sketch |
@@ -81,7 +83,7 @@ After `$codex-bootstrap` completes initial structure:
 1. `session_show_defaults` — confirm project/workspace, scheme, configuration, and platform destination
 2. **iOS:** `build_run_sim` for launch smoke; **macOS:** `build_run_macos` (requires `macos` workflow). If macOS launch smoke and tests are not run, at least `build_macos`
 3. Run unit tests if present (`test_sim` / `test_macos`) with parallel testing disabled by default
-4. Optional iOS-only: capture a screenshot or view hierarchy (`ui-automation`). macOS has no XcodeBuildMCP UI automation — rely on `test_macos`; if tests are absent, still require `build_run_macos` or at least `build_macos` (do not declare complete on residual risk alone)
+4. For user-visible iOS/iPadOS work, run the consumer's small risk-based inspection matrix: capture and visually inspect a screenshot plus `snapshot_ui` for each selected scenario. For non-UI iOS work, screenshot/hierarchy capture remains optional. macOS has no XcodeBuildMCP UI automation — rely on `test_macos`; if tests are absent, still require `build_run_macos` or at least `build_macos` (do not declare complete on residual risk alone)
 5. Apply review skills (`swift-concurrency-review`, `apple-security-privacy-review`, `apple-accessibility-review`) before shipping shared components
 
 Keep bootstraps focused on reusable skills and clean architecture in the **consumer workspace**. Do not rebuild the archived package in this repo unless asked — see [ARCHIVE.md](ARCHIVE.md).

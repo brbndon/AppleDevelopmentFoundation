@@ -13,10 +13,11 @@ Change **shared** semantic tokens or design-system components in the **consumer 
 2. **Semantic tokens before chrome.** Prefer roles (`background`, `label`, `accent`, `danger`, spacing scale, type styles) over raw hex or one-off sizes. Map tokens to light/dark (and increased contrast when the project supports it).
 3. **Native first.** Prefer system materials, typography, and controls. Custom tokens should wrap or complement platform defaults, not fight them.
 4. **Appearance and motion.** New visual tokens must remain readable in light and dark appearance. Prefer Reduce Motion–safe defaults; avoid decorative motion that is the only affordance of meaning.
-5. **Differentiate without color alone.** Status and state must not rely only on hue when color is the sole signal.
-6. **Layering.** Tokens feed shared components; app screens consume components/tokens. Do not hardcode magic numbers for shared UI when a token should exist.
-7. **Document usage.** Name tokens for role, not for a single marketing campaign or temporary experiment. Note deprecations when replacing tokens.
-8. **Verify.** Add or update focused tests/examples or a gallery surface when the project has one. Build the affected target. Accessibility audits of screens belong to `apple-accessibility-review`, not this skill alone.
+5. **Polish defaults.** Content layer stays solid/opaque; reserve Liquid Glass for system navigation/control chrome (not content lists, cards, or tables). A Liquid Glass request means adopting native `TabView`, navigation bars, toolbars, and sheets before considering custom effects; never rebuild that chrome with materials, overlays, or safe-area bars. Use brand/accent for primary actions and content highlights, not full custom chrome. Shared interactive targets must remain usable at ~44×44 pt. Prefer system text styles and Regular/Medium/Semibold/Bold; avoid Ultralight/Thin for UI copy.
+6. **Differentiate without color alone.** Status and state must not rely only on hue when color is the sole signal.
+7. **Layering.** Tokens feed shared components; app screens consume components/tokens. Do not hardcode magic numbers for shared UI when a token should exist.
+8. **Document usage.** Name tokens for role, not for a single marketing campaign or temporary experiment. Note deprecations when replacing tokens.
+9. **Verify.** Add or update focused tests/examples or a gallery surface when the project has one. Build the affected target. Accessibility audits of screens belong to `apple-accessibility-review`, not this skill alone.
 
 ## Stop conditions
 

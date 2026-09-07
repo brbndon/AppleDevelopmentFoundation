@@ -25,8 +25,4 @@ The repository's former Swift package, examples, apps, website, historical packa
 
 ## Agent guidance
 
-Do **not** add modules, expand public APIs, refactor package code, or "improve" archived targets unless the user explicitly asks. Skills in this repo apply to **consumer apps and packages in the user's active workspace**, not to landing code in `archive/`. See [`archive/README.md`](archive/README.md) for the preserved layout.
-
-## History note
-
-Commit `2c9f948` repurpose also included unrelated LoggingKit/AppShellKit test additions. Those diffs were left in place; they are not part of the skills/MCP product story.
+Do **not** add modules, expand public APIs, refactor package code, or "improve" archived targets unless the user explicitly asks. Skills in this repo apply to **consumer apps and packages in the user's active workspace**, not to landing code in `archive/`. See [`archive/README.md`](archive/README.md) for the preserved layout. Archived sources are frozen as moved for history; they are not part of the live skills/MCP product.

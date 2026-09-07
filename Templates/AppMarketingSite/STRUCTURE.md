@@ -55,7 +55,7 @@ Use `trailingSlash: "always"` and directory build format so URLs stay `/help/`-s
 
 ## Page composition
 
-**Home:** Hero + device → Trust → Story beats → Feature visual → Privacy band  
+**Home:** Hero + device → Trust → Screenshot gallery → Benefits → Feature visual → Social proof → Pricing → FAQ → Final CTA band (full spec: `LANDING_RECIPE.md`)  
 
 **Help:** PageIntro + search → category grids → FAQ details  
 

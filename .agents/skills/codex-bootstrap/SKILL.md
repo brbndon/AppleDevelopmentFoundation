@@ -37,8 +37,11 @@ Before creating project files:
    the file; the non-dry-run form refuses conflicts by default.
 4. Customize project/workspace, scheme, configuration, platforms, deployment
    versions, exact simulator or `.xcodebuildmcp/config.yaml`, repository-native
-   formatter/linter/test commands, and **Apple verification policy** knobs from
-   inspected consumer configuration and team preference. The knobs are
+   formatter/linter/test commands, the **UI inspection contract** for user-visible
+   iOS/iPadOS work, and **Apple verification policy** knobs from inspected consumer
+   configuration and team preference. The inspection contract records deterministic
+   routes or states, safe UI-only launch arguments, a small risk-based evidence
+   matrix, and artifact handling. The policy knobs are
    XcodeBuildMCP CLI fallback and repository-native raw `xcodebuild` / `xcrun` /
    `simctl`, each `require-approval` | `allowed` | `denied`. Template default is
    `require-approval` for both — keep that unless the user authorizes a different
@@ -95,8 +98,12 @@ Use XcodeBuildMCP (see repo `MCP.md`) — not raw `xcodebuild`/`simctl`. Enable 
      `build_run_sim` for launch; before tests, wait for same-project
      `xcodebuild` / `xctest` / test-runner processes; run `test_sim` without a
      redundant preceding build and default to
-     `extraArgs: ["-parallel-testing-enabled", "NO"]`; optional `screenshot` /
-     `snapshot_ui` (ui-automation workflow; iOS simulator only)
+     `extraArgs: ["-parallel-testing-enabled", "NO"]`. For user-visible
+     iOS/iPadOS work, run the consumer's small risk-based evidence matrix: a
+     primary route by default, plus only affected sheet, appearance, or Dynamic
+     Type scenarios. For each selected scenario, capture a `screenshot`, inspect
+     the rendered image, then capture `snapshot_ui` (ui-automation workflow;
+     iOS simulator only)
    - **macOS:** use the `macos` workflow — prefer `build_run_macos` for a launch
      smoke; run `test_macos` when a test target exists (required verification
      when tests are present). If neither launch smoke nor `test_macos` runs,

@@ -22,7 +22,7 @@
     },
     "framework_boundaries": {
       "type": "array",
-      "minItems": 7,
+      "minItems": 9,
       "items": { "$ref": "#/$defs/boundaryCase" }
     }
   },
@@ -125,6 +125,43 @@
           "properties": {
             "report_exact_checks": { "type": "boolean" },
             "report_residual_risk": { "type": "boolean" }
+          }
+        },
+        "ui_evidence": {
+          "type": "object",
+          "required": ["scope", "required_actions", "forbidden_actions"],
+          "additionalProperties": false,
+          "properties": {
+            "scope": {
+              "enum": ["ui-inspection-contract", "focused-code-tests-only"]
+            },
+            "required_actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "focused-code-tests",
+                  "launch-smoke",
+                  "screenshot",
+                  "visual-inspection",
+                  "snapshot-ui",
+                  "manual-only-checks"
+                ]
+              }
+            },
+            "forbidden_actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "launch-smoke",
+                  "screenshot",
+                  "visual-inspection",
+                  "snapshot-ui",
+                  "manual-only-checks"
+                ]
+              }
+            }
           }
         }
       }

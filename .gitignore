@@ -1,15 +1,21 @@
 .DS_Store
 .build/
+.swiftpm/
 DerivedData/
 *.xcuserstate
 xcuserdata/
 .xcodebuildmcp/
+.cursor/
 archive/Website/node_modules/
 archive/Website/dist/
 archive/Website/.vite/
+archive/Website/.vercel/
 node_modules/
 .blume/
 .blume-verify/
 dist/
 __pycache__/
 *.py[cod]
+
+# Local TinyFish research outputs (not product guidance)
+tinyfish-results/
