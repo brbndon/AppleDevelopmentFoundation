@@ -52,7 +52,7 @@ export default defineConfig({
 3. **Screenshot gallery** — one real capture per main screen (typically 3–5; adjust the grid columns to the capture count); snap-scroll on mobile, responsive grid on desktop
 4. **Benefits** — 4–6 cards, one per real capability
 5. **Clarity / feature** — diagram or simple visual + bullets
-6. **Social proof** — quote cards; placeholder data until real users exist
+6. **Social proof** — quote cards with real testimonials only; pre-launch, hide the section or label placeholders visibly on the page
 7. **Pricing** — single centered card; only real pricing facts
 8. **FAQ** — native `<details>` rows + help link
 9. **Final CTA / privacy band** — inverted night panel, privacy link, `#screens` CTA

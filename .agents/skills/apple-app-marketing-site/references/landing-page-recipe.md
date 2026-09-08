@@ -27,7 +27,7 @@ All copy lives in frontmatter `as const` arrays at the top of
    (`rounded-[1.4rem] ring-1 ring-black/10 shadow-soft`) → `img`
    (`loading="lazy"`, descriptive `alt`) →
    `figcaption` (bold title + muted caption). iOS captures use portrait
-   `width="640" height="1391"`; macOS captures keep the native window aspect
+   geometry (for example `width="640" height="1391"`); macOS captures keep the native window aspect
    with matching `width`/`height` (never stretch a landscape capture into
    portrait geometry; use wider framing for macOS cards). Never CSS
    illustrations here — only captures of the real app.
@@ -95,8 +95,9 @@ Then drive navigation:
 - Assert distinctive text on every screen before screenshotting; names on
   `takeScreenshot` map to content.
 
-Downscale to 640px wide into `web/public/screenshots/`:
+Downscale iOS captures to 640px wide into `web/public/screenshots/`:
 `sips --resampleWidth 640 shot.png --out web/public/screenshots/name.png`
+Keep macOS captures at their native window aspect (do not force portrait geometry).
 (raw `xcrun simctl io booted screenshot` only when the active project/user policy explicitly permits raw Xcode tooling per the capability ladder; otherwise stay on XcodeBuildMCP).
 Delete unused captures; register each in the `screens` array.
 

@@ -14,10 +14,17 @@ assert_missing() { [[ ! -e "$1" && ! -L "$1" ]] || fail "expected no path: $1"; 
 home="$scratch/Codex Home With Spaces"
 skills="$home/skills"
 
-CODEX_HOME="$home" "$installer" >/dev/null
+CODEX_HOME="$home" "$installer" >"$scratch/fresh-output.txt"
+fresh_output="$(cat "$scratch/fresh-output.txt")"
 assert_link "$skills/apple-platform-planner"
 assert_link "$skills/swiftui-tab-navigation"
 assert_exists "$skills/.apple-development-foundation-links"
+[[ "$fresh_output" == *'Installed 17 skills to '* ]] \
+  || fail "fresh install did not report installed count"
+[[ "$fresh_output" == *'Next: in Codex, invoke $apple-development-foundation'* ]] \
+  || fail "fresh install did not report next steps"
+[[ "$fresh_output" == *'docs/quickstart.mdx'* ]] \
+  || fail "fresh install did not report quickstart path"
 
 repeat_output="$(CODEX_HOME="$home" "$installer")"
 [[ "$repeat_output" == *'Already installed (installer-owned): apple-platform-planner'* ]] \
@@ -42,8 +49,10 @@ CODEX_HOME="$conflict_home" "$installer" >/dev/null
 assert_link "$conflict_home/skills/swift-concurrency-review"
 
 dry_home="$scratch/dry run"
-CODEX_HOME="$dry_home" "$installer" --dry-run >/dev/null
+dry_output="$(CODEX_HOME="$dry_home" "$installer" --dry-run)"
 assert_missing "$dry_home"
+[[ "$dry_output" != *'Installed 17 skills to '* ]] \
+  || fail "dry run incorrectly reported installed count"
 
 unrelated="$skills/unrelated-file"
 touch "$unrelated"

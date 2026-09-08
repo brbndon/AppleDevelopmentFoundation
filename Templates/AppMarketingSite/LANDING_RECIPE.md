@@ -57,8 +57,8 @@ Section rhythm: `py-24 md:py-32`, canvas `#f5f5f7` alternating with full-bleed
 
 ## Ship checklist (additions to CHECKLIST.md)
 
-- [ ] Screenshots are real captures of the current build, 640px wide, with descriptive alt text
+- [ ] Screenshots are real captures of the current build at platform-native framing (640px-wide portrait for iOS; native window aspect for macOS), with descriptive alt text
 - [ ] Every link and form tested at desktop (1440px) and mobile (390px)
 - [ ] No horizontal page overflow at 320px and 390px (gallery scrolls internally)
-- [ ] Placeholder testimonials marked in code (pre-launch)
+- [ ] Pre-launch social proof hidden, or placeholders visibly labeled on the page (code-only marking is not enough)
 - [ ] Full verification pass ran: build → preview → 200s → links/forms → widths → error sweep

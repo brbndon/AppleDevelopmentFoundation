@@ -38,6 +38,7 @@ That symlinks 17 skills into `${CODEX_HOME:-$HOME/.codex}/skills`. Then open Cod
 
 - Codex, the only verified host. Other agent harnesses may work by hand, but I do not verify them.
 - Xcode with XcodeBuildMCP for builds and tests (see `MCP.md`). Maestro only matters for UI flows. Node 22.12+ only matters for the docs site.
+- For App Store screenshot sets, I use the external `$app-store-screenshots` skill (see `docs/reference/external-skills.mdx`). It is not installed by this repo.
 
 ## Limits
 
