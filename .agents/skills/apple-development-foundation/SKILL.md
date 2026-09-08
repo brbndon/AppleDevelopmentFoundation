@@ -25,7 +25,14 @@ root reconcile installed skills against HEAD with
    or run verification for ordinary routing.
 3. Resolve sibling skill paths relative to this foundation repository (follow
    this skill’s install symlink if present). Do not resolve
-   `.agents/skills/...` paths against the consumer app cwd.
+   `.agents/skills/...` paths against the consumer app cwd. The installer
+   normally installs all skills together, so manual master-only resolution is a
+   robustness fallback, not the primary path. Derive the root only when the host
+   exposes this skill's file path: `readlink` the installed link, resolve it with
+   `pwd -P`, then go three levels up from `.agents/skills/<name>` to the
+   repository root. If the checkout is missing, fall back in order: repo-path load
+   (`docs/quickstart.mdx` "Load without global install"), clone from `README.md`
+   quickstart, then the docs `llms.txt` feed.
 4. Read only the shortlisted child `SKILL.md` files and follow their workflows.
    For a **new** consumer iOS or macOS SwiftUI project, always shortlist and
    follow `codex-bootstrap` first (then its chained children). Prefer this
@@ -50,3 +57,5 @@ guides, design-only skills, and similar), see
 For Liquid Glass, animation polish, and motion-audit routing (foundation first,
 host depth only if needed), see
 [references/design-motion-glass-routing.md](references/design-motion-glass-routing.md).
+For the consolidated indie craft checklist (no new rules), see
+[references/indie-craft-checklist.md](references/indie-craft-checklist.md).

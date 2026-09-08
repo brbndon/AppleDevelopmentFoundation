@@ -9,15 +9,23 @@ Bootstrap a **consumer app or package** in the active workspace using sibling sk
 
 ## Step 1 — Intake
 
-Confirm before writing files:
+Confirm before writing files. Ask in stages rather than all at once:
 
-- Explicit consumer repository path and whether project-local operating guidance is authorized
-- Target platforms (iOS, macOS, or both) and minimum OS versions
-- SwiftUI app vs Swift Package vs mixed (app + local packages)
-- Primary peer destinations and whether the app needs tabs, a sidebar, or no persistent navigation yet
-- Existing design system to reuse, or need for a minimal neutral token/component layer
-- Auth, persistence, networking, or entitlements constraints (app-owned; not prescribed here)
-- Planning-only vs implementation request
+- Stage A (required before any file): explicit consumer repository path and whether project-local operating guidance is authorized; planning-only vs implementation request.
+- Stage B (confirm, or record as stated assumptions pending confirmation):
+  target platforms (iOS, macOS, or both) and minimum OS versions; SwiftUI app vs
+  Swift Package vs mixed (app + local packages); primary peer destinations and
+  whether the app needs tabs, a sidebar, or no persistent navigation yet;
+  existing design system to reuse, or need for a minimal neutral token/component
+  layer; auth, persistence, networking, or entitlements constraints (app-owned;
+  not prescribed here).
+
+When the user has not decided, record neutral assumptions as stated assumptions
+(for example the foundation iOS 17+ scope, a single root shell, no persistent
+navigation until peer destinations are named), leave the corresponding template
+values as explicit placeholders per Step 2, and continue — do not invent project
+configuration and do not create or merge any `AGENTS.md` without the Step 2
+authorization.
 
 Inputs: bootstrap request + any existing design system or app constraints. If planning-only, output the plan and skill selection without writing files.
 
